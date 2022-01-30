@@ -1,22 +1,23 @@
-#pragma once
 #include "Levenshtein.hpp"
-#include <cstring>
+#include <string>
 
 using namespace std;
 
-int Levenshtein::searchPattern(const string *pattern, const string *text) {
-    unsigned long textLength = text->size();
-    unsigned long patternLength = pattern->size();
-    unsigned long lastIndex = textLength - patternLength;
+int* Levenshtein::searchPattern(const string *pattern, const string *text) {
+    int patternLength = static_cast<int>(pattern->size());
+    int textLength = static_cast<int>(text->size());
+    int lastIndex = textLength - patternLength;
 
-    auto* score = new unsigned long[lastIndex];
-    unsigned long distance = 0;
+    string examined;
+    const string* examined_p;
+
+    int* scores = new int[lastIndex];
 
     for (int i=0; i <= lastIndex; i++) {
-        score[i] = Levenshtein::getDistance(reinterpret_cast<const char *>(pattern),
-                                            reinterpret_cast<const char *>(text + i),
-                                            patternLength, patternLength);
+        examined = text->substr(i, i + patternLength);
+        examined_p = &examined;
+        scores[i] = Levenshtein::getDistance(pattern, examined_p, patternLength, patternLength);
     }
 
-    return score[1];
+    return scores;
 }
