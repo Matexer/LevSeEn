@@ -11,26 +11,19 @@ using namespace std;
 
 using namespace std;
 
+
 inline int min(int a, int b, int c) {
     int x = (a < b) ? a : b;
     return (c < x) ? c : x;
 }
 
 
-inline void zeros(int array[], int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        array[i] = 0;
-    }    
-}
-
-
+//Aby było optymalnie pamięciowo: pattern < word
 int Levenshtein::getDistance(
-    const string* pattern, const string* word,
-    const int patternLength, const int wordLength)
+    const string& pattern, const string& word,
+    const size_t& patternLength, const size_t& wordLength)
 {
-    int size = wordLength + 1;
+    size_t size = patternLength + 1;
     int* top = new int[size];
     int* bot = new int[size];
 
@@ -40,7 +33,7 @@ int Levenshtein::getDistance(
 
     int result;
 
-    for (int i = 0; i <= wordLength; i++)
+    for (int i = 0; i < size; i++)
     {
         top[i] = i;
 
@@ -53,7 +46,7 @@ int Levenshtein::getDistance(
     cout<<"\n";
     #endif
 
-    for (int i = 0; i < patternLength; i++)
+    for (int i = 0; i < wordLength; i++)
     {
         bot[0] = i + 1;
 
@@ -61,17 +54,14 @@ int Levenshtein::getDistance(
         cout<<i;
         #endif
 
-        for (int j = 0; j < wordLength; j++)
+        for (int j = 0; j < patternLength; j++)
         {
             delCost = top[j + 1] + 1;
             insCost = bot[j] + 1;
-            if (pattern->at(i) == word->at(j))
+            subCost = top[j];
+            if (pattern.at(j) != word.at(i))
             {
-                subCost = top[j];
-            }
-            else
-            {
-                subCost = top[j] + 1;
+                subCost++;
             }
 
             bot[j + 1] = min(delCost, insCost, subCost);
@@ -86,10 +76,9 @@ int Levenshtein::getDistance(
         #endif
 
         swap(top, bot);
-        zeros(bot, wordLength + 1);
     }
 
-    result = top[wordLength];
+    result = top[patternLength];
 
     delete[] top;
     delete[] bot;
@@ -98,9 +87,9 @@ int Levenshtein::getDistance(
 }
 
 
-int Levenshtein::getDistance(const string* pattern, const string* word) {
-    int patternLength = static_cast<int>(pattern->size());
-    int wordLength = static_cast<int>(word->size());
+int Levenshtein::getDistance(const string& pattern, const string& word) {
+    size_t patternLength = pattern.size();
+    size_t wordLength = word.size();
 
     if (patternLength < wordLength)
     {
@@ -108,6 +97,7 @@ int Levenshtein::getDistance(const string* pattern, const string* word) {
     }
     else
     {
-        return getDistance(word, pattern, wordLength, patternLength);
+        return getDistance(word, pattern,
+                           wordLength, patternLength);
     }
 }
