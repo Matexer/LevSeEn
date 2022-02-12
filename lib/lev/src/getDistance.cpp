@@ -2,13 +2,6 @@
 #include "Levenshtein.hpp"
 #include <string>
 
-#define DEBUG false
-
-#if DEBUG
-#include <iostream>
-using namespace std;
-#endif
-
 using namespace std;
 
 
@@ -36,23 +29,11 @@ int Levenshtein::getDistance(
     for (int i = 0; i < size; i++)
     {
         top[i] = i;
-
-        #if DEBUG
-        cout<<i;
-        #endif
     }
-
-    #if DEBUG
-    cout<<"\n";
-    #endif
 
     for (int i = 0; i < wordLength; i++)
     {
         bot[0] = i + 1;
-
-        #if DEBUG
-        cout<<i;
-        #endif
 
         for (int j = 0; j < patternLength; j++)
         {
@@ -65,15 +46,7 @@ int Levenshtein::getDistance(
             }
 
             bot[j + 1] = min(delCost, insCost, subCost);
-
-            #if DEBUG
-            cout<<bot[j + 1];
-            #endif
         }
-
-        #if DEBUG
-        cout<<"\n";
-        #endif
 
         swap(top, bot);
     }
