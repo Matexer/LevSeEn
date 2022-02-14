@@ -15,7 +15,7 @@ int Levenshtein::getDistance(
     const string& pattern, const string& word,
     const size_t& patternLength, const size_t& wordLength)
 {
-    size_t size = patternLength + 1;
+    auto size = patternLength + 1;
     int* top = new int[size];
     int* bot = new int[size];
 

@@ -11,23 +11,23 @@ int main(int argc, char const *argv[])
 {
     auto start = high_resolution_clock::now();
 
-    int* scores;
-    auto pattern = new string("bbbaaabaaa");
-    auto word = new string("bbbaabaa");
+    vector<size_t>* output;
+    auto pattern = new string("baaśabaaa");
+    auto word = new string("bbbćaabaa");
     auto text = new string();
 
-    //TODO naprawić dla większych wartości
-    for (int i=1; i<10000 ;i++) {
+    for (int i=1; i<4 ;i++) {
+        pattern->append(*pattern);
+    }
+
+    for (int i=1; i<30000 ;i++) {
         text->append(*word);
     }
 
-    std::cout<<Levenshtein::getDistance(pattern, word)<<"\n";
-    scores = Levenshtein::search(pattern, text);
-
-    size_t size = text->size() - pattern->size();
-    for (int i=0; i < size; i++) {
-        std::cout << scores[i] << " ";
-    }
+    cout<<Levenshtein::getDistance(pattern, word)<<"\n";
+    output = Levenshtein::search(pattern, text);
+    auto minimum = min_element(output->begin(), output->end()).base();
+    cout << *minimum;
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
@@ -36,6 +36,7 @@ int main(int argc, char const *argv[])
     delete pattern;
     delete word;
     delete text;
+    delete output;
 
     return 0;
 }
