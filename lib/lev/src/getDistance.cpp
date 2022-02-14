@@ -1,4 +1,3 @@
-#pragma once
 #include "Levenshtein.hpp"
 #include <string>
 
@@ -74,3 +73,20 @@ int Levenshtein::getDistance(const string& pattern, const string& word) {
                            wordLength, patternLength);
     }
 }
+
+
+int Levenshtein::getDistance(const string* pattern, const string* word) {
+    size_t patternLength = pattern->size();
+    size_t wordLength = word->size();
+
+    if (patternLength < wordLength)
+    {
+        return getDistance(*pattern, *word, patternLength, wordLength);
+    }
+    else
+    {
+        return getDistance(*word, *pattern,
+                           wordLength, patternLength);
+    }
+}
+
