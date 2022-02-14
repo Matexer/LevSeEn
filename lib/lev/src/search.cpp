@@ -1,89 +1,90 @@
 #include "Levenshtein.hpp"
-#include <string>
-#include <vector>
-#include <thread>
 
 
 using namespace std;
 
 
 struct SearchData {
-    const string* pattern;
-    const string* text;
+    const string* const pattern;
+    const string* const text;
     const size_t patternLength;
 };
 
 
 struct ThreadData {
-    int* const scores;
+    const SearchData& data;
+    const size_t firstIndex;
     const size_t lastIndex;
+    vector<size_t>* const output;
 };
 
 
-void normalSearch(SearchData &data,int* const scores, const size_t &lastIndex) {
-    for (size_t i=0; i <= lastIndex; i++) {
-        scores[i] = Levenshtein::getDistance(*data.pattern,
-                                             data.text->substr(i, i + data.patternLength),
-                                             data.patternLength,
-                                             data.patternLength);
+void normalSearch(SearchData &data, vector<size_t>* output) {
+    for (auto i = 0; i < output->size(); i++) {
+        output->at(i) = Levenshtein::getDistance(*data.pattern,
+                                                   data.text->substr(i, i + data.patternLength),
+                                                   data.patternLength,
+                                                   data.patternLength);
     }
 }
 
 
-void threadSearch(const SearchData &data, ThreadData threadData) {
-    auto scores = threadData.scores;
-    for (int i=0; i <= threadData.lastIndex; i++) {
-        scores[i] = Levenshtein::getDistance(*data.pattern,
-                                             data.text->substr(i, i + data.patternLength),
-                                             data.patternLength,
-                                             data.patternLength);
+void threadSearch(ThreadData tData) {
+    auto data = tData.data;
+    for (auto i = tData.firstIndex; i < tData.lastIndex; i++) {
+        tData.output->at(i) = Levenshtein::getDistance(*data.pattern,
+                                                       data.text->substr(i, i + data.patternLength),
+                                                       data.patternLength,
+                                                       data.patternLength);
     }
 }
 
 
-void concurrentSearch(const SearchData &commonData, int* const scores, const size_t &lastIndex) {
+void concurrentSearch(const SearchData &commonData, vector<size_t>* output) {
     const auto threadsNum = thread::hardware_concurrency();
     const auto lastThreadIndex = threadsNum - 1; // rezerwacja ostatniego wątku do realizacji wszystkich pozostałych iteracji
-    const auto iterPerThread = lastIndex / threadsNum;
+    const auto iterPerThread = output->size() / threadsNum;
 
     vector<thread> pool(threadsNum);
 
     //Pierwszy wątek
-    auto scoresFirstIndex = scores;
-    auto scoresLastIndex = iterPerThread - 1;
-    ThreadData firstThreadData = {scoresFirstIndex, scoresLastIndex};
-    pool.at(0) = thread (threadSearch, commonData, firstThreadData);
+    size_t firstIndex = 0;
+    auto lastIndex = iterPerThread;
+
+    ThreadData firstThreadData = {commonData, firstIndex, lastIndex, output};
+    pool.at(0) = thread (threadSearch, firstThreadData);
 
     //Wątki wewnętrzne
     for (int i=1; i < lastThreadIndex; i++) {
-        scoresFirstIndex += iterPerThread;
-        scoresLastIndex += iterPerThread;
-        ThreadData threadData = {scoresFirstIndex, scoresLastIndex};
-        pool.at(i) = thread (threadSearch, commonData, threadData);
+        firstIndex += iterPerThread;
+        lastIndex += iterPerThread;
+        ThreadData threadData = {commonData, firstIndex, lastIndex, output};
+        pool.at(i) = thread (threadSearch, threadData);
     }
 
-    //Ostatni wątek iteruje do końca (lastIndex)
-    scoresFirstIndex += iterPerThread;
-    ThreadData lastThreadData = {scoresFirstIndex, lastIndex - 1};
-    pool.at(lastThreadIndex) = thread (threadSearch, commonData, lastThreadData);
+    //Ostatni wątek iteruje do końca (output->size())
+    firstIndex += iterPerThread;
+    ThreadData threadData = {commonData, firstIndex, output->size(), output};
+    pool.at(lastThreadIndex) = thread (threadSearch, threadData);
 
     for (auto &&t : pool)
         t.join();
 }
 
 
-int* Levenshtein::search(const string* pattern, const string* text) {
+vector<size_t>* Levenshtein::search(const string* pattern, const string* text) {
     auto patternLength = pattern->size();
     auto textLength = text->size();
     auto lastIndex = textLength - patternLength;
+    auto complexity = (patternLength^2 * textLength);
+
     SearchData data {pattern, text, patternLength};
+    auto output = new vector<size_t> (lastIndex);
 
-    int* const scores = new int[lastIndex];
-
-    if (textLength > Levenshtein::multithreadingStart)
-        concurrentSearch(data, scores, lastIndex);
+    if (complexity > Levenshtein::multithreadingStart)
+        concurrentSearch(data, output);
     else
-        normalSearch(data, scores, lastIndex);
+        normalSearch(data, output);
 
-    return scores;
+    return output;
 }
