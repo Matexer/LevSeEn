@@ -22,7 +22,7 @@ class Base {
             auto sign = character.first;
             auto occurrences = character.second;
             if (word.letters.contains(sign)) {
-                difference += abs(word.letters[sign] - occurrences);
+                difference += word.letters[sign] - occurrences;
             }
         }
         return difference;
@@ -47,7 +47,7 @@ struct ThreadData {
 
 void normalFilter(FilterData data, vector<size_t>* const output) {
     auto patternBase = data.patternBase;
-    auto wordBase = Base(data.text->substr(0, data.patternLength));
+    //auto wordBase = Base(data.text->substr(0, data.patternLength));
     for (auto i = 0; i < data.text->size(); i++) {
     }
 }
