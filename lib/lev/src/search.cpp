@@ -42,28 +42,22 @@ void threadSearch(ThreadData tData) {
 
 void concurrentSearch(const SearchData &commonData, vector<size_t>* output) {
     const auto threadsNum = thread::hardware_concurrency();
-    const auto lastThreadIndex = threadsNum - 1; // rezerwacja ostatniego wątku do realizacji wszystkich pozostałych iteracji
+    const auto lastThreadIndex = threadsNum - 1;
     const auto iterPerThread = output->size() / threadsNum;
 
     vector<thread> pool(threadsNum);
 
-    //Pierwszy wątek
     size_t firstIndex = 0;
     auto lastIndex = iterPerThread;
-
-    ThreadData firstThreadData = {commonData, firstIndex, lastIndex, output};
-    pool.at(0) = thread (threadSearch, firstThreadData);
-
     //Wątki wewnętrzne
-    for (int i=1; i < lastThreadIndex; i++) {
-        firstIndex += iterPerThread;
-        lastIndex += iterPerThread;
+    for (int i=0; i < lastThreadIndex; i++) {
         ThreadData threadData = {commonData, firstIndex, lastIndex, output};
         pool.at(i) = thread (threadSearch, threadData);
+        firstIndex += iterPerThread;
+        lastIndex += iterPerThread;
     }
 
     //Ostatni wątek iteruje do końca (output->size())
-    firstIndex += iterPerThread;
     ThreadData threadData = {commonData, firstIndex, output->size(), output};
     pool.at(lastThreadIndex) = thread (threadSearch, threadData);
 

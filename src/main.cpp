@@ -12,11 +12,11 @@ int main(int argc, char const *argv[])
     auto start = high_resolution_clock::now();
 
     vector<size_t>* output;
-    auto pattern = new string("baaśabaaa");
+    auto pattern = new string("baaśaa");
     auto word = new string("bbbćaabaa");
     auto text = new string();
 
-    for (int i=1; i<4 ;i++) {
+    for (int i=1; i<3 ;i++) {
         pattern->append(*pattern);
     }
 
