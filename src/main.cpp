@@ -24,8 +24,8 @@ int main(int argc, char const *argv[])
         text->append(*word);
     }
 
-    cout<<Levenshtein::getDistance(pattern, word)<<"\n";
-    output = Levenshtein::search(pattern, text);
+    cout<<Levenshtein::getDistance(*pattern, *word)<<"\n";
+    output = Levenshtein::search(*pattern, *text);
     auto minimum = min_element(output->begin(), output->end()).base();
     cout << *minimum;
 

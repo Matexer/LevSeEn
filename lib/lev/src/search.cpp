@@ -5,8 +5,8 @@ using namespace std;
 
 
 struct SearchData {
-    const string* const pattern;
-    const string* const text;
+    const string &pattern;
+    const string &text;
     const size_t patternLength;
 };
 
@@ -21,8 +21,8 @@ struct ThreadData {
 
 void normalSearch(SearchData &data, vector<size_t>* output) {
     for (auto i = 0; i < output->size(); i++) {
-        output->at(i) = Levenshtein::getDistance(*data.pattern,
-                                                   data.text->substr(i, i + data.patternLength),
+        output->at(i) = Levenshtein::getDistance(data.pattern,
+                                                   data.text.substr(i, i + data.patternLength),
                                                    data.patternLength,
                                                    data.patternLength);
     }
@@ -32,8 +32,8 @@ void normalSearch(SearchData &data, vector<size_t>* output) {
 void threadSearch(ThreadData tData) {
     auto data = tData.data;
     for (auto i = tData.firstIndex; i < tData.lastIndex; i++) {
-        tData.output->at(i) = Levenshtein::getDistance(*data.pattern,
-                                                       data.text->substr(i, i + data.patternLength),
+        tData.output->at(i) = Levenshtein::getDistance(data.pattern,
+                                                       data.text.substr(i, i + data.patternLength),
                                                        data.patternLength,
                                                        data.patternLength);
     }
@@ -52,7 +52,7 @@ void concurrentSearch(const SearchData &commonData, vector<size_t>* output) {
     //Wątki wewnętrzne
     for (int i=0; i < lastThreadIndex; i++) {
         ThreadData threadData = {commonData, firstIndex, lastIndex, output};
-        pool.at(i) = thread (threadSearch, threadData);
+        pool.at(i) = thread(threadSearch, threadData);
         firstIndex += iterPerThread;
         lastIndex += iterPerThread;
     }
@@ -66,9 +66,9 @@ void concurrentSearch(const SearchData &commonData, vector<size_t>* output) {
 }
 
 
-vector<size_t>* Levenshtein::search(const string* pattern, const string* text) {
-    auto patternLength = pattern->size();
-    auto textLength = text->size();
+vector<size_t>* Levenshtein::search(const string &pattern, const string &text) {
+    auto patternLength = pattern.size();
+    auto textLength = text.size();
     auto lastIndex = textLength - patternLength;
     auto complexity = (patternLength^2 * textLength);
 
