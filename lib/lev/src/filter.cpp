@@ -49,8 +49,9 @@ public:
     }
 
     size_t move(char8_t inserted, char8_t removed) {
-        auto diffFromInserted = subabs(pattern->letters.at(inserted), letters[inserted]);
-        auto diffFromRemoved = subabs(pattern->letters.at(removed), letters[removed]);
+        auto diffFromInserted = getDiffFrom(inserted);
+        auto diffFromRemoved = getDiffFrom(removed);
+
         auto restDifference = lastDifference - diffFromInserted - diffFromRemoved;
 
         if (letters.contains(inserted))
@@ -59,18 +60,26 @@ public:
         if (letters.contains(removed))
             letters[removed]--;
 
-        diffFromInserted = subabs(pattern->letters.at(inserted), letters[inserted]);
-        diffFromRemoved = subabs(pattern->letters.at(removed), letters[removed]);
+        diffFromInserted = getDiffFrom(inserted);
+        diffFromRemoved = getDiffFrom(removed);
 
         lastDifference = restDifference + diffFromInserted + diffFromRemoved;
         return lastDifference;
     }
 
+private:
     static inline size_t subabs(size_t a, size_t b) {
         if (a > b)
             return a - b;
         else
             return b - a;
+    }
+
+    inline size_t getDiffFrom(char8_t character) {
+        if (letters.contains(character))
+            return subabs(pattern->letters.at(character), letters[character]);
+        else
+            return 0;
     }
 
 };
@@ -102,15 +111,15 @@ void normalFilter(FilterData data, vector<size_t>* const output) {
     if (lastDifference <= data.maxDifference)
         output->push_back(0);
 
-    for (decltype(lastIndex) i = 1; i < lastIndex; i++) {
+    for (decltype(lastIndex) i = 0; i < lastIndex; i++) {
         auto incomingCharacter = data.text.at(i + data.patternLength);
-        auto leavingCharacter = data.text.at(i - 1);
+        auto leavingCharacter = data.text.at(i );
         if (incomingCharacter != leavingCharacter) {
             lastDifference = wordBase.move(incomingCharacter, leavingCharacter);
         }
 
         if (lastDifference <= data.maxDifference)
-            output->push_back(i);
+            output->push_back(i + 1);
     }
 }
 

@@ -57,19 +57,27 @@ namespace Test {
         auto start = high_resolution_clock::now();
 
         vector<size_t>* output;
-        auto pattern = new string("jajko");
-        auto word = new string("testjajkotest");
+        auto pattern = new string("t5t55");
+        auto word = new string("45556");
+        auto maxDifference = 2;
         auto text = new string();
 
-        for (int i=1; i<3 ;i++) {
+        for (int i=0; i<0 ;i++) {
             pattern->append(*pattern);
         }
 
-        for (int i=1; i<30000 ;i++) {
+        for (int i=0; i<2 ;i++) {
             text->append(*word);
         }
 
-        output = Levenshtein::filter(*pattern, *text, 13);
+        output = Levenshtein::filter(*pattern, *text, maxDifference);
+        auto percent = ((double)(output->size()) / (double)(text->size())) * 100;
+
+        cout<<"\nOdrzucono "<<percent<<"%\n";
+
+        for (auto val : *output) {
+            cout << val << " ";
+        }
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
