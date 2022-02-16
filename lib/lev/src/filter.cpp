@@ -19,7 +19,7 @@ public:
         }
     }
 
-    Base(const string &word, Base* pattern) {
+    Base(const string &word, const Base* const pattern) {
         this->pattern = pattern;
 
         letters = unordered_map<char8_t, size_t>();
@@ -86,10 +86,10 @@ private:
 
 
 struct FilterData {
-    const Base &patternBase;
+    const Base* patternBase;
     const string &text;
     const size_t patternLength;
-    const size_t textLength;
+    const size_t lastIndex;
     const size_t maxDifference;
 };
 
@@ -103,15 +103,13 @@ struct ThreadData {
 
 
 void normalFilter(FilterData data, vector<size_t>* const output) {
-    auto patternBase = data.patternBase;
-    auto lastIndex = data.textLength - data.patternLength;
-    auto wordBase = Base(data.text.substr(0, data.patternLength), &patternBase);
+    auto wordBase = Base(data.text.substr(0, data.patternLength), data.patternBase);
     auto lastDifference = wordBase.getDifference();
 
     if (lastDifference <= data.maxDifference)
         output->push_back(0);
 
-    for (decltype(lastIndex) i = 0; i < lastIndex; i++) {
+    for (size_t i = 0; i < data.lastIndex; i++) {
         auto incomingCharacter = data.text.at(i + data.patternLength);
         auto leavingCharacter = data.text.at(i );
         if (incomingCharacter != leavingCharacter) {
@@ -124,16 +122,26 @@ void normalFilter(FilterData data, vector<size_t>* const output) {
 }
 
 
+void concurrentFilter(FilterData data, vector<size_t>* const output) {
+
+}
+
+
 vector<size_t>* Levenshtein::filter(const string &pattern, const string &text, const size_t maxDifference) {
-    const auto patternBase = Base(pattern);
+    const auto patternBase = new Base(pattern);
+    const auto patternLength = pattern.size();
+    const auto lastIndex = text.size() - patternLength;
     const auto complexity = text.size();
-    const auto data = FilterData {patternBase, text, pattern.size(), text.size(), maxDifference};
+
+    const auto data = FilterData {patternBase, text, patternLength, lastIndex, maxDifference};
+
     auto output = new vector<size_t>();
 
     if (complexity > Levenshtein::multithreadingStart)
-        normalFilter(data, output);
+        concurrentFilter(data, output);
     else
         normalFilter(data, output);
 
+    delete patternBase;
     return output;
 }
