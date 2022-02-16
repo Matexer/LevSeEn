@@ -49,7 +49,7 @@ void concurrentSearch(const SearchData &commonData, vector<size_t>* output) {
 
     size_t firstIndex = 0;
     auto lastIndex = iterPerThread;
-    //Wątki wewnętrzne
+    //Wątki
     for (int i=0; i < lastThreadIndex; i++) {
         ThreadData threadData = {commonData, firstIndex, lastIndex, output};
         pool.at(i) = thread(threadSearch, threadData);
