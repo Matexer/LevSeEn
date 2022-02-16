@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <thread>
-#include "cstring"
+#include <cstring>
 
 
 class Levenshtein
@@ -15,5 +15,5 @@ public:
     static int getDistance(const std::string& pattern, const std::string& word);
 
     static std::vector<size_t>* search(const std::string &pattern, const std::string &text);
-    static std::vector<size_t>* filter(const std::string &pattern, const std::string &text,const size_t minSimilarity);
+    static std::vector<size_t>* filter(const std::string &pattern, const std::string &text, size_t maxDifference);
 };

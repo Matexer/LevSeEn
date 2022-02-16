@@ -6,27 +6,73 @@ using namespace std;
 
 
 class Base {
-    public:
+    const Base* pattern = nullptr;
+    size_t lastDifference = 0;
+
+public:
     unordered_map<char8_t, size_t> letters;
 
-    explicit Base(const string &pattern) {
+    explicit Base(const string &word) {
         letters = unordered_map<char8_t, size_t>();
-        for (char8_t character: pattern) {
+        for (char8_t character : word) {
             letters[character]++;
         }
     }
 
-    size_t compare(const Base &word) {
-        size_t difference = 0;
-        for (auto character: letters) {
-            auto sign = character.first;
-            auto occurrences = character.second;
-            if (word.letters.contains(sign)) {
-                //difference += word.letters[sign] - occurrences;
-            }
+    Base(const string &word, Base* pattern) {
+        this->pattern = pattern;
+
+        letters = unordered_map<char8_t, size_t>();
+        for (auto valuedLetter : pattern->letters) {
+            letters[valuedLetter.first] = 0;
         }
+
+        for (auto character: word) {
+            if (letters.contains(character))
+                letters[character]++;
+        }
+    }
+
+    size_t getDifference() {
+        if (pattern == nullptr)
+            return -1;
+
+        size_t difference = 0;
+        for (auto character: this->letters) {
+            auto ownOccurrences = character.second;
+            auto patternOccurrences = pattern->letters.at(character.first);
+
+            difference += subabs(ownOccurrences,patternOccurrences);
+        }
+        lastDifference = difference;
         return difference;
     }
+
+    size_t move(char8_t inserted, char8_t removed) {
+        auto diffFromInserted = subabs(pattern->letters.at(inserted), letters[inserted]);
+        auto diffFromRemoved = subabs(pattern->letters.at(removed), letters[removed]);
+        auto restDifference = lastDifference - diffFromInserted - diffFromRemoved;
+
+        if (letters.contains(inserted))
+            letters[inserted]++;
+
+        if (letters.contains(removed))
+            letters[removed]--;
+
+        diffFromInserted = subabs(pattern->letters.at(inserted), letters[inserted]);
+        diffFromRemoved = subabs(pattern->letters.at(removed), letters[removed]);
+
+        lastDifference = restDifference + diffFromInserted + diffFromRemoved;
+        return lastDifference;
+    }
+
+    static inline size_t subabs(size_t a, size_t b) {
+        if (a > b)
+            return a - b;
+        else
+            return b - a;
+    }
+
 };
 
 
@@ -35,6 +81,7 @@ struct FilterData {
     const string &text;
     const size_t patternLength;
     const size_t textLength;
+    const size_t maxDifference;
 };
 
 
@@ -49,22 +96,33 @@ struct ThreadData {
 void normalFilter(FilterData data, vector<size_t>* const output) {
     auto patternBase = data.patternBase;
     auto lastIndex = data.textLength - data.patternLength;
-    auto wordBase = Base(data.text.substr(0, data.patternLength));
-    for (decltype(lastIndex) i = 0; i < lastIndex; i++) {
+    auto wordBase = Base(data.text.substr(0, data.patternLength), &patternBase);
+    auto lastDifference = wordBase.getDifference();
 
+    if (lastDifference <= data.maxDifference)
+        output->push_back(0);
+
+    for (decltype(lastIndex) i = 1; i < lastIndex; i++) {
+        auto incomingCharacter = data.text.at(i + data.patternLength);
+        auto leavingCharacter = data.text.at(i - 1);
+        if (incomingCharacter != leavingCharacter) {
+            lastDifference = wordBase.move(incomingCharacter, leavingCharacter);
+        }
+
+        if (lastDifference <= data.maxDifference)
+            output->push_back(i);
     }
 }
 
 
-vector<size_t>* Levenshtein::filter(const string &pattern, const string &text, const size_t minSimilarity) {
+vector<size_t>* Levenshtein::filter(const string &pattern, const string &text, const size_t maxDifference) {
     const auto patternBase = Base(pattern);
-    auto complexity = text.size();
+    const auto complexity = text.size();
+    const auto data = FilterData {patternBase, text, pattern.size(), text.size(), maxDifference};
     auto output = new vector<size_t>();
-    auto data = FilterData {patternBase, text, pattern.size(), text.size()};
-
 
     if (complexity > Levenshtein::multithreadingStart)
-        int a = 0;
+        normalFilter(data, output);
     else
         normalFilter(data, output);
 
