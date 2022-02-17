@@ -9,14 +9,14 @@ using namespace std::chrono;
 
 int main(int argc, char const *argv[])
 {
-    cout<<"Testowanie getDistance";
+    cout<<"Testowanie getDistance\n";
     Test::getDistance();
 
-    //cout<<"Testowanie search";
-    //Test::search();
+    cout<<"Testowanie search";
+    Test::search();
 
-    //cout<<"Testowanie filter";
-    //Test::filter();
+    cout<<"Testowanie filter";
+    Test::filter();
 
     return 0;
 }
