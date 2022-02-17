@@ -4,37 +4,39 @@
 using namespace std;
 
 
-inline int min(int a, int b, int c) {
+template<typename SizeT>
+inline SizeT min(SizeT a, SizeT b, SizeT c) {
     int x = (a < b) ? a : b;
     return (c < x) ? c : x;
 }
 
 
 //Aby było optymalnie pamięciowo: pattern < word
-int Levenshtein::getDistance(
+template<typename SizeT>
+SizeT Levenshtein::getDistance(
     const string& pattern, const string& word,
-    const size_t& patternLength, const size_t& wordLength)
+    const SizeT& patternLength, const SizeT& wordLength)
 {
     auto size = patternLength + 1;
-    int* top = new int[size];
-    int* bot = new int[size];
+    auto top = new SizeT[size];
+    auto bot = new SizeT[size];
 
-    int delCost;
-    int insCost;
-    int subCost;
+    SizeT delCost;
+    SizeT insCost;
+    SizeT subCost;
 
-    int result;
+    SizeT result;
 
-    for (int i = 0; i < size; i++)
+    for (SizeT i = 0; i < size; i++)
     {
         top[i] = i;
     }
 
-    for (int i = 0; i < wordLength; i++)
+    for (size_t i = 0; i < wordLength; i++)
     {
         bot[0] = i + 1;
 
-        for (int j = 0; j < patternLength; j++)
+        for (SizeT j = 0; j < patternLength; j++)
         {
             delCost = top[j + 1] + 1;
             insCost = bot[j] + 1;
@@ -58,18 +60,18 @@ int Levenshtein::getDistance(
     return result;
 }
 
-
-int Levenshtein::getDistance(const string& pattern, const string& word) {
+template<typename SizeT>
+SizeT Levenshtein::getDistance(const string& pattern, const string& word) {
     size_t patternLength = pattern.size();
     size_t wordLength = word.size();
 
     if (patternLength < wordLength)
     {
-        return getDistance(pattern, word, patternLength, wordLength);
+        return getDistance(pattern, word, (SizeT)patternLength, wordLength);
     }
     else
     {
         return getDistance(word, pattern,
-                           wordLength, patternLength);
+                           wordLength, (SizeT)patternLength);
     }
 }

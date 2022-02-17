@@ -1,8 +1,7 @@
 #pragma once
-#include <iostream>
 #include <vector>
-#include <thread>
 #include <cstring>
+#include <map>
 
 
 class Levenshtein
@@ -10,10 +9,19 @@ class Levenshtein
 public:
     static const size_t multithreadingStart = 10000;
 
-    static int getDistance(const std::string& pattern, const std::string& word,
-                           const size_t& pLength, const size_t& wLength);
-    static int getDistance(const std::string& pattern, const std::string& word);
+    template<typename SizeT>
+    static SizeT getDistance(const std::string& pattern, const std::string& word,
+                             const SizeT& pLength, const SizeT& wLength);
 
-    static std::vector<size_t>* search(const std::string &pattern, const std::string &text);
-    static std::vector<size_t>* filter(const std::string &pattern, const std::string &text, size_t maxDifference);
+    template<typename SizeT>
+    static SizeT getDistance(const std::string& pattern, const std::string& word);
+
+    template<typename SizeT>
+    static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
+    
+    template<typename SizeT>
+    static std::map<SizeT, SizeT>* search(const std::string &pattern, const std::string &text, SizeT maxDifference);
+    
+    template<typename SizeT>
+    static std::vector<SizeT>* filter(const std::string &pattern, const std::string &text, SizeT maxDifference);
 };
