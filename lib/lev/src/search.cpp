@@ -30,7 +30,7 @@ void normalSearch(SearchData &data, vector<size_t>* output) {
 
 
 void threadSearch(ThreadData tData) {
-    auto data = tData.data;
+    auto &data = tData.data;
     for (auto i = tData.firstIndex; i < tData.lastIndex; i++) {
         tData.output->at(i) = Levenshtein::getDistance(data.pattern,
                                                        data.text.substr(i, i + data.patternLength),
@@ -41,7 +41,10 @@ void threadSearch(ThreadData tData) {
 
 
 void concurrentSearch(const SearchData &commonData, vector<size_t>* output) {
-    const auto threadsNum = thread::hardware_concurrency();
+    auto threadsNum = thread::hardware_concurrency();
+    if (commonData.text.size() < threadsNum)
+        threadsNum = commonData.text.size() / 2;
+
     const auto lastThreadIndex = threadsNum - 1;
     const auto iterPerThread = output->size() / threadsNum;
 
