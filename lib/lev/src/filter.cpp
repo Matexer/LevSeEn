@@ -102,7 +102,7 @@ struct ThreadData {
 };
 
 
-void normalFilter(FilterData data, vector<size_t>* const output) {
+void normalFilter(const FilterData data, vector<size_t>* const output) {
     auto wordBase = Base(data.text.substr(0, data.patternLength), data.patternBase);
     auto lastDifference = wordBase.getDifference();
 
@@ -122,8 +122,54 @@ void normalFilter(FilterData data, vector<size_t>* const output) {
 }
 
 
-void concurrentFilter(FilterData data, vector<size_t>* const output) {
+void threadFilter(ThreadData tData) {
+    auto &data = tData.data;
+    auto word = data.text.substr(tData.firstIndex, tData.firstIndex + data.patternLength);
 
+    auto wordBase = Base(word, data.patternBase);
+    auto lastDifference = wordBase.getDifference();
+
+    if (lastDifference <= data.maxDifference)
+        tData.output->push_back(tData.firstIndex);
+
+    for (auto i = tData.firstIndex; i < tData.lastIndex; i++) {
+        auto incomingCharacter = data.text.at(i + data.patternLength);
+        auto leavingCharacter = data.text.at(i );
+        if (incomingCharacter != leavingCharacter) {
+            lastDifference = wordBase.move(incomingCharacter, leavingCharacter);
+        }
+
+        if (lastDifference <= data.maxDifference)
+            tData.output->push_back(i + 1);
+    }
+}
+
+
+void concurrentFilter(const FilterData commonData, vector<size_t>* const output) {
+    auto threadsNum = thread::hardware_concurrency();
+    if (commonData.text.size() < threadsNum)
+        threadsNum = commonData.text.size() / 2;
+
+    const auto lastThreadIndex = threadsNum - 1;
+    const auto iterPerThread = output->size() / threadsNum;
+    vector<thread> pool(threadsNum);
+
+    size_t firstIndex = 0;
+    auto lastIndex = iterPerThread;
+
+    for (int i=0; i < lastThreadIndex; i++) {
+        ThreadData threadData = {commonData, firstIndex, lastIndex, output};
+        pool.at(i) = thread(threadFilter, threadData);
+        firstIndex += iterPerThread;
+        lastIndex += iterPerThread;
+    }
+
+    //Ostatni wątek iteruje do końca
+    ThreadData threadData = {commonData, firstIndex, commonData.lastIndex, output};
+    pool.at(lastThreadIndex) = thread (threadFilter, threadData);
+
+    for (auto &&t : pool)
+        t.join();
 }
 
 
@@ -137,7 +183,7 @@ vector<size_t>* Levenshtein::filter(const string &pattern, const string &text, c
 
     auto output = new vector<size_t>();
 
-    if (complexity > Levenshtein::multithreadingStart)
+    if (complexity > Levenshtein::multithreadingStart && complexity > thread::hardware_concurrency())
         concurrentFilter(data, output);
     else
         normalFilter(data, output);

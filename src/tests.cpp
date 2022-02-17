@@ -57,16 +57,16 @@ namespace Test {
         auto start = high_resolution_clock::now();
 
         vector<size_t>* output;
-        auto pattern = new string("t5t55");
-        auto word = new string("45556");
-        auto maxDifference = 2;
+        auto pattern = new string("tttt");
+        auto word = new string("eggttttegg");
+        auto maxDifference = 1;
         auto text = new string();
 
         for (int i=0; i<0 ;i++) {
             pattern->append(*pattern);
         }
 
-        for (int i=0; i<2 ;i++) {
+        for (int i=0; i<1 ;i++) {
             text->append(*word);
         }
 
