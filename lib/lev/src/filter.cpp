@@ -98,6 +98,12 @@ class Filter {
         const SizeT maxDifference;
     };
 
+    struct SelectiveSearchData {
+        const string &pattern;;
+        const string &text;
+        const SizeT maxDistance;
+    };
+
     struct ThreadData {
         const FilterData &data;
         const size_t firstIndex;
@@ -105,7 +111,15 @@ class Filter {
         vector<SizeT> *const output;
     };
 
-    static void normalFilter(const FilterData data, vector<SizeT>* const output) {
+    struct SelectiveThreadData {
+        const SelectiveSearchData &data;
+        const Base* patternBase;
+        const size_t firstIndex;
+        const size_t lastIndex;
+        map<size_t, SizeT> *const output;
+    };
+
+    static void normalFilter(const FilterData &data, vector<SizeT>* const output) {
         auto wordBase = Base(data.text.substr(0, data.patternLength), data.patternBase);
         auto lastDifference = wordBase.getDifference();
 
@@ -146,13 +160,44 @@ class Filter {
         }
     }
 
-    static void concurrentFilter(const FilterData commonData, vector<SizeT>* const output) {
+    static void threadSelectiveSearch(SelectiveThreadData tData) {
+        auto &data = tData.data;
+        const SizeT patternLength = data.pattern.size();
+        auto word = data.text.substr(tData.firstIndex, tData.firstIndex + patternLength);
+
+        auto wordBase = Base(word, tData.patternBase);
+        auto lastDifference = wordBase.getDifference();
+        SizeT distance;
+
+        if (lastDifference <= data.maxDistance) {
+            distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
+            if (distance <= data.maxDistance)
+                tData.output->insert({(size_t)0, distance});
+        }
+
+        for (auto i = tData.firstIndex; i < tData.lastIndex; i++) {
+            auto incomingCharacter = data.text.at(i + patternLength);
+            auto leavingCharacter = data.text.at(i );
+            if (incomingCharacter != leavingCharacter) {
+                lastDifference = wordBase.move(incomingCharacter, leavingCharacter);
+            }
+
+            if (lastDifference <= data.maxDistance) {
+                word = data.text.substr(i + 1, patternLength);
+                distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
+                if (distance <= data.maxDistance)
+                    tData.output->insert({(i + 1), distance});
+            }
+        }
+    }
+
+    static void concurrentFilter(const FilterData &commonData, vector<SizeT>* const output) {
         auto threadsNum = thread::hardware_concurrency();
         if (commonData.text.size() < threadsNum)
             threadsNum = commonData.text.size() / 2;
 
         const auto lastThreadIndex = threadsNum - 1;
-        const auto iterPerThread = output->size() / threadsNum;
+        const auto iterPerThread = commonData.text.size() / threadsNum;
         vector<thread> pool(threadsNum);
 
         size_t firstIndex = 0;
@@ -171,6 +216,70 @@ class Filter {
 
         for (auto &&t : pool)
             t.join();
+    }
+
+    static void concurrentSelectiveSearch(const SelectiveSearchData &commonData, map<size_t, SizeT>* const output) {
+        const SizeT patternLength = commonData.pattern.size();
+        const auto finalIndex = commonData.text.size() - patternLength;
+        auto patternBase = new Base(commonData.pattern);
+
+        auto threadsNum = thread::hardware_concurrency();
+        if (commonData.text.size() < threadsNum)
+            threadsNum = commonData.text.size() / 2;
+
+        const auto lastThreadIndex = threadsNum - 1;
+        const auto iterPerThread = commonData.text.size() / threadsNum;
+        vector<thread> pool(threadsNum);
+
+        size_t firstIndex = 0;
+        auto lastIndex = iterPerThread;
+
+        for (size_t i=0; i < lastThreadIndex; i++) {
+            SelectiveThreadData threadData = {commonData, patternBase, firstIndex, lastIndex, output};
+            pool.at(i) = thread(threadSelectiveSearch, threadData);
+            firstIndex += iterPerThread;
+            lastIndex += iterPerThread;
+        }
+
+        //Ostatni wątek iteruje do końca
+        SelectiveThreadData threadData = {commonData, patternBase, firstIndex, finalIndex, output};
+        pool.at(lastThreadIndex) = thread (threadSelectiveSearch, threadData);
+
+        for (auto &&t : pool)
+            t.join();
+
+        delete patternBase;
+    }
+
+    static void normalSelectiveSearch(const SelectiveSearchData &data, map<size_t, SizeT>* const output) {
+        const SizeT patternLength = data.pattern.size();
+        const auto lastIndex = data.text.size() - patternLength;
+        auto patternBase = Base(data.pattern);
+        auto word = data.text.substr(0, patternLength);
+        auto wordBase = Base(word, &patternBase);
+        auto lastDifference = wordBase.getDifference();
+        SizeT distance;
+
+        if (lastDifference <= data.maxDistance) {
+            distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
+            if (distance <= data.maxDistance)
+                output->insert({(size_t)0, distance});
+        }
+
+        for (size_t i = 0; i < lastIndex; i++) {
+            auto incomingCharacter = data.text.at(i + patternLength);
+            auto leavingCharacter = data.text.at(i );
+            if (incomingCharacter != leavingCharacter) {
+                lastDifference = wordBase.move(incomingCharacter, leavingCharacter);
+            }
+
+            if (lastDifference <= data.maxDistance) {
+                word = data.text.substr(i + 1, patternLength);
+                distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
+                if (distance <= data.maxDistance)
+                    output->insert({(i + 1), distance});
+            }
+        }
     }
 
 public:
@@ -192,19 +301,29 @@ public:
         delete patternBase;
         return output;
     }
+
+    static map<size_t , SizeT>* selectiveSearch(const string &pattern, const string &text, const SizeT maxDifference) {
+        const auto complexity = text.size() * (1 + pattern.size()^2 / 5);
+        const auto data = SelectiveSearchData {pattern, text, maxDifference};
+        auto output = new map<size_t , SizeT>();
+
+        if (complexity > Levenshtein<SizeT>::multithreadingStart && complexity > thread::hardware_concurrency())
+            concurrentSelectiveSearch(data, output);
+        else
+            normalSelectiveSearch(data, output);
+
+        return output;
+    }
 };
-
-
-template class Filter<unsigned char>;
-#if ~DEBUG
-template class Filter<unsigned short int>;
-template class Filter<unsigned int>;
-template class Filter<unsigned long int>;
-template class Filter<unsigned long long int>;
-#endif
 
 
 template<typename SizeT>
 std::vector<SizeT>* Levenshtein<SizeT>::filter(const std::string &pattern, const std::string &text, SizeT maxDifference) {
     return Filter<SizeT>::filter(pattern, text, maxDifference);
+}
+
+
+template<typename SizeT>
+std::map<size_t, SizeT>* Levenshtein<SizeT>::search(const std::string &pattern, const std::string &text, SizeT maxDifference) {
+    return Filter<SizeT>::selectiveSearch(pattern, text, maxDifference);
 }

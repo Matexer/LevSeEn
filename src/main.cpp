@@ -3,20 +3,20 @@
 #include "tests.cpp"
 #endif
 
-using namespace std;
-using namespace std::chrono;
-
 
 int main(int argc, char const *argv[])
 {
-    cout<<"Testowanie getDistance\n";
-    Test::getDistance();
+//    cout<<"Testowanie getDistance\n";
+//    Test::getDistance();
+//
+//    cout<<"Testowanie search";
+//    Test::search();
+//
+//    cout<<"Testowanie filter";
+//    Test::filter();
 
-    cout<<"Testowanie search";
-    Test::search();
-
-    cout<<"Testowanie filter";
-    Test::filter();
+    cout<<"Testowanie selective search\n";
+    Test::selectiveSearch();
 
     return 0;
 }

@@ -33,7 +33,7 @@ namespace Test {
             pattern->append(*pattern);
         }
 
-        for (int i=1; i<300 ;i++) {
+        for (int i=1; i<30 ;i++) {
             text->append(*word);
         }
 
@@ -74,6 +74,38 @@ namespace Test {
 
         for (auto val : *output) {
             cout << val << " ";
+        }
+
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
+
+        delete pattern;
+        delete word;
+        delete text;
+        delete output;
+    }
+
+    inline void selectiveSearch() {
+        auto start = high_resolution_clock::now();
+
+        auto pattern = new string("mak");
+        auto word = new string("nf7834bnskljfdn743gmeeaujisdfusmak");
+        auto maxDifference = 1;
+        auto text = new string();
+
+        for (int i=0; i<0 ;i++) {
+            pattern->append(*pattern);
+        }
+
+        for (int i=0; i<1000 ;i++) {
+            text->append(*word);
+        }
+
+        auto output = Levenshtein<unsigned char>::search(*pattern, *text, maxDifference);
+
+        for (auto val : *output) {
+            cout << (int)val.first << ": " << (int)val.second << " | ";
         }
 
         auto stop = high_resolution_clock::now();

@@ -78,15 +78,6 @@ public:
 };
 
 
-template class Distance<unsigned char>;
-#if ~DEBUG
-template class Distance<unsigned short int>;
-template class Distance<unsigned int>;
-template class Distance<unsigned long int>;
-template class Distance<unsigned long long int>;
-#endif
-
-
 template<typename SizeT>
 SizeT Levenshtein<SizeT>::getDistance(const std::string &pattern, const std::string &word,
                                       const SizeT &patternLength, const SizeT &wordLength) {

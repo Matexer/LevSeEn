@@ -17,7 +17,6 @@ class Search {
     };
 
     struct SelectiveSearchData: SearchData {
-        const std::vector<SizeT>* const indexes;
         const SizeT maxDistance;
     };
 
@@ -36,19 +35,6 @@ class Search {
                                                             data.patternLength);
         }
     }
-
-
-//    static void selectiveNormalSearch(SelectiveSearchData &data, map<SizeT, SizeT>* output) {
-//        for (auto i : *data.indexes) {
-//            auto distance = Levenshtein<SizeT>::getDistance(data.pattern,
-//                    data.text.substr(i, i + data.patternLength),
-//                    data.patternLength,
-//                    data.patternLength);
-//            if (distance <= data.maxDistance)
-//                output->insert(i, distance);
-//        }
-//    }
-
 
     static void threadSearch(ThreadData tData) {
         auto &data = tData.data;
@@ -105,33 +91,7 @@ public:
 
         return output;
     }
-
-    static map<SizeT, SizeT>* search(const string &pattern, const string &text, const SizeT maxDifference) {
-        SizeT patternLength = pattern.size();
-        auto textLength = text.size();
-        auto lastIndex = textLength - patternLength;
-        auto complexity = (patternLength^2 * textLength);
-
-        SearchData data {pattern, text, patternLength};
-        auto output = new map<SizeT, SizeT>;
-
-        //    if (complexity > Levenshtein::multithreadingStart)
-        //        concurrentSearch(data, output);
-        //    else
-        //        normalSearch(data, output);
-
-        return output;
-    }
 };
-
-
-template class Search<unsigned char>;
-#if ~DEBUG
-template class Search<unsigned short int>;
-template class Search<unsigned int>;
-template class Search<unsigned long int>;
-template class Search<unsigned long long int>;
-#endif
 
 
 template<typename SizeT>
