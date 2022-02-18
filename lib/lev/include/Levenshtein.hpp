@@ -3,7 +3,7 @@
 #include <cstring>
 #include <map>
 
-#define DEBUG true
+#define DEBUG false
 
 
 template<typename SizeT>
