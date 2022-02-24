@@ -16,10 +16,6 @@ class Search {
         const SizeT patternLength;
     };
 
-    struct SelectiveSearchData: SearchData {
-        const SizeT maxDistance;
-    };
-
     struct ThreadData {
         const SearchData& data;
         const size_t firstIndex;

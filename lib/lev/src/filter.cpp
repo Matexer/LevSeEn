@@ -108,7 +108,7 @@ class Filter {
         const FilterData &data;
         const size_t firstIndex;
         const size_t lastIndex;
-        vector<SizeT> *const output;
+        vector<size_t> *const output;
     };
 
     struct SelectiveThreadData {
@@ -119,7 +119,7 @@ class Filter {
         map<size_t, SizeT> *const output;
     };
 
-    static void normalFilter(const FilterData &data, vector<SizeT>* const output) {
+    static void normalFilter(const FilterData &data, vector<size_t>* const output) {
         auto wordBase = Base(data.text.substr(0, data.patternLength), data.patternBase);
         auto lastDifference = wordBase.getDifference();
 
@@ -191,7 +191,7 @@ class Filter {
         }
     }
 
-    static void concurrentFilter(const FilterData &commonData, vector<SizeT>* const output) {
+    static void concurrentFilter(const FilterData &commonData, vector<size_t>* const output) {
         auto threadsNum = thread::hardware_concurrency();
         if (commonData.text.size() < threadsNum)
             threadsNum = commonData.text.size() / 2;
@@ -283,7 +283,7 @@ class Filter {
     }
 
 public:
-    static vector<SizeT>* filter(const string &pattern, const string &text, const SizeT maxDifference) {
+    static vector<size_t>* filter(const string &pattern, const string &text, const SizeT maxDifference) {
         const auto patternBase = new Base(pattern);
         const SizeT patternLength = pattern.size();
         const auto lastIndex = text.size() - patternLength;
@@ -291,7 +291,7 @@ public:
 
         const auto data = FilterData {patternBase, text, patternLength, lastIndex, maxDifference};
 
-        auto output = new vector<SizeT>();
+        auto output = new vector<size_t>();
 
         if (complexity > Levenshtein<SizeT>::multithreadingStart && complexity > thread::hardware_concurrency())
             concurrentFilter(data, output);
@@ -318,7 +318,7 @@ public:
 
 
 template<typename SizeT>
-std::vector<SizeT>* Levenshtein<SizeT>::filter(const std::string &pattern, const std::string &text, SizeT maxDifference) {
+std::vector<size_t>* Levenshtein<SizeT>::filter(const std::string &pattern, const std::string &text, SizeT maxDifference) {
     return Filter<SizeT>::filter(pattern, text, maxDifference);
 }
 

@@ -12,10 +12,10 @@ namespace Test {
     inline void getDistance() {
         auto start = high_resolution_clock::now();
 
-        auto pattern = new string("jajko2");
+        auto pattern = new string("jajko2testjajkotest");
         auto word = new string("testjajkotest");
 
-        cout<<Levenshtein<unsigned char>::getDistance(*pattern, *word)<<"\n";
+        cout<<(int)Levenshtein<unsigned char>::getDistance(*pattern, *word)<<"\n";
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);

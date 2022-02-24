@@ -17,7 +17,7 @@ public:
                              const SizeT& patternLength, const SizeT& wordLength);
     static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
     static std::map<size_t, SizeT>* search(const std::string &pattern, const std::string &text, SizeT maxDifference);
-    static std::vector<SizeT>* filter(const std::string &pattern, const std::string &text, SizeT maxDifference);
+    static std::vector<size_t>* filter(const std::string &pattern, const std::string &text, SizeT maxDifference);
 
 };
 
