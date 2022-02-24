@@ -117,4 +117,38 @@ namespace Test {
         delete text;
         delete output;
     }
+
+    inline void purify() {
+        auto start = high_resolution_clock::now();
+
+        auto pattern = new string("mak");
+        auto word = new string("nf7834bnskljfdn743gmeeaujisdfusmak");
+        auto maxDifference = 7;
+        auto text = new string();
+
+        for (int i=0; i<0 ;i++) {
+            pattern->append(*pattern);
+        }
+
+        for (int i=0; i<1000 ;i++) {
+            text->append(*word);
+        }
+
+        auto output = Levenshtein<unsigned char>::search(*pattern, *text, maxDifference);
+        output = Levenshtein<unsigned char>::purify(output, pattern->length());
+
+        for (auto val : *output) {
+            cout << (int)val.first << ": " << (int)val.second << " | ";
+        }
+
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
+
+        delete pattern;
+        delete word;
+        delete text;
+        delete output;
+    }
+
 }
