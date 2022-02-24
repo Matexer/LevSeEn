@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
 //
 //    cout<<"Testowanie selective search\n";
 //    Test::selectiveSearch();
-
+//
     cout<<"Testowanie purify\n";
     Test::purify();
 

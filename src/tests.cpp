@@ -105,7 +105,7 @@ namespace Test {
         auto output = Levenshtein<unsigned char>::search(*pattern, *text, maxDifference);
 
         for (auto val : *output) {
-            cout << (int)val.first << ": " << (int)val.second << " | ";
+            cout << (int)val.index << ": " << (int)val.distance << " | ";
         }
 
         auto stop = high_resolution_clock::now();
@@ -138,7 +138,7 @@ namespace Test {
         output = Levenshtein<unsigned char>::purify(output, pattern->length());
 
         for (auto val : *output) {
-            cout << (int)val.first << ": " << (int)val.second << " | ";
+            cout << (int)val.index << ": " << (int)val.distance << " | ";
         }
 
         auto stop = high_resolution_clock::now();

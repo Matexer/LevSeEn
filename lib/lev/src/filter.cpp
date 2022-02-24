@@ -10,6 +10,8 @@ using namespace std;
 
 template<typename SizeT>
 class Filter {
+    typedef typename Levenshtein<SizeT>::Output Output;
+
     class Base {
         const Base* pattern = nullptr;
         SizeT lastDifference = 0;
@@ -116,8 +118,17 @@ class Filter {
         const Base* patternBase;
         const size_t firstIndex;
         const size_t lastIndex;
-        map<size_t, SizeT> *const output;
+        vector<Output> *const output;
     };
+
+    static inline bool cmp(Output& a, Output& b)
+    {
+        if (a.distance == b.distance) {
+            return a.index < b.index;
+        }
+        else
+            return a.distance < b.distance;
+    }
 
     static void normalFilter(const FilterData &data, vector<size_t>* const output) {
         auto wordBase = Base(data.text.substr(0, data.patternLength), data.patternBase);
@@ -172,7 +183,7 @@ class Filter {
         if (lastDifference <= data.maxDistance) {
             distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
             if (distance <= data.maxDistance)
-                tData.output->insert({(size_t)0, distance});
+                tData.output->push_back(Output {(size_t)0, distance});
         }
 
         for (auto i = tData.firstIndex; i < tData.lastIndex; i++) {
@@ -186,7 +197,7 @@ class Filter {
                 word = data.text.substr(i + 1, patternLength);
                 distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
                 if (distance <= data.maxDistance)
-                    tData.output->insert({(i + 1), distance});
+                    tData.output->push_back(Output {(i + 1), distance});
             }
         }
     }
@@ -218,7 +229,7 @@ class Filter {
             t.join();
     }
 
-    static void concurrentSelectiveSearch(const SelectiveSearchData &commonData, map<size_t, SizeT>* const output) {
+    static void concurrentSelectiveSearch(const SelectiveSearchData &commonData, vector<Output>* const output) {
         const SizeT patternLength = commonData.pattern.size();
         const auto finalIndex = commonData.text.size() - patternLength;
         auto patternBase = new Base(commonData.pattern);
@@ -251,7 +262,7 @@ class Filter {
         delete patternBase;
     }
 
-    static void normalSelectiveSearch(const SelectiveSearchData &data, map<size_t, SizeT>* const output) {
+    static void normalSelectiveSearch(const SelectiveSearchData &data, vector<Output>* const output) {
         const SizeT patternLength = data.pattern.size();
         const auto lastIndex = data.text.size() - patternLength;
         auto patternBase = Base(data.pattern);
@@ -263,7 +274,7 @@ class Filter {
         if (lastDifference <= data.maxDistance) {
             distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
             if (distance <= data.maxDistance)
-                output->insert({(size_t)0, distance});
+                output->push_back(Output {(size_t)0, distance} );
         }
 
         for (size_t i = 0; i < lastIndex; i++) {
@@ -277,7 +288,7 @@ class Filter {
                 word = data.text.substr(i + 1, patternLength);
                 distance = Levenshtein<SizeT>::getDistance(data.pattern, word, patternLength, patternLength);
                 if (distance <= data.maxDistance)
-                    output->insert({(i + 1), distance});
+                    output->push_back(Output {(i + 1), distance} );
             }
         }
     }
@@ -302,16 +313,17 @@ public:
         return output;
     }
 
-    static map<size_t , SizeT>* selectiveSearch(const string &pattern, const string &text, const SizeT maxDifference) {
+    static vector<Output>* selectiveSearch(const string &pattern, const string &text, const SizeT maxDifference) {
         const auto complexity = text.size() * (1 + pattern.size()^2 / 5);
         const auto data = SelectiveSearchData {pattern, text, maxDifference};
-        auto output = new map<size_t , SizeT>();
+        auto output = new vector<Output>();
 
         if (complexity > Levenshtein<SizeT>::multithreadingStart && complexity > thread::hardware_concurrency())
             concurrentSelectiveSearch(data, output);
         else
             normalSelectiveSearch(data, output);
 
+        sort(output->begin(), output->end(), cmp);
         return output;
     }
 };
@@ -324,6 +336,6 @@ std::vector<size_t>* Levenshtein<SizeT>::filter(const std::string &pattern, cons
 
 
 template<typename SizeT>
-std::map<size_t, SizeT>* Levenshtein<SizeT>::search(const std::string &pattern, const std::string &text, SizeT maxDifference) {
+std::vector<typename Levenshtein<SizeT>::Output>* Levenshtein<SizeT>::search(const std::string &pattern, const std::string &text, SizeT maxDifference) {
     return Filter<SizeT>::selectiveSearch(pattern, text, maxDifference);
 }

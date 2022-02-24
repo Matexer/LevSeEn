@@ -6,10 +6,7 @@ using namespace std;
 
 template<typename SizeT>
 class Purify {
-    static inline bool cmp(Value& a, Value& b)
-    {
-        return a.distance < b.distance;
-    }
+    typedef typename Levenshtein<SizeT>::Output Output;
 
     static inline bool inRange(size_t val, size_t minRange, size_t maxRange) {
         if ((val > maxRange) || (val < minRange)) return false;
@@ -17,37 +14,23 @@ class Purify {
     }
 
 public:
-    static map<size_t, SizeT>* purify(map<size_t, SizeT>* input, const SizeT patternLength) {
+    static vector<Output>* purify(vector<Output>* input, const SizeT patternLength) {
         SizeT range = patternLength / 2;
-        auto purified = new map<size_t, SizeT>;
-        auto tmp = vector<Value>(input->size());
+        Output exVal;
 
-        size_t i = 0;
-        for (auto const& [key, val] : *input)
-        {
-            tmp.at(i) = Value {key, val};
-            i++;
+        for(size_t i=0; i < input->size(); i++) {
+            auto index = input->at(i).index;
+            auto minRange = index - range;
+            auto maxRange = index + range;
+
+            for (size_t j=i+1; j < input->size(); j++) {
+                exVal = input->at(j);
+                if (inRange(exVal.index, minRange, maxRange)) {
+                    input->erase(input->begin()+j);
+                    j--;
+                }
+            }
         }
-
-        sort(tmp.begin(), tmp.end(), cmp);
-
-        for (auto val : tmp) {
-            auto index = val.index;
-        }
-
-//        for(auto val : tmp) {
-//            purified->insert(val);
-//            auto index = val.second;
-//            auto minRange = index - range;
-//            auto maxRange = index + range;
-//
-//            for (auto exVal : tmp) {
-//                index = exVal.second;
-//                if (inRange(index, minRange, maxRange)) {
-//
-//                }
-//            }
-//        }
 
         return input;
     }
@@ -55,6 +38,6 @@ public:
 
 
 template<typename SizeT>
-std::map<size_t, SizeT>* Levenshtein<SizeT>::purify(map<size_t, SizeT>* input, const SizeT patternLength) {
+std::vector<typename Levenshtein<SizeT>::Output>* Levenshtein<SizeT>::purify(vector<Output>* input, const SizeT patternLength) {
     return Purify<SizeT>::purify(input, patternLength);
 }
