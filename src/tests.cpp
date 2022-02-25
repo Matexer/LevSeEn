@@ -108,7 +108,7 @@ public:
 
         size_t iters = min(printNumber, output->size());
         for (size_t i=0; i < iters; i++) {
-            auto index = (int)output->at(i).index;
+            int index = (int)output->at(i).index;
             cout << index << ": ";
             cout << textP->substr(index, pattern.size());
             cout << " | D = " << (int)output->at(i).distance << "\n";
@@ -118,7 +118,7 @@ public:
     }
 
     void fix(string &pattern, int maxDifference) {
-        cout << "Testowanie purify\n";
+        cout << "Testowanie fix\n";
         auto start = high_resolution_clock::now();
         //Obliczenia
         auto output = Levenshtein<unsigned char>::search(pattern, *textP, maxDifference);
@@ -132,8 +132,8 @@ public:
 
         size_t iters = min(printNumber, fixedOutput->size());
         for (size_t i=0; i < iters; i++) {
-            auto index = (int)fixedOutput->at(i).index;
-            auto length = (int)fixedOutput->at(i).length;
+            int index = (int)fixedOutput->at(i).index;
+            int length = (int)fixedOutput->at(i).length;
 
             cout << index << ": ";
             cout << textP->substr(index, length);

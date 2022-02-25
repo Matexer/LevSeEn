@@ -56,6 +56,15 @@ class Fix {
         return FixedOutput {bestIndex, bestDistance, bestLength};
     }
 
+    static inline bool cmp(FixedOutput& a, FixedOutput& b)
+    {
+        if (a.distance == b.distance) {
+            return a.index < b.index;
+        }
+        else
+            return a.distance < b.distance;
+    }
+
 public:
     static vector<FixedOutput>* fix(vector<Output>* input, const string &pattern, const string &text) {
         auto output = new vector<FixedOutput>;
@@ -65,6 +74,7 @@ public:
             output->push_back(getFixed(data));
         }
 
+        sort(output->begin(), output->end(), cmp);
         return output;
     }
 };

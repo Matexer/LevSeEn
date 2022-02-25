@@ -11,6 +11,7 @@ int main(int argc, char const *argv[])
 {
     auto test = Test("/home/mateusz/Pulpit/navarro.txt");
     string pattern = "A Guided Tour to Approximate Matching";
+    test.purify((string &) pattern, 8);
     test.fix((string &) pattern, 8);
 
     return 0;
