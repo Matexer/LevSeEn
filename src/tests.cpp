@@ -91,7 +91,7 @@ namespace Test {
 
         auto pattern = new string("mak");
         auto word = new string("nf7834bnskljfdn743gmeeaujisdfusmak");
-        auto maxDifference = 1;
+        auto maxDifference = 2;
         auto text = new string();
 
         for (int i=0; i<0 ;i++) {
@@ -135,15 +135,17 @@ namespace Test {
         }
 
         auto output = Levenshtein<unsigned char>::search(*pattern, *text, maxDifference);
-        output = Levenshtein<unsigned char>::purify(output, pattern->length());
-
-        for (auto val : *output) {
-            cout << (int)val.index << ": " << (int)val.distance << " | ";
-        }
+        output = Levenshtein<unsigned char>::purify(output, pattern->size());
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
-        cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
+        cout << "Czas obliczeń : " << duration.count() << " microseconds" << endl;
+
+        for (size_t i = 0; i < 10 ; i++) {
+            auto index = output->at(i).index;
+            auto dis = output->at(i).distance;
+            cout << "Indeks: " << index << " \"" << text->substr(index, pattern->size()) << "\" D = " << (int)dis <<"\n";
+        }
 
         delete pattern;
         delete word;
