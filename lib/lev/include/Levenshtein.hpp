@@ -3,8 +3,6 @@
 #include <cstring>
 #include <map>
 
-#define DEBUG true
-
 
 template<typename SizeT>
 class Levenshtein
@@ -15,7 +13,7 @@ public:
         SizeT distance;
     };
 
-    struct BestOutput : Output {
+    struct FixedOutput : Output {
         SizeT length;
     };
 
@@ -27,12 +25,11 @@ public:
     static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
     static std::vector<Output>* search(const std::string &pattern, const std::string &text, SizeT maxDifference);
     static std::vector<size_t>* filter(const std::string &pattern, const std::string &text, SizeT maxDifference);
-    static std::vector<Output>* purify(std::vector<Output>* input, SizeT patternLength);
+    static void purify(std::vector<Output>* input, SizeT patternLength);
+    static std::vector<FixedOutput>* fix(std::vector<Output>* input, const std::string &pattern, const std::string &text);
 };
 
 
 template class Levenshtein<unsigned char>;
-#if ~DEBUG
-template class Levenshtein<unsigned short int>;
-template class Levenshtein<unsigned int>;
-#endif
+//template class Levenshtein<unsigned short int>;
+//template class Levenshtein<unsigned int>;

@@ -14,7 +14,7 @@ class Purify {
     }
 
 public:
-    static vector<Output>* purify(vector<Output>* input, const SizeT patternLength) {
+    static void purify(vector<Output>* input, const SizeT patternLength) {
         SizeT range = patternLength / 2;
         Output exVal;
 
@@ -31,13 +31,11 @@ public:
                 }
             }
         }
-
-        return input;
     }
 };
 
 
 template<typename SizeT>
-std::vector<typename Levenshtein<SizeT>::Output>* Levenshtein<SizeT>::purify(vector<Output>* input, const SizeT patternLength) {
-    return Purify<SizeT>::purify(input, patternLength);
+void Levenshtein<SizeT>::purify(vector<Output>* input, const SizeT patternLength) {
+    Purify<SizeT>::purify(input, patternLength);
 }

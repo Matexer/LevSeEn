@@ -25,9 +25,7 @@ class Test {
 public:
     explicit Test(const string &filePath) : textP (new string())
     {
-        auto result = loadText(filePath);
-        if (!result)
-            cout << "Nie udało się odczytać pliku tekstowego";
+        if (!loadText(filePath)) cout << "Nie udało się odczytać pliku tekstowego";
     }
 
     ~Test() {
@@ -102,7 +100,7 @@ public:
         auto start = high_resolution_clock::now();
         //Obliczenia
         auto output = Levenshtein<unsigned char>::search(pattern, *textP, maxDifference);
-        output = Levenshtein<unsigned char>::purify(output, pattern.size());
+        Levenshtein<unsigned char>::purify(output, pattern.size());
         //
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
@@ -117,5 +115,32 @@ public:
         }
 
         delete output;
+    }
+
+    void fix(string &pattern, int maxDifference) {
+        cout << "Testowanie purify\n";
+        auto start = high_resolution_clock::now();
+        //Obliczenia
+        auto output = Levenshtein<unsigned char>::search(pattern, *textP, maxDifference);
+        Levenshtein<unsigned char>::purify(output, pattern.size());
+        auto fixedOutput = Levenshtein<unsigned char>::fix(output, pattern, *textP);
+        delete output;
+        //
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
+
+        size_t iters = min(printNumber, fixedOutput->size());
+        for (size_t i=0; i < iters; i++) {
+            auto index = (int)fixedOutput->at(i).index;
+            auto length = (int)fixedOutput->at(i).length;
+
+            cout << index << ": ";
+            cout << textP->substr(index, length);
+            cout << " | D = " << (int)fixedOutput->at(i).distance;
+            cout << " | L = " << (int)fixedOutput->at(i).length << "\n";
+        }
+
+        delete fixedOutput;
     }
 };

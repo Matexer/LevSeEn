@@ -9,9 +9,9 @@
 
 int main(int argc, char const *argv[])
 {
-    auto test = Test("../navarro.txt");
-    string pattern = "We present egg";
-    test.selectiveSearch((string &) pattern, 8);
+    auto test = Test("/home/mateusz/Pulpit/navarro.txt");
+    string pattern = "A Guided Tour to Approximate Matching";
+    test.fix((string &) pattern, 8);
 
     return 0;
 }
