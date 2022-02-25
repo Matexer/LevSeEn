@@ -4,22 +4,14 @@
 #endif
 
 
+//TODO Sprawdzić poprawność text.substring w kodzie
+
+
 int main(int argc, char const *argv[])
 {
-//    cout<<"Testowanie getDistance\n";
-//    Test::getDistance();
-//
-//    cout<<"Testowanie search";
-//    Test::search();
-//
-//    cout<<"Testowanie filter";
-//    Test::filter();
-//
-//    cout<<"Testowanie selective search\n";
-//    Test::selectiveSearch();
-//
-    cout<<"Testowanie purify\n";
-    Test::purify();
+    auto test = Test("../navarro.txt");
+    string pattern = "We present egg";
+    test.selectiveSearch((string &) pattern, 8);
 
     return 0;
 }

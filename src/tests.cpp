@@ -2,155 +2,120 @@
 #include "Levenshtein.hpp"
 #include <string>
 #include <chrono>
+#include <fstream>
 
 
 using namespace std;
 using namespace std::chrono;
 
 
-namespace Test {
-    inline void getDistance() {
+class Test {
+    const size_t printNumber = 10;
+    string* const textP;
+
+    bool loadText(const string &filePath) {
+        ifstream ifs(filePath, ifstream::in);
+
+        if (!ifs) return false;
+        textP->assign( (std::istreambuf_iterator<char>(ifs) ),
+                       (std::istreambuf_iterator<char>()));
+        return true;
+    }
+
+public:
+    explicit Test(const string &filePath) : textP (new string())
+    {
+        auto result = loadText(filePath);
+        if (!result)
+            cout << "Nie udało się odczytać pliku tekstowego";
+    }
+
+    ~Test() {
+        delete textP;
+    }
+
+    static void getDistance(string &first, string &second) {
+        cout << "Testowanie getDistance\n";
         auto start = high_resolution_clock::now();
-
-        auto pattern = new string("jajko2testjajkotest");
-        auto word = new string("testjajkotest");
-
-        cout<<(int)Levenshtein<unsigned char>::getDistance(*pattern, *word)<<"\n";
-
+        //Obliczenia
+        cout<<(int)Levenshtein<unsigned char>::getDistance(first, second)<<"\n";
+        //
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
     }
 
-    inline void search() {
+    void search(string &pattern) {
+        cout << "Testowanie search\n";
         auto start = high_resolution_clock::now();
-
-        auto pattern = new string("jajko");
-        auto word = new string("testjajkotest");
-        auto text = new string();
-
-        for (int i=1; i<3 ;i++) {
-            pattern->append(*pattern);
-        }
-
-        for (int i=1; i<30 ;i++) {
-            text->append(*word);
-        }
-
-        auto output = Levenshtein<unsigned char>::search(*pattern, *text);
-        auto minimum = min_element(output->begin(), output->end()).base();
-        cout << *minimum;
-
+        //Obliczenia
+        auto output = Levenshtein<unsigned char>::search(pattern, *textP);
+        //
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
 
-        delete pattern;
-        delete word;
-        delete text;
+        size_t iters = min(printNumber, output->size());
+        for (size_t i=0; i < iters; i++) {
+            cout << i << ": " << output->at(i) << " |";
+        }
+
         delete output;
     }
 
-    inline void filter() {
+    void filter(string &pattern, int maxDifference) {
+        cout << "Testowanie filter\n";
         auto start = high_resolution_clock::now();
+        //Obliczenia
+        auto output = Levenshtein<unsigned char>::filter(pattern, *textP, maxDifference);
+        //
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
 
-        auto pattern = new string("tttt");
-        auto word = new string("eggttttegg");
-        auto maxDifference = 1;
-        auto text = new string();
-
-        for (int i=0; i<0 ;i++) {
-            pattern->append(*pattern);
-        }
-
-        for (int i=0; i<1 ;i++) {
-            text->append(*word);
-        }
-
-        auto output = Levenshtein<unsigned char>::filter(*pattern, *text, maxDifference);
-        auto percent = ((double)(output->size()) / (double)(text->size())) * 100;
-
+        auto percent = ((double)(output->size()) / (double)(textP->size())) * 100;
         cout<<"\nOdrzucono "<<percent<<"%\n";
 
-        for (auto val : *output) {
-            cout << val << " ";
-        }
+        delete output;
+    }
 
+    void selectiveSearch(string &pattern, int maxDifference) {
+        cout << "Testowanie selectiveSearch\n";
+        auto start = high_resolution_clock::now();
+        //Obliczenia
+        auto output = Levenshtein<unsigned char>::search(pattern, *textP, maxDifference);
+        //
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
 
-        delete pattern;
-        delete word;
-        delete text;
+        size_t iters = min(printNumber, output->size());
+        for (size_t i=0; i < iters; i++) {
+            cout << (int)output->at(i).index << ": " << (int)output->at(i).distance << " | ";
+        }
+
         delete output;
     }
 
-    inline void selectiveSearch() {
+    void purify(string &pattern, int maxDifference) {
+        cout << "Testowanie purify\n";
         auto start = high_resolution_clock::now();
-
-        auto pattern = new string("mak");
-        auto word = new string("nf7834bnskljfdn743gmeeaujisdfusmak");
-        auto maxDifference = 2;
-        auto text = new string();
-
-        for (int i=0; i<0 ;i++) {
-            pattern->append(*pattern);
-        }
-
-        for (int i=0; i<1000 ;i++) {
-            text->append(*word);
-        }
-
-        auto output = Levenshtein<unsigned char>::search(*pattern, *text, maxDifference);
-
-        for (auto val : *output) {
-            cout << (int)val.index << ": " << (int)val.distance << " | ";
-        }
-
+        //Obliczenia
+        auto output = Levenshtein<unsigned char>::search(pattern, *textP, maxDifference);
+        output = Levenshtein<unsigned char>::purify(output, pattern.size());
+        //
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "\nTime taken : " << duration.count() << " microseconds" << endl;
 
-        delete pattern;
-        delete word;
-        delete text;
+        size_t iters = min(printNumber, output->size());
+        for (size_t i=0; i < iters; i++) {
+            auto index = (int)output->at(i).index;
+            cout << index << ": ";
+            cout << textP->substr(index, pattern.size());
+            cout << " | D = " << (int)output->at(i).distance << "\n";
+        }
+
         delete output;
     }
-
-    inline void purify() {
-        auto start = high_resolution_clock::now();
-
-        auto pattern = new string("mak");
-        auto word = new string("nf7834bnskljfdn743gmeeaujisdfusmak");
-        auto maxDifference = 7;
-        auto text = new string();
-
-        for (int i=0; i<0 ;i++) {
-            pattern->append(*pattern);
-        }
-
-        for (int i=0; i<1000 ;i++) {
-            text->append(*word);
-        }
-
-        auto output = Levenshtein<unsigned char>::search(*pattern, *text, maxDifference);
-        output = Levenshtein<unsigned char>::purify(output, pattern->size());
-
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
-        cout << "Czas obliczeń : " << duration.count() << " microseconds" << endl;
-
-        for (size_t i = 0; i < 10 ; i++) {
-            auto index = output->at(i).index;
-            auto dis = output->at(i).distance;
-            cout << "Indeks: " << index << " \"" << text->substr(index, pattern->size()) << "\" D = " << (int)dis <<"\n";
-        }
-
-        delete pattern;
-        delete word;
-        delete text;
-        delete output;
-    }
-
-}
+};
