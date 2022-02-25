@@ -151,7 +151,7 @@ class Filter {
 
     static void threadFilter(ThreadData tData) {
         auto &data = tData.data;
-        auto word = data.text.substr(tData.firstIndex, tData.firstIndex + data.patternLength);
+        auto word = data.text.substr(tData.firstIndex, data.patternLength);
 
         auto wordBase = Base(word, data.patternBase);
         auto lastDifference = wordBase.getDifference();
@@ -174,7 +174,7 @@ class Filter {
     static void threadSelectiveSearch(SelectiveThreadData tData) {
         auto &data = tData.data;
         const SizeT patternLength = data.pattern.size();
-        auto word = data.text.substr(tData.firstIndex, tData.firstIndex + patternLength);
+        auto word = data.text.substr(tData.firstIndex, patternLength);
 
         auto wordBase = Base(word, tData.patternBase);
         auto lastDifference = wordBase.getDifference();

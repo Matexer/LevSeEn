@@ -26,7 +26,7 @@ class Search {
     static void normalSearch(SearchData &data, std::vector<SizeT>* output) {
         for (size_t i = 0; i < output->size(); i++) {
             output->at(i) = Levenshtein<SizeT>::getDistance(data.pattern,
-                                                            data.text.substr(i, i + data.patternLength),
+                                                            data.text.substr(i, data.patternLength),
                                                             data.patternLength,
                                                             data.patternLength);
         }
@@ -36,7 +36,7 @@ class Search {
         auto &data = tData.data;
         for (size_t i = tData.firstIndex; i < tData.lastIndex; i++) {
             tData.output->at(i) = Levenshtein<SizeT>::getDistance(data.pattern,
-                    data.text.substr(i, i + data.patternLength),
+                    data.text.substr(i, data.patternLength),
                     data.patternLength,
                     data.patternLength);
         }

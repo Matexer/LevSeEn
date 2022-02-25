@@ -4,15 +4,11 @@
 #endif
 
 
-//TODO Sprawdzić poprawność text.substring w kodzie
-
-
 int main(int argc, char const *argv[])
 {
     auto test = Test("/home/mateusz/Pulpit/navarro.txt");
-    string pattern = "A Guided Tour to Approximate Matching";
-    test.purify((string &) pattern, 8);
-    test.fix((string &) pattern, 8);
+    string pattern = "that it seems that the filters that partition the";
+    test.fix((string &) pattern, 12);
 
     return 0;
 }
