@@ -1,5 +1,5 @@
-#include <iostream>
 #include "Levenshtein.hpp"
+#include <iostream>
 #include <string>
 #include <chrono>
 #include <fstream>

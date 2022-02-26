@@ -1,4 +1,5 @@
 #include "Levenshtein.hpp"
+#include <string>
 
 
 using namespace std;
@@ -81,6 +82,6 @@ public:
 
 
 template<typename SizeT>
-vector<typename Levenshtein<SizeT>::FixedOutput> *Levenshtein<SizeT>::fix(vector<Output> *input, const string &pattern, const string &text) {
+vector<typename Levenshtein<SizeT>::FixedOutput> *Levenshtein<SizeT>::fix(vector<typename Levenshtein<SizeT>::Output> *input, const string &pattern, const string &text) {
     return Fix<SizeT>::fix(input, pattern, text);
 }

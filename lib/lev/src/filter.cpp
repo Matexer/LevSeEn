@@ -1,7 +1,7 @@
 #include "Levenshtein.hpp"
 #include <vector>
 #include <thread>
-#include <cstring>
+#include <string>
 #include <unordered_map>
 
 

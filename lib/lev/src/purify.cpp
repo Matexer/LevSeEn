@@ -1,4 +1,5 @@
 #include "Levenshtein.hpp"
+#include <string>
 
 
 using namespace std;
