@@ -29,9 +29,13 @@ public:
     static std::vector<size_t>* filter(const std::string &pattern, const std::string &text, SizeT maxDifference);
     static void purify(std::vector<Output>* input, SizeT patternLength);
     static std::vector<FixedOutput>* fix(std::vector<Output>* input, const std::string &pattern, const std::string &text);
+
+    static SizeT getMe(const std::string &f, const std::string &b) {
+        return f.size();
+    }
 };
 
 
-template class Levenshtein<unsigned char>;
-template class Levenshtein<unsigned short int>;
-template class Levenshtein<unsigned int>;
+template class Levenshtein<uint8_t>;
+template class Levenshtein<uint16_t>;
+template class Levenshtein<uint32_t>;
