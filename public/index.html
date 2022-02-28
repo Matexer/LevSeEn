@@ -2,37 +2,21 @@
 <html>
 <head></head>
 <body>
-
+<script src="lse.wasm.js"></script>
 
 <button class="mybutton">Run myFunction</button>
 
-
 <script>
-    !function(e, t){
-        console.log("Loading WebAssembly...");
-        var n = "lse.wasm.js";
-        if(!e.WebAssembly){
-            n = "lse.js"
-        }
-        console.log("Script set to " + n);
-        var o = t.createElement("script");
-        o.async = !0, o.type = "text/javascript", o.src = n, o.onerror = function(t) {
-            console.error("Script Error"), console.error(t), setTimeout(function() {
-                e.location.reload(!0)
-            }, 3e3)
-        };
-        var r = t.getElementsByTagName("script")[0];
-        r.parentNode.insertBefore(o, r)
-    }(window, document);
-
-    getDistance8 = Module.ccall('getDistance8', // name of C function
-        'number', // return type
-        ['string', 'string'], // argument types
-        ["megg", "fegg"]); // arguments
-
     document.querySelector('.mybutton')
-        .addEventListener('click', getDistance8()
-        );
+        .addEventListener('click', function() {
+            var result = Module.ccall(
+                'getDistance8',  // name of C function
+                'number',  // return type
+                ['number', 'number'],  // argument types
+                [3, 4]  // arguments
+            );
+        });
 </script>
+
 </body>
 </html>
