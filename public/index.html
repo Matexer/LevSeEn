@@ -9,12 +9,26 @@
 <script>
     document.querySelector('.mybutton')
         .addEventListener('click', function() {
+            var pattern = "Żółw";
+            var patternBuffer = Module._malloc(pattern.length + 1);
+            Module.stringToUTF8(pattern, patternBuffer, pattern.length);
+
+            var word = "Żółw2";
+            var wordBuffer = Module._malloc(word.length + 1);
+            Module.stringToUTF8(word, wordBuffer, word.length);
+
             var result = Module.ccall(
                 'getDistance8',  // name of C function
                 'number',  // return type
-                ['number', 'number'],  // argument types
-                [3, 4]  // arguments
+                ['number', 'number', 'number', 'number'],  // argument types
+                [patternBuffer, wordBuffer, pattern.length, word.length]  // arguments
             );
+
+            Module._free(patternBuffer);
+            Module._free(wordBuffer);
+
+            console.log(result);
+
         });
 </script>
 

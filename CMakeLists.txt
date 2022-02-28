@@ -15,8 +15,8 @@ target_include_directories(lse PUBLIC ${LEV_DIR}/src)
 set_target_properties(lse PROPERTIES LINK_FLAGS "-s WASM=1 \
 -s EXIT_RUNTIME=1 \
 -s NO_EXIT_RUNTIME \
--s EXPORTED_FUNCTIONS='_getDistance8' \
--s EXPORTED_RUNTIME_METHODS='ccall, cwrap'")
+-s EXPORTED_FUNCTIONS='_getDistance8, _malloc, _free' \
+-s EXPORTED_RUNTIME_METHODS='ccall, cwrap, stringToUTF8'")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
