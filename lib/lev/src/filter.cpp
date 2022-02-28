@@ -1,8 +1,4 @@
 #include "Levenshtein.hpp"
-#include <vector>
-#include <thread>
-#include <string>
-#include <unordered_map>
 
 
 using namespace std;

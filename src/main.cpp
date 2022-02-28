@@ -1,5 +1,4 @@
 #define TEST false
-#define WEB false
 
 #if TEST
 #include "tests.cpp"
@@ -21,17 +20,3 @@ int main(int argc, char const *argv[])
 
     return 0;
 }
-
-#if WEB
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-EMSCRIPTEN_KEEPALIVE void egg(int argc, char ** argv) {
-    printf("Egg\n");
-}
-
-#ifdef __cplusplus
-}
-#endif
-#endif

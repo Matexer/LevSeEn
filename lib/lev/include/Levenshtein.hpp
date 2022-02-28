@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <unordered_map>
+#include <thread>
 
 
 template<typename SizeT>
@@ -31,5 +33,5 @@ public:
 
 
 template class Levenshtein<unsigned char>;
-//template class Levenshtein<unsigned short int>;
-//template class Levenshtein<unsigned int>;
+template class Levenshtein<unsigned short int>;
+template class Levenshtein<unsigned int>;

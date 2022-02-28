@@ -1,8 +1,4 @@
 #include "Levenshtein.hpp"
-#include <vector>
-#include <thread>
-#include <string>
-#include <map>
 
 
 using namespace std;
