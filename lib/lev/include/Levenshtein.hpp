@@ -39,3 +39,4 @@ public:
 template class Levenshtein<uint8_t>;
 template class Levenshtein<uint16_t>;
 template class Levenshtein<uint32_t>;
+template class Levenshtein<uint64_t>;

@@ -24,13 +24,13 @@ SizeT getDistance8(const string &pattern,const string &word) {
 
 
 template <typename SizeT>
-vector<typename Levenshtein<SizeT>::FixedOutput>* lookFor8(const string &pattern, const string &text, SizeT maxDifference) {
+Levenshtein<uint8_t>::FixedOutput lookFor8(const string &pattern, const string &text, SizeT maxDifference) {
     auto output = Levenshtein<SizeT>::search(pattern, text, maxDifference);
     Levenshtein<SizeT>::purify(output, pattern.size());
     auto fixedOutput = Levenshtein<SizeT>::fix(output, pattern, text);
 
     delete output;
-    return fixedOutput;
+    return fixedOutput->at(0);
 }
 
 
