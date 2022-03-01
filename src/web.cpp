@@ -13,61 +13,66 @@ using namespace std;
 using namespace emscripten;
 
 
-typedef Levenshtein<uint8_t>::Output Output8;
 typedef Levenshtein<uint8_t>::FixedOutput FixedOutput8;
+typedef Levenshtein<uint16_t>::FixedOutput FixedOutput16;
+typedef Levenshtein<uint32_t>::FixedOutput FixedOutput32;
+typedef Levenshtein<uint64_t>::FixedOutput FixedOutput64;
+
+
+//template <typename SizeT>
+//SizeT getDistance(const string &pattern,const string &word) {
+//    return Levenshtein<SizeT>::getDistance(pattern, word);
+//}
 
 
 template <typename SizeT>
-SizeT getDistance8(const string &pattern,const string &word) {
-    return Levenshtein<SizeT>::getDistance(pattern, word);
-}
-
-
-template <typename SizeT>
-Levenshtein<uint8_t>::FixedOutput lookFor8(const string &pattern, const string &text, SizeT maxDifference) {
+vector<typename Levenshtein<SizeT>::FixedOutput>* lookFor(const string &pattern, const string &text, SizeT maxDifference) {
     auto output = Levenshtein<SizeT>::search(pattern, text, maxDifference);
     Levenshtein<SizeT>::purify(output, pattern.size());
     auto fixedOutput = Levenshtein<SizeT>::fix(output, pattern, text);
 
     delete output;
-    return fixedOutput->at(0);
+    return fixedOutput;
 }
 
 
 EMSCRIPTEN_BINDINGS(Lev) {
-        class_<Output8>("Output8")
-                .constructor<>()
-                .property("index", &Output8::index)
-                .property("distance", &Output8::distance)
-                ;
+        register_vector<FixedOutput8>("vector<FixedOutput8>");
+        register_vector<FixedOutput16>("vector<FixedOutput16>");
+        register_vector<FixedOutput32>("vector<FixedOutput32>");
+        register_vector<FixedOutput64>("vector<FixedOutput64>");
 
         class_<FixedOutput8>("FixedOutput8")
-                .constructor<>()
-                .property("length", &FixedOutput8::length)
-                ;
+            .constructor<>()
+            .property("index", &FixedOutput8::index)
+            .property("distance", &FixedOutput8::distance)
+            .property("length", &FixedOutput8::length);
 
-        emscripten::function("getDistance8", ::getDistance8<uint8_t>, allow_raw_pointers());
-        emscripten::function("lookFor8", ::lookFor8<uint8_t>, allow_raw_pointers());
-}
+        class_<FixedOutput16>("FixedOutput16")
+            .constructor<>()
+            .property("index", &FixedOutput16::index)
+            .property("distance", &FixedOutput16::distance)
+            .property("length", &FixedOutput16::length);
 
+        class_<FixedOutput32>("FixedOutput32")
+            .constructor<>()
+            .property("index", &FixedOutput32::index)
+            .property("distance", &FixedOutput32::distance)
+            .property("length", &FixedOutput32::length);
 
-extern "C" {
+        class_<FixedOutput64>("FixedOutput64")
+            .constructor<>()
+            .property("index", &FixedOutput64::index)
+            .property("distance", &FixedOutput64::distance)
+            .property("length", &FixedOutput64::length);
 
-//EMSCRIPTEN_KEEPALIVE uint8_t getDistance8(const char *pattern, const char *word, uint8_t patternLength, uint8_t wordLength) {
-//    string patternStr(pattern, patternLength);
-//    string wordStr(word, wordLength);
-//    return Levenshtein<uint8_t>::getDistance(patternStr, wordStr);
-//}
+        emscripten::function("lookFor8", ::lookFor<uint8_t>, allow_raw_pointers());
+        emscripten::function("lookFor16", ::lookFor<uint16_t>, allow_raw_pointers());
+        emscripten::function("lookFor32", ::lookFor<uint32_t>, allow_raw_pointers());
+        emscripten::function("lookFor64", ::lookFor<uint64_t>, allow_raw_pointers());
 
-//EMSCRIPTEN_KEEPALIVE uint8_t lookFor8(const char *pattern, const char *text, uint8_t maxDifference, uint8_t patternLength, uint8_t textLength) {
-//    string patternStr(pattern, patternLength);
-//    string textStr(text, textLength);
-//
-//    auto output = Levenshtein<uint8_t>::search(pattern, *textP, maxDifference);
-//    Levenshtein<uint8_t>::purify(output, pattern.size());
-//    auto fixedOutput = Levenshtein<uint8_t>::fix(output, pattern, *textP);
-//    delete output;
-//    return 0;
-//}
-
+//        emscripten::function("getDistance8", ::getDistance<uint8_t>, allow_raw_pointers());
+//        emscripten::function("getDistance16", ::getDistance<uint16_t>, allow_raw_pointers());
+//        emscripten::function("getDistance32", ::getDistance<uint32_t>, allow_raw_pointers());
+//        emscripten::function("getDistance64", ::getDistance<uint64_t>, allow_raw_pointers());
 }

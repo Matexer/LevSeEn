@@ -227,7 +227,7 @@ class Filter {
 
     static void concurrentSelectiveSearch(const SelectiveSearchData &commonData, vector<Output>* const output) {
         const SizeT patternLength = commonData.pattern.size();
-        const auto finalIndex = commonData.text.size() - patternLength;
+        const size_t finalIndex = commonData.text.size() - patternLength;
         auto patternBase = new Base(commonData.pattern);
 
         auto threadsNum = thread::hardware_concurrency();

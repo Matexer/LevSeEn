@@ -1,19 +1,25 @@
-function getDistance8(pattern, word) {
-    let patternBuffer = Module._malloc(pattern.length + 1);
-    Module.stringToUTF8(pattern, patternBuffer, pattern.length);
+class Lev {
+    static SizeT (a) {
+        return 2^a
+    };
 
-    let wordBuffer = Module._malloc(word.length + 1);
-    Module.stringToUTF8(word, wordBuffer, word.length);
+    static lookFor(pattern, text, maxDistance) {
+        if (pattern.length < this.SizeT(8)) {
+            return Module.lookFor8(pattern, text, maxDistance)
+        }
+        else if (pattern.length < this.SizeT(16)) {
+            return Module.lookFor16(pattern, text, maxDistance)
+        }
+        else if (pattern.length < this.SizeT(32)) {
+            return Module.lookFor32(pattern, text, maxDistance)
+        }
+        else if (pattern.length < this.SizeT(64)) {
+            return Module.lookFor64(pattern, text, maxDistance)
+        }
+        else {
+            console.error("Zbyt długi wzorzec. Maksymalna długość to ", this.SizeT(64) ," znaków.")
+        }
 
-    let result = Module.ccall(
-        'getDistance8',  // name of C function
-        'number',  // return type
-        ['number', 'number', 'number', 'number'],  // argument types
-        [patternBuffer, wordBuffer, pattern.length, word.length]  // arguments
-    );
 
-    Module._free(patternBuffer);
-    Module._free(wordBuffer);
-
-    return result;
+    };
 }

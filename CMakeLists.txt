@@ -13,12 +13,12 @@ add_executable(lse ${CMAKE_CURRENT_SOURCE_DIR}/src/web.cpp)
 target_include_directories(lse PUBLIC ${LEV_DIR}/include)
 target_include_directories(lse PUBLIC ${LEV_DIR}/src)
 set_target_properties(lse PROPERTIES LINK_FLAGS "-s WASM=1 \
--01 \
+-03 \
 -lembind \
 -s EXIT_RUNTIME=1 \
 -s NO_EXIT_RUNTIME \
 -s EXPORTED_FUNCTIONS='' \
--s EXPORTED_RUNTIME_METHODS='ccall, cwrap, stringToUTF8'")
+-s EXPORTED_RUNTIME_METHODS=''")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)

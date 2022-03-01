@@ -10,7 +10,17 @@
 <script>
     document.querySelector('.mybutton')
         .addEventListener('click', function() {
-            console.log(Module.lookFor8("rgg", "mhgjgjhjghgfhjig", 55).length)
+            let pattern = "Egg";
+            let word = "EggmhgEtggjgjhjEggghgfhjig";
+
+            var retVector = Lev.lookFor(pattern, word, 1);
+
+            for (var i = 0; i < retVector.size(); i++) {
+                let val = retVector.get(i);
+                let subword = word.substr(val.index, val.length);
+
+                console.log(val.index, ": ", subword, " D=", val.distance);
+            }
         });
 </script>
 
