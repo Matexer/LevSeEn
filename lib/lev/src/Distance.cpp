@@ -19,14 +19,12 @@ SizeT Distance<SizeT>::getDistance(const string &first, const string &second,
     auto secondLength = second.size();
 
     if (firstLength < secondLength) {
-        auto distance =  Distance<SizeT>(firstLength, secondLength);
-        distance.setEditCosts(deletionCost, insertionCost, swapCost);
-        return distance.getDistance(first, second);
+        return Distance<SizeT>(firstLength, secondLength, deletionCost, insertionCost, swapCost).
+                getDistance(first, second);
     }
     else {
-        auto distance =  Distance<SizeT>(secondLength, firstLength);
-        distance.setEditCosts(deletionCost, insertionCost, swapCost);
-        return distance.getDistance(second, first);
+        return Distance<SizeT>(secondLength, firstLength, deletionCost, insertionCost, swapCost).
+                getDistance(second, first);
     }
 }
 
@@ -46,10 +44,18 @@ Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
 
 
 template<typename SizeT>
-void Distance<SizeT>::setEditCosts(SizeT newDeletionCost, SizeT newInsertionCost, SizeT newSwapCost) {
-    this->deletionCost = newDeletionCost;
-    this->insertionCost = newInsertionCost;
-    this->swapCost = newSwapCost;
+Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength,
+                          SizeT deletionCost, SizeT insertionCost, SizeT swapCost) :
+                          Distance<SizeT>::Distance(patternLength, wordLength) {
+    this->setEditCosts(deletionCost, insertionCost, swapCost);
+}
+
+
+template<typename SizeT>
+void Distance<SizeT>::setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost) {
+    this->deletionCost = deletionCost;
+    this->insertionCost = insertionCost;
+    this->swapCost = swapCost;
 }
 
 
@@ -101,6 +107,3 @@ inline SizeT Distance<SizeT>::min(SizeT a, SizeT b, SizeT c) {
     auto x = (a < b) ? a : b;
     return (c < x) ? c : x;
 }
-
-
-//Protected

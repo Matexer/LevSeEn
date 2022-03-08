@@ -14,6 +14,11 @@ public:
 //  Konstruktor tworzący warunki do szybkiego porównywania słów o podanych długościach
     Distance(const SizeT& patternLength, const SizeT &wordLength);
 
+//  Konstruktor tworzący warunki do szybkiego porównywania słów o podanych długościach
+//  oraz ustawiający nowe wartości kosztów edycji
+    Distance(const SizeT& patternLength, const SizeT &wordLength,
+             SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
+
 //  Ustala koszty edycji dla niestatycznych funkcji składowych
     void setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
@@ -24,7 +29,7 @@ public:
     static SizeT getEditDistance(const std::string& first, const std::string& second);
 
 //  Zwraca odległość Levenshteina po samodzielnym sprawdzeniu długości wzorca i słowa
-    static SizeT getDistance(const std::string& first, const std::string& second,
+    [[maybe_unused]] static SizeT getDistance(const std::string& first, const std::string& second,
                              SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
     ~Distance();
