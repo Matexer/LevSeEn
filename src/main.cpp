@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include "string"
-#include "Distance.h"
+#include "Levenshtein.hpp"
 
 
 using namespace std;
@@ -18,8 +18,15 @@ int main(int argc, char const *argv[])
     string pattern = "egg";
     string word = "megg";
 
-    auto lev = Distance<uint8_t>::getEditDistance(pattern, word);
-    cout << (int)lev;
+    auto dis = Distance<uint8_t>::getEditDistance(pattern, word);
+    auto levSearch = Search<uint8_t>::search(pattern, word);
+    //cout << (int)dis;
+
+    for (auto i: *levSearch) {
+        cout << (int)i; //TODO nie dochodzi do końca, naprawić.
+    }
+
+
 
 //    auto test = Test("/home/mateusz/Pulpit/navarro.txt");
 //    string pattern = "The method was based on a little general version of";

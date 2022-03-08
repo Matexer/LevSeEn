@@ -7,10 +7,11 @@
 
 namespace Levenshtein {
 
+
 template<typename SizeT>
 class Distance {
 public:
-//  Konstruktor tworzący warunki do porównywania słów o podanych długościach
+//  Konstruktor tworzący warunki do szybkiego porównywania słów o podanych długościach
     Distance(const SizeT& patternLength, const SizeT &wordLength);
 
 //  Ustala koszty edycji dla niestatycznych funkcji składowych
@@ -26,9 +27,9 @@ public:
     static SizeT getDistance(const std::string& first, const std::string& second,
                              SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
+    ~Distance();
 protected:
     static inline SizeT min(SizeT a, SizeT b, SizeT c);
-    ~Distance();
 
     SizeT patternLength;
     SizeT wordLength;

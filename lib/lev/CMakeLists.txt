@@ -1,7 +1,8 @@
 file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 #add_library(lev STATIC ${SRC_FILES})
 
-add_library(lev STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Distance.cpp)
+add_library(lev STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Distance.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Search.cpp)
 target_include_directories(lev PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)

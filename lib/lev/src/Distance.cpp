@@ -36,7 +36,7 @@ template<typename SizeT>
 Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
 //    ((patternLength >= wordLength),
 //            "patternLength must be shorter or equal wordLength");
-
+//TODO zrobić throw exception;
     this->patternLength = patternLength;
     this->wordLength = wordLength;
     this->tableSize = patternLength + 1; //+1 na słowo puste
@@ -88,6 +88,13 @@ SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word) {
 }
 
 
+template<typename SizeT>
+Distance<SizeT>::~Distance() {
+    delete[] top;
+    delete[] bot;
+}
+
+
 //Protected - static
 template<typename SizeT>
 inline SizeT Distance<SizeT>::min(SizeT a, SizeT b, SizeT c) {
@@ -97,8 +104,3 @@ inline SizeT Distance<SizeT>::min(SizeT a, SizeT b, SizeT c) {
 
 
 //Protected
-template<typename SizeT>
-Distance<SizeT>::~Distance() {
-    delete[] top;
-    delete[] bot;
-}
