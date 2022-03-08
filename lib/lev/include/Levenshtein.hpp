@@ -26,11 +26,16 @@ public:
     static SizeT getDistance(const std::string& pattern, const std::string& word);
     static SizeT getDistance(const std::string& pattern, const std::string& word,
                              const SizeT& patternLength, const SizeT& wordLength);
+
     static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
     static std::vector<Output>* search(const std::string &pattern, const std::string &text, SizeT maxDifference);
+
     static std::vector<size_t>* filter(const std::string &pattern, const std::string &text, SizeT maxDifference);
     static void purify(std::vector<Output>* input, SizeT patternLength);
+
     static std::vector<FixedOutput>* fix(std::vector<Output>* input, const std::string &pattern, const std::string &text);
+
+    static std::vector<FixedOutput>* lookFor(const std::string &pattern, const std::string &text, SizeT maxDifference);
 };
 
 

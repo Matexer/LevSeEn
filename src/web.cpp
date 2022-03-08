@@ -7,6 +7,7 @@
 #include "filter.cpp"
 #include "purify.cpp"
 #include "fix.cpp"
+#include "lookFor.cpp"
 
 
 using namespace std;

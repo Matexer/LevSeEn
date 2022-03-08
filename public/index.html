@@ -10,16 +10,16 @@
 <script>
     document.querySelector('.mybutton')
         .addEventListener('click', function() {
-            let pattern = "Egg";
-            let word = "EggmhgEtggjgjhjEggghgfhjig";
+            let pattern = "EggiEgg";
+            let word = "fkjdsahfgu3h47hsdgfnaklEggiEggsd2389ćm,asndiuas98342 EggiwEgg";
 
-            var retVector = Lev.lookFor(pattern, word, 1);
+            var retVector = Lev.lookFor(pattern, word, 3);
 
             for (var i = 0; i < retVector.size(); i++) {
                 let val = retVector.get(i);
                 let subword = word.substr(val.index, val.length);
 
-                console.log(val.index, ": ", subword, " D=", val.distance);
+                console.log(val.index, ": ", subword, " D=", val.distance, " L=", val.length);
             }
         });
 </script>
