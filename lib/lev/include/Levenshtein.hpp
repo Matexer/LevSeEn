@@ -1,9 +1,13 @@
 #pragma once
+
 #include <vector>
 #include <string>
 #include <map>
 #include <unordered_map>
 #include <thread>
+
+#include "SizeT.h"
+#include "Distance.h"
 
 
 template<typename SizeT>
@@ -20,6 +24,8 @@ public:
         SizeT distance;
         SizeT length;
     };
+
+    static Distance<SizeT> distance = Distance<SizeT>;
 
     static const size_t multithreadingStart = 1000;
 
@@ -39,7 +45,18 @@ public:
 };
 
 
+#ifdef UINT8_SizeT
 template class Levenshtein<uint8_t>;
+#endif
+
+#ifdef UINT16_SizeT
 template class Levenshtein<uint16_t>;
+#endif
+
+#ifdef UINT32_SizeT
 template class Levenshtein<uint32_t>;
+#endif
+
+#ifdef UINT64_SizeT
 template class Levenshtein<uint64_t>;
+#endif

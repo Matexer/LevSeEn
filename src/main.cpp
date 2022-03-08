@@ -1,22 +1,29 @@
-#define TEST true
+#define TEST false
 
 #if TEST
 #include "tests.cpp"
 #endif
 
-#include "Levenshtein.hpp"
 #include <iostream>
 #include "string"
+#include "Distance.h"
 
 
 using namespace std;
+using namespace Levenshtein;
 
 
 int main(int argc, char const *argv[])
 {
-    auto test = Test("/home/mateusz/Pulpit/navarro.txt");
-    string pattern = "The method was based on a little general version of";
-    test.search(pattern);
+    string pattern = "egg";
+    string word = "megg";
+
+    auto lev = Distance<uint8_t>::getEditDistance(pattern, word);
+    cout << (int)lev;
+
+//    auto test = Test("/home/mateusz/Pulpit/navarro.txt");
+//    string pattern = "The method was based on a little general version of";
+//    test.search(pattern);
 
 //    auto lev = Levenshtein<uint8_t>();
 //    auto pattern2 = "22Fhh321";
