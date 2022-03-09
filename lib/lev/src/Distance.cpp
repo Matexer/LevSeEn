@@ -118,9 +118,27 @@ SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word) {
     return result;
 }
 
+#include "iostream"
+
 
 template<typename SizeT>
 Distance<SizeT>::~Distance() {
+
+    for (SizeT i = 0; i < tableSize; i++)
+    {
+        cout << (int)top[i] << " ";
+    }
+
+    cout << endl;
+
+    for (SizeT i = 0; i < tableSize; i++)
+    {
+        cout << (int)bot[i] << " ";
+    }
+
+    cout << endl;
+
+    //TODO nie działa jak należy, usuwa nie wiadomo co
     delete[] top;
     delete[] bot;
 }

@@ -50,10 +50,7 @@ namespace Levenshtein {
     };
 
 #ifdef UINT8_SizeT
-
-    template
-    class Distance<uint8_t>;
-
+    template class Distance<uint8_t>;
 #endif
 
 #ifdef UINT16_SizeT
