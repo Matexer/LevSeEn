@@ -34,7 +34,7 @@ template<typename SizeT>
 Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
     this->patternLength = patternLength;
     this->wordLength = wordLength;
-    this->tableSize = patternLength + 1; //+1 na słowo puste
+    this->tableSize = patternLength + 1; // +1 na słowo puste
     this->top = new SizeT[tableSize];
     this->bot = new SizeT[tableSize];
 }

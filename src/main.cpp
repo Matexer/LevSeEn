@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
 {
     typedef Search<uint8_t> Search;
     typedef Distance<uint8_t> Distance;
-    Search::MULTITHREADING_MIN_COMPLEXITY = 10;
+    Search::setMultithreadingMinComplexity(10);
 
     string pattern = "egg";
     string word = "megg12345";

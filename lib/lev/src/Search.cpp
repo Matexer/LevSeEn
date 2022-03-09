@@ -10,13 +10,15 @@ using namespace std;
 
 //Pubic - static
 template<typename SizeT>
-bool Search<SizeT>::USE_FILTER = true;
+void Search<SizeT>::setMultithreading(bool multithreading) {
+    MULTITHREADING = multithreading;
+}
+
 
 template<typename SizeT>
-bool Search<SizeT>::MULTITHREADING = true;
-
-template<typename SizeT>
-uint64_t Search<SizeT>::MULTITHREADING_MIN_COMPLEXITY = 100;
+void Search<SizeT>::setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity) {
+    MULTITHREADING_MIN_COMPLEXITY = multithreadingMinComplexity;
+}
 
 
 template<typename SizeT>
@@ -89,3 +91,11 @@ void Search<SizeT>::concurrentSearch(typename Search<SizeT>::SearchData &data) {
         pool[i].join();
     }
 }
+
+
+template<typename SizeT>
+bool Search<SizeT>::MULTITHREADING = true;
+
+
+template<typename SizeT>
+uint64_t Search<SizeT>::MULTITHREADING_MIN_COMPLEXITY = 100;
