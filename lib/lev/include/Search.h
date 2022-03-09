@@ -12,19 +12,25 @@ namespace Levenshtein {
     template<typename SizeT>
     class Search {
     public:
+        static bool USE_FILTER;      // Zezwolenie na wykorzystanie filtra
+        static bool MULTITHREADING;  // Zezwolenie na wielowątkowość
+        static uint64_t MULTITHREADING_MIN_COMPLEXITY;
+
+//      Zwraca tablicę zawiarającą odległość dla każdego indexu w tekście
         static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
 
     protected:
         struct SearchData {
             const std::string &pattern;
             const std::string &text;
+            size_t firstIndex;
+            size_t lastIndex;
             std::vector<SizeT>* const output;
-            size_t firstOutputIndex = 0;
         };
 
-        static std::vector<SizeT>* search(SearchData &data);
-
-        static uint64_t multithreadingMinComplexity;
+        static void search(SearchData &data);
+        static void _search(SearchData data);
+        static void concurrentSearch(SearchData &data);
     };
 
 

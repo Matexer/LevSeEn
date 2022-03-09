@@ -29,7 +29,7 @@ public:
     static SizeT getEditDistance(const std::string& first, const std::string& second);
 
 //  Zwraca odległość Levenshteina po samodzielnym sprawdzeniu długości wzorca i słowa
-    [[maybe_unused]] static SizeT getDistance(const std::string& first, const std::string& second,
+    static SizeT getDistance(const std::string& first, const std::string& second,
                              SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
     ~Distance();

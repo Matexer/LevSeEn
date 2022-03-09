@@ -32,9 +32,6 @@ SizeT Distance<SizeT>::getDistance(const string &first, const string &second,
 //Public
 template<typename SizeT>
 Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
-//    ((patternLength >= wordLength),
-//            "patternLength must be shorter or equal wordLength");
-//TODO zrobić throw exception;
     this->patternLength = patternLength;
     this->wordLength = wordLength;
     this->tableSize = patternLength + 1; //+1 na słowo puste

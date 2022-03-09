@@ -1,6 +1,4 @@
 #pragma once
-
-
 #include "Distance.h"
 #include "Search.h"
 

@@ -15,18 +15,20 @@ using namespace Levenshtein;
 
 int main(int argc, char const *argv[])
 {
-    string pattern = "egg";
-    string word = "megg";
+    typedef Search<uint8_t> Search;
+    typedef Distance<uint8_t> Distance;
+    Search::MULTITHREADING_MIN_COMPLEXITY = 10;
 
-    auto dis = Distance<uint8_t>::getEditDistance(pattern, word);
-    auto levSearch = Search<uint8_t>::search(pattern, word);
-    //cout << (int)dis;
+    string pattern = "egg";
+    string word = "megg12345";
+
+    auto dis = Distance::getEditDistance(pattern, word);
+    auto levSearch = Search::search(pattern, word);
+    cout << (int)dis << " | ";
 
     for (auto i: *levSearch) {
-        cout << (int)i; //TODO nie dochodzi do końca, naprawić.
+        cout << (int)i << " ";
     }
-
-
 
 //    auto test = Test("/home/mateusz/Pulpit/navarro.txt");
 //    string pattern = "The method was based on a little general version of";
