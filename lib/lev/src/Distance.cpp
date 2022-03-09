@@ -1,9 +1,12 @@
 #include "Distance.h"
 
 //#define DRAW
-#ifdef DRAW
+//#define MEMORY_DEBUG
+
+#if defined DRAW || defined MEMORY_DEBUG
     #include <iostream>
 #endif
+
 
 using namespace std;
 using namespace Levenshtein;
@@ -25,13 +28,21 @@ SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word,
 
 
 //Public
+//Constructors
 template<typename SizeT>
 Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
     this->patternLength = patternLength;
     this->wordLength = wordLength;
     this->tableSize = patternLength + 1; // +1 na słowo puste
+
     this->top = new SizeT[tableSize];
     this->bot = new SizeT[tableSize];
+
+    #ifdef MEMORY_DEBUG
+        cout << "KONSTRUKTOR " << this << endl;
+        cout << top << " | ";
+        cout << bot << endl;
+    #endif
 }
 
 
@@ -43,6 +54,30 @@ Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength,
 }
 
 
+template<typename SizeT>
+Distance<SizeT>::Distance(const Distance<SizeT>& other) :
+    Distance(other.patternLength, other.wordLength,
+             other.deletionCost, other.insertionCost, other.swapCost) {
+}
+
+
+template<typename SizeT>
+Distance<SizeT>::Distance(Distance<SizeT>&& other) noexcept {
+    this->patternLength = other.patternLength;
+    this->wordLength = other.wordLength;
+    this->tableSize = other.tableSize;
+    this->deletionCost = other.deletionCost;
+    this->insertionCost = other.insertionCost;
+    this->swapCost = other.swapCost;
+
+    std::swap(this->top, other.top);
+    std::swap(this->bot, other.bot);
+
+    other.~Distance();
+}
+
+
+//Methods
 template<typename SizeT>
 void Distance<SizeT>::setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost) {
     this->deletionCost = deletionCost;
@@ -118,29 +153,20 @@ SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word) {
     return result;
 }
 
-#include "iostream"
-
 
 template<typename SizeT>
 Distance<SizeT>::~Distance() {
+    #ifdef MEMORY_DEBUG
+        cout << "DESTRUKTOR " << this << endl;
+        cout << top << " | ";
+        cout << bot << endl << endl;
+    #endif
 
-    for (SizeT i = 0; i < tableSize; i++)
-    {
-        cout << (int)top[i] << " ";
-    }
-
-    cout << endl;
-
-    for (SizeT i = 0; i < tableSize; i++)
-    {
-        cout << (int)bot[i] << " ";
-    }
-
-    cout << endl;
-
-    //TODO nie działa jak należy, usuwa nie wiadomo co
     delete[] top;
+    top = nullptr;
+
     delete[] bot;
+    bot = nullptr;
 }
 
 

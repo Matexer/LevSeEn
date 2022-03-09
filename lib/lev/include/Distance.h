@@ -19,6 +19,26 @@ namespace Levenshtein {
         Distance(const SizeT &patternLength, const SizeT &wordLength,
                  SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
+        Distance(const Distance& other);
+        Distance(Distance&& other) noexcept ;
+
+        // = działa jak przeniesienie z posprzątaniem obiektu przenoszonego (rozmontowywanego)
+        Distance& operator=(Distance &&other) {
+            this->patternLength = other.patternLength;
+            this->wordLength = other.wordLength;
+            this->tableSize = other.tableSize;
+            this->deletionCost = other.deletionCost;
+            this->insertionCost = other.insertionCost;
+            this->swapCost = other.swapCost;
+
+            std::swap(this->top, other.top);
+            std::swap(this->bot, other.bot);
+
+            other.~Distance();
+
+            return *this;
+        }
+
         //  Ustala koszty edycji dla niestatycznych funkcji składowych
         void setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
@@ -41,8 +61,8 @@ namespace Levenshtein {
         SizeT wordLength;
         SizeT tableSize;
 
-        SizeT *top;
-        SizeT *bot;
+        SizeT *top = nullptr;
+        SizeT *bot = nullptr;
 
         SizeT deletionCost = 1;
         SizeT insertionCost = 1;
