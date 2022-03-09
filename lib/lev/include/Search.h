@@ -31,7 +31,6 @@ namespace Levenshtein {
         static void _search(SearchData data);
         static void concurrentSearch(SearchData &data);
 
-        static SizeT DELETION_COST;
     public:
         static void setDeletionCost(SizeT deletionCost);
 
@@ -40,6 +39,7 @@ namespace Levenshtein {
         static void setSwapCost(SizeT swapCost);
 
     protected:
+        static SizeT DELETION_COST;
         static SizeT INSERTION_COST;
         static SizeT SWAP_COST;
 
