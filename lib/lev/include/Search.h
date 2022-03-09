@@ -31,6 +31,18 @@ namespace Levenshtein {
         static void _search(SearchData data);
         static void concurrentSearch(SearchData &data);
 
+        static SizeT DELETION_COST;
+    public:
+        static void setDeletionCost(SizeT deletionCost);
+
+        static void setInsertionCost(SizeT insertionCost);
+
+        static void setSwapCost(SizeT swapCost);
+
+    protected:
+        static SizeT INSERTION_COST;
+        static SizeT SWAP_COST;
+
         static bool MULTITHREADING;  // Zezwolenie na wielowątkowość
         static uint64_t MULTITHREADING_MIN_COMPLEXITY;
     };

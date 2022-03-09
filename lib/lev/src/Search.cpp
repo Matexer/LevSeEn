@@ -10,10 +10,24 @@ using namespace std;
 
 //Pubic - static
 template<typename SizeT>
+void Search<SizeT>::setDeletionCost(SizeT deletionCost) {
+    DELETION_COST = deletionCost;
+}
+
+template<typename SizeT>
+void Search<SizeT>::setInsertionCost(SizeT insertionCost) {
+    INSERTION_COST = insertionCost;
+}
+
+template<typename SizeT>
+void Search<SizeT>::setSwapCost(SizeT swapCost) {
+    SWAP_COST = swapCost;
+}
+
+template<typename SizeT>
 void Search<SizeT>::setMultithreading(bool multithreading) {
     MULTITHREADING = multithreading;
 }
-
 
 template<typename SizeT>
 void Search<SizeT>::setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity) {
@@ -50,7 +64,8 @@ std::vector<SizeT>* Search<SizeT>::search(const std::string &pattern, const std:
 template<typename SizeT>
 void Search<SizeT>::search(typename Search<SizeT>::SearchData &data) {
     auto patternLength = data.pattern.length();
-    auto disSearch = Distance<SizeT>(patternLength, patternLength);
+    auto disSearch = Distance<SizeT>(patternLength, patternLength,
+                                     DELETION_COST, INSERTION_COST, SWAP_COST);
 
     for (size_t i = data.firstIndex; i < data.lastIndex; i++) {
         data.output->at(i) = disSearch.getDistance(
@@ -96,6 +111,14 @@ void Search<SizeT>::concurrentSearch(typename Search<SizeT>::SearchData &data) {
 template<typename SizeT>
 bool Search<SizeT>::MULTITHREADING = true;
 
-
 template<typename SizeT>
 uint64_t Search<SizeT>::MULTITHREADING_MIN_COMPLEXITY = 100;
+
+template<typename SizeT>
+SizeT Search<SizeT>::DELETION_COST = 1;
+
+template<typename SizeT>
+SizeT Search<SizeT>::INSERTION_COST = 1;
+
+template<typename SizeT>
+SizeT Search<SizeT>::SWAP_COST = 1;
