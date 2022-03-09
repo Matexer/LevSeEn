@@ -1,5 +1,6 @@
 # Project exclude paths
-/cmake-build-debug/
+*/cmake-build-debug/
 /build/
 /.idea/
-/navarro.txt
+*/test/data/
+
