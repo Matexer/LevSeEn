@@ -56,7 +56,6 @@ std::vector<SizeT>* Search<SizeT>::search(const std::string &pattern, const std:
     }
 
     return output;
-
 }
 
 

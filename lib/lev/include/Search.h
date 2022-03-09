@@ -14,6 +14,9 @@ namespace Levenshtein {
     public:
         static void setMultithreading(bool multithreading);
         static void setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity);
+        static void setDeletionCost(SizeT deletionCost);
+        static void setInsertionCost(SizeT insertionCost);
+        static void setSwapCost(SizeT swapCost);
 
         //Zwraca tablicę zawiarającą odległość dla każdego indexu w tekście
         static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
@@ -30,13 +33,6 @@ namespace Levenshtein {
         static void search(SearchData &data);
         static void _search(SearchData data);
         static void concurrentSearch(SearchData &data);
-
-    public:
-        static void setDeletionCost(SizeT deletionCost);
-
-        static void setInsertionCost(SizeT insertionCost);
-
-        static void setSwapCost(SizeT swapCost);
 
     protected:
         static SizeT DELETION_COST;
