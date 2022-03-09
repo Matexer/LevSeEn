@@ -48,7 +48,7 @@ Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
 
 template<typename SizeT>
 Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength,
-                          SizeT deletionCost, SizeT insertionCost, SizeT swapCost) :
+                          const SizeT deletionCost, const SizeT insertionCost, const SizeT swapCost) :
                           Distance<SizeT>::Distance(patternLength, wordLength) {
     this->setEditCosts(deletionCost, insertionCost, swapCost);
 }
@@ -79,7 +79,7 @@ Distance<SizeT>::Distance(Distance<SizeT>&& other) noexcept {
 
 //Methods
 template<typename SizeT>
-void Distance<SizeT>::setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost) {
+void Distance<SizeT>::setEditCosts(const SizeT deletionCost, const SizeT insertionCost, const SizeT swapCost) {
     this->deletionCost = deletionCost;
     this->insertionCost = insertionCost;
     this->swapCost = swapCost;
