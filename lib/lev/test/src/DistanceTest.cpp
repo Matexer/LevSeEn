@@ -38,9 +38,18 @@ TEST_F(DistanceTest, testGetEditDistanceWhenSecondLongerThanFirst) {
     ASSERT_EQ(1, DistanceT::getEditDistance(words[9], words[8]));
 }
 
-//TODO pattern i word nie moga sie zamieniac miejscami bo niegdy nie bedzie usuwania znakow
 TEST_F(DistanceTest, testGetDistanceWithDiffDeletionCosts) {
+    ASSERT_EQ(2, DistanceT::getDistance(words[1], words[0], 2, 1, 1));
     ASSERT_EQ(4, DistanceT::getDistance(words[0], words[1], 2, 1, 1));
-    ASSERT_EQ(4, DistanceT::getDistance("baaab", "bab", 2, 1, 1));
-    ASSERT_EQ(2, DistanceT::getDistance("aabbbaa", "aaabaaa", 2, 1, 1));
+}
+
+TEST_F(DistanceTest, testGetDistanceWithDiffInsertionCosts) {
+    ASSERT_EQ(4, DistanceT::getDistance(words[1], words[0], 1, 2, 1));
+    ASSERT_EQ(2, DistanceT::getDistance(words[0], words[1], 1, 2, 1));
+}
+
+TEST_F(DistanceTest, testGetDistanceWithDiffSwapCosts) {
+    ASSERT_EQ(2, DistanceT::getDistance(words[1], words[0], 1, 1, 2));
+    ASSERT_EQ(2, DistanceT::getDistance(words[0], words[1], 1, 1, 2));
+    ASSERT_EQ(4, DistanceT::getDistance(words[4], words[5], 1, 1, 2));
 }

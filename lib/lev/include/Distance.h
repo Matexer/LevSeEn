@@ -26,10 +26,10 @@ namespace Levenshtein {
         SizeT getDistance(const std::string &pattern, const std::string &word);
 
         //  Zwraca odległość edycji po samodzielnym sprawdzeniu długości wzorca i słowa
-        static SizeT getEditDistance(const std::string &first, const std::string &second);
+        static SizeT getEditDistance(const std::string &pattern, const std::string &word);
 
         //  Zwraca odległość Levenshteina po samodzielnym sprawdzeniu długości wzorca i słowa
-        static SizeT getDistance(const std::string &first, const std::string &second,
+        static SizeT getDistance(const std::string &pattern, const std::string &second,
                                  SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
         ~Distance();

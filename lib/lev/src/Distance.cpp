@@ -1,5 +1,9 @@
 #include "Distance.h"
 
+//#define DRAW
+#ifdef DRAW
+    #include <iostream>
+#endif
 
 using namespace std;
 using namespace Levenshtein;
@@ -7,25 +11,16 @@ using namespace Levenshtein;
 
 //Public - static
 template<typename SizeT>
-SizeT Distance<SizeT>::getEditDistance(const string &first, const string &second) {
-    return Distance<SizeT>::getDistance(first, second, 1, 1, 1);
+SizeT Distance<SizeT>::getEditDistance(const string &pattern, const string &word) {
+    return Distance<SizeT>::getDistance(pattern, word, 1, 1, 1);
 }
 
 
 template<typename SizeT>
-SizeT Distance<SizeT>::getDistance(const string &first, const string &second,
+SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word,
                                    SizeT deletionCost, SizeT insertionCost, SizeT swapCost) {
-    auto firstLength = first.size();
-    auto secondLength = second.size();
-
-    if (firstLength < secondLength) {
-        return Distance<SizeT>(firstLength, secondLength, deletionCost, insertionCost, swapCost).
-                getDistance(first, second);
-    }
-    else {
-        return Distance<SizeT>(secondLength, firstLength, deletionCost, insertionCost, swapCost).
-                getDistance(second, first);
-    }
+    return Distance<SizeT>(pattern.size(), word.size(), deletionCost, insertionCost, swapCost).
+            getDistance(pattern, word);
 }
 
 
@@ -63,28 +58,61 @@ SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word) {
     SizeT swpFullCost;
     SizeT result;
 
+    #ifdef DRAW
+    cout << "   # ";
+    for(auto ch: pattern) {
+        cout << ch << " ";
+    }
+    cout << endl;
+    cout << "#| ";
+    #endif
+
     for (SizeT i = 0; i < tableSize; i++)
     {
-        top[i] = i;
+        top[i] = i * deletionCost;
+
+        #ifdef DRAW
+            cout << (int)i << " ";
+        #endif
     }
+
+    #ifdef DRAW
+        cout << endl;
+    #endif
 
     for (size_t i = 0; i < wordLength; i++)
     {
-        bot[0] = i + 1;
+        bot[0] = (i + 1) * insertionCost;
+
+    #ifdef DRAW
+        cout << word.at(i) << "| " << (int)bot[0] << " ";
+    #endif
 
         for (SizeT j = 0; j < patternLength; j++)
         {
-            delFullCost = top[j + 1] + deletionCost;
-            insFullCost = bot[j] + insertionCost;
+            insFullCost = top[j + 1] + insertionCost;
+            delFullCost = bot[j] + deletionCost;
             swpFullCost = top[j];
             if (pattern.at(j) != word.at(i))
                 swpFullCost += swapCost;
 
             bot[j + 1] = min(delFullCost, insFullCost, swpFullCost);
+
+            #ifdef DRAW
+                cout << (int)bot[j + 1] << " ";
+            #endif
         }
+
+        #ifdef DRAW
+            cout << endl;
+        #endif
 
         swap(top, bot);
     }
+
+    #ifdef DRAW
+        cout << endl;
+    #endif
 
     result = top[patternLength];
     return result;
