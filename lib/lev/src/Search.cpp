@@ -98,7 +98,7 @@ void Search<SizeT>::concurrentSearch(typename Search<SizeT>::SearchData &data) {
     }
 
     //Ostatni wątek iteruje do końca
-    threadData.lastIndex += (numOfIndexes - threadData.firstIndex) - 1;
+    threadData.lastIndex = numOfIndexes;
     pool[numOfThreads - 1] = thread(Search<SizeT>::_search, threadData);
 
     for(auto i = 0; i < numOfThreads; i++) {
