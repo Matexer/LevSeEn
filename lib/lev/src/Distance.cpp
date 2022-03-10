@@ -63,17 +63,7 @@ Distance<SizeT>::Distance(const Distance<SizeT>& other) :
 
 template<typename SizeT>
 Distance<SizeT>::Distance(Distance<SizeT>&& other) noexcept {
-    this->patternLength = other.patternLength;
-    this->wordLength = other.wordLength;
-    this->tableSize = other.tableSize;
-    this->deletionCost = other.deletionCost;
-    this->insertionCost = other.insertionCost;
-    this->swapCost = other.swapCost;
-
-    std::swap(this->top, other.top);
-    std::swap(this->bot, other.bot);
-
-    other.~Distance();
+    this->stealAndDestroy(other);
 }
 
 
@@ -175,4 +165,20 @@ template<typename SizeT>
 inline SizeT Distance<SizeT>::min(SizeT a, SizeT b, SizeT c) {
     auto x = (a < b) ? a : b;
     return (c < x) ? c : x;
+}
+
+//Protected
+template<typename SizeT>
+void Distance<SizeT>::stealAndDestroy(Distance& other) {
+    this->patternLength = other.patternLength;
+    this->wordLength = other.wordLength;
+    this->tableSize = other.tableSize;
+    this->deletionCost = other.deletionCost;
+    this->insertionCost = other.insertionCost;
+    this->swapCost = other.swapCost;
+
+    std::swap(this->top, other.top);
+    std::swap(this->bot, other.bot);
+
+    other.~Distance();
 }

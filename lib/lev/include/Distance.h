@@ -24,18 +24,7 @@ namespace Levenshtein {
 
         // = działa jak przeniesienie z posprzątaniem obiektu przenoszonego (rozmontowywanego)
         Distance& operator=(Distance &&other) {
-            this->patternLength = other.patternLength;
-            this->wordLength = other.wordLength;
-            this->tableSize = other.tableSize;
-            this->deletionCost = other.deletionCost;
-            this->insertionCost = other.insertionCost;
-            this->swapCost = other.swapCost;
-
-            std::swap(this->top, other.top);
-            std::swap(this->bot, other.bot);
-
-            other.~Distance();
-
+            this->stealAndDestroy(other);
             return *this;
         }
 
@@ -56,6 +45,11 @@ namespace Levenshtein {
 
     protected:
         static inline SizeT min(SizeT a, SizeT b, SizeT c);
+
+        //Przypisuje sobie wszystkie wartości argumentów skałdowych
+        //zabiera tablice top i bot, dając swoje, a następnie sprząta
+        //rozmontowywany obiekt (usuwając je)
+        void stealAndDestroy(Distance& other);
 
         SizeT patternLength;
         SizeT wordLength;
