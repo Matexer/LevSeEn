@@ -5,7 +5,7 @@
 namespace Levenshtein {
 
 
-template<typename SizeT>
+template<typename StringT, typename SizeT>
 class Distance {
 public:
     //  Konstruktor tworzący warunki do szybkiego porównywania słów o podanych długościach
@@ -29,13 +29,13 @@ public:
     void setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
     //  Zwraca odległość Levenshteina, dla wzorca i słowa o ustalonej w konstruktorze długości
-    SizeT getDistance(const std::string &pattern, const std::string &word);
+    SizeT getDistance(const StringT &pattern, const StringT &word);
 
     //  Zwraca odległość edycji po samodzielnym sprawdzeniu długości wzorca i słowa
-    static SizeT getEditDistance(const std::string &pattern, const std::string &word);
+    static SizeT getEditDistance(const StringT &pattern, const StringT &word);
 
     //  Zwraca odległość Levenshteina po samodzielnym sprawdzeniu długości wzorca i słowa
-    static SizeT getDistance(const std::string &pattern, const std::string &second,
+    static SizeT getDistance(const StringT &pattern, const StringT &second,
                              SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
     ~Distance();
@@ -62,11 +62,18 @@ protected:
 };
 
 
-template class Distance<uint8_t>;
-
+template class Distance<std::u16string, uint8_t>;
 #ifdef NDEBUG
-template class Distance<uint16_t>;
-template class Distance<uint32_t>;
-template class Distance<uint64_t>;
+template class Distance<std::string, uint8_t>;
+//template class Distance<std::u16string, uint8_t>;
+template class Distance<std::u32string, uint8_t>;
+
+template class Distance<std::string, uint16_t>;
+template class Distance<std::u16string, uint16_t>;
+template class Distance<std::u32string, uint16_t>;
+
+template class Distance<std::string, uint32_t>;
+template class Distance<std::u16string, uint32_t>;
+template class Distance<std::u32string, uint32_t>;
 #endif
 }

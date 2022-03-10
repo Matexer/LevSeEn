@@ -13,24 +13,24 @@ using namespace Levenshtein;
 
 
 //Public - static
-template<typename SizeT>
-SizeT Distance<SizeT>::getEditDistance(const string &pattern, const string &word) {
-    return Distance<SizeT>::getDistance(pattern, word, 1, 1, 1);
+template<typename StringT, typename SizeT>
+SizeT Distance<StringT, SizeT>::getEditDistance(const StringT &pattern, const StringT &word) {
+    return Distance<StringT, SizeT>::getDistance(pattern, word, 1, 1, 1);
 }
 
 
-template<typename SizeT>
-SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word,
+template<typename StringT, typename SizeT>
+SizeT Distance<StringT, SizeT>::getDistance(const StringT &pattern, const StringT &word,
                                    SizeT deletionCost, SizeT insertionCost, SizeT swapCost) {
-    return Distance<SizeT>(pattern.size(), word.size(), deletionCost, insertionCost, swapCost).
+    return Distance<StringT, SizeT>(pattern.size(), word.size(), deletionCost, insertionCost, swapCost).
             getDistance(pattern, word);
 }
 
 
 //Public
 //Constructors
-template<typename SizeT>
-Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
+template<typename StringT, typename SizeT>
+Distance<StringT, SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
     this->patternLength = patternLength;
     this->wordLength = wordLength;
     this->tableSize = patternLength + 1; // +1 na słowo puste
@@ -46,38 +46,38 @@ Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength) {
 }
 
 
-template<typename SizeT>
-Distance<SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength,
+template<typename StringT, typename SizeT>
+Distance<StringT, SizeT>::Distance(const SizeT& patternLength, const SizeT &wordLength,
                           const SizeT deletionCost, const SizeT insertionCost, const SizeT swapCost) :
-                          Distance<SizeT>::Distance(patternLength, wordLength) {
+                          Distance<StringT, SizeT>::Distance(patternLength, wordLength) {
     this->setEditCosts(deletionCost, insertionCost, swapCost);
 }
 
 
-template<typename SizeT>
-Distance<SizeT>::Distance(const Distance<SizeT>& other) :
+template<typename StringT, typename SizeT>
+Distance<StringT, SizeT>::Distance(const Distance<StringT, SizeT>& other) :
     Distance(other.patternLength, other.wordLength,
              other.deletionCost, other.insertionCost, other.swapCost) {
 }
 
 
-template<typename SizeT>
-Distance<SizeT>::Distance(Distance<SizeT>&& other) noexcept {
+template<typename StringT, typename SizeT>
+Distance<StringT, SizeT>::Distance(Distance<StringT, SizeT>&& other) noexcept {
     this->stealAndDestroy(other);
 }
 
 
 //Methods
-template<typename SizeT>
-void Distance<SizeT>::setEditCosts(const SizeT deletionCost, const SizeT insertionCost, const SizeT swapCost) {
+template<typename StringT, typename SizeT>
+void Distance<StringT, SizeT>::setEditCosts(const SizeT deletionCost, const SizeT insertionCost, const SizeT swapCost) {
     this->deletionCost = deletionCost;
     this->insertionCost = insertionCost;
     this->swapCost = swapCost;
 }
 
 
-template<typename SizeT>
-SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word) {
+template<typename StringT, typename SizeT>
+SizeT Distance<StringT, SizeT>::getDistance(const StringT &pattern, const StringT &word) {
     SizeT delFullCost;
     SizeT insFullCost;
     SizeT swpFullCost;
@@ -144,8 +144,8 @@ SizeT Distance<SizeT>::getDistance(const string &pattern, const string &word) {
 }
 
 
-template<typename SizeT>
-Distance<SizeT>::~Distance() {
+template<typename StringT, typename SizeT>
+Distance<StringT, SizeT>::~Distance() {
     #ifdef MEMORY_DEBUG
         cout << "DESTRUKTOR " << this << endl;
         cout << top << " | ";
@@ -161,15 +161,15 @@ Distance<SizeT>::~Distance() {
 
 
 //Protected - static
-template<typename SizeT>
-inline SizeT Distance<SizeT>::min(SizeT a, SizeT b, SizeT c) {
+template<typename StringT, typename SizeT>
+inline SizeT Distance<StringT, SizeT>::min(SizeT a, SizeT b, SizeT c) {
     auto x = (a < b) ? a : b;
     return (c < x) ? c : x;
 }
 
 //Protected
-template<typename SizeT>
-void Distance<SizeT>::stealAndDestroy(Distance& other) {
+template<typename StringT, typename SizeT>
+void Distance<StringT, SizeT>::stealAndDestroy(Distance& other) {
     this->patternLength = other.patternLength;
     this->wordLength = other.wordLength;
     this->tableSize = other.tableSize;

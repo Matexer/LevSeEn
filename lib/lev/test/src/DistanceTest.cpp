@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-
 #include <string>
+
 #include "Distance.h"
 
 
@@ -8,19 +8,26 @@ using namespace Levenshtein;
 using namespace std;
 
 
+template <class internT, class externT, class stateT>
+struct codecvt : std::codecvt<internT,externT,stateT>
+{ ~codecvt(){} };
+std::wstring_convert<::codecvt<char16_t,char,std::mbstate_t>, char16_t> convert16;
+std::wstring_convert<::codecvt<char32_t,char,std::mbstate_t>, char32_t> convert32;
+
+
 class DistanceTest : public ::testing::Test {
 protected:
-    typedef Distance<uint8_t> DistanceT;
+    typedef Distance<u16string, uint8_t> DistanceT;
 
     static constexpr uint8_t numOfWords = 12;
 
-    string words[numOfWords] {
-        "aaabaaa", "aabaa",
-        "baaab","bab",
-        "aabbbaa", "aaabaaa",
-        "2222","",
-        "żółf", "żółw",
-        "żółw", "żołw"
+    u16string words[numOfWords] {
+        u"aaabaaa", u"aabaa",
+        u"baaab", u"bab",
+        u"aabbbaa", u"aaabaaa",
+        u"2222", u"",
+        u"żółf", u"żółw",
+        u"żółw", u"żołw"
     };
 };
 
@@ -74,7 +81,7 @@ TEST_F(DistanceTest, testDistanceObject_SettingEditCost) {
 
         ASSERT_EQ(disObj.getDistance(pattern, word),
                   DistanceT::getDistance(pattern, word, 3, i, 4))
-                << "Fail for" << i <<": " << pattern << " " << word;
+                << "Fail for" << i <<": " << convert16.to_bytes(pattern) << " " << convert16.to_bytes(word);
 
         swap(pattern, word);
         swap(pLength, wLength);
@@ -84,7 +91,7 @@ TEST_F(DistanceTest, testDistanceObject_SettingEditCost) {
 
         ASSERT_EQ(disObj.getDistance(pattern, word),
                   DistanceT::getDistance(pattern, word, 3, i, 4))
-                  << "Fail for " << i <<": " << pattern << " " << word;;
+                  << "Fail for " << i <<": " << convert16.to_bytes(pattern) << " " << convert16.to_bytes(word);
     }
 }
 
