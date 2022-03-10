@@ -29,7 +29,7 @@ protected:
 };
 
 
-TEST_F(SearchTest, testSearch) {
+TEST_F(SearchTest, testSearchOnText) {
     ifstream ifs(navarroPath, ifstream::in);
     if (!ifs) cerr << "Nie można załadować pliku " << navarroPath;
     char out[textLength];
@@ -78,5 +78,35 @@ TEST_F(SearchTest, testSearch) {
         auto substr = text.substr(i, pattern.length());
         ASSERT_EQ(output->at(i), Distance<uint16_t>::getEditDistance(pattern, substr));
     }
+    delete output;
+}
+
+
+TEST_F(SearchTest, testSearchOnString) {
+    auto pattern = "rabbit";
+    auto text = "rabbit2";
+    auto output = SearchT16::search(pattern, text);
+    ASSERT_EQ(output->size(), 2);
+    ASSERT_EQ(output->at(0), 0);
+    ASSERT_EQ(output->at(1), 2);
+    delete output;
+}
+
+
+TEST_F(SearchTest, testSearchOnEmptyString) {
+    auto pattern = "";
+    auto text = "rabbit2";
+    auto output = SearchT16::search(pattern, text);
+    ASSERT_EQ(output->at(0), 0);
+    ASSERT_EQ(output->size(), 8);
+    delete output;
+}
+
+
+TEST_F(SearchTest, testSearchOnShorterText) {
+    auto pattern = "rabbit2";
+    auto text = "rabbit";
+    auto output = SearchT16::search(pattern, text);
+    ASSERT_EQ(output->size(), 0);
     delete output;
 }
