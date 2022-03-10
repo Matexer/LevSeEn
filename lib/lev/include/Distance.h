@@ -2,9 +2,6 @@
 #include <string>
 
 
-#include "SizeT.h"
-
-
 namespace Levenshtein {
 
 
@@ -63,20 +60,12 @@ protected:
     SizeT swapCost = 1;
 };
 
-#ifdef UINT8_SizeT
-    template class Distance<uint8_t>;
-#endif
 
-#ifdef UINT16_SizeT
-    template class Distance<uint16_t>;
-#endif
+template class Distance<uint8_t>;
 
-#ifdef UINT32_SizeT
-    template class Distance<uint32_t>;
+#ifdef NDEBUG
+template class Distance<uint16_t>;
+template class Distance<uint32_t>;
+template class Distance<uint64_t>;
 #endif
-
-#ifdef UINT64_SizeT
-    template class Distance<uint64_t>;
-#endif
-
 }

@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-#include "SizeT.h"
-
 
 namespace Levenshtein {
 
@@ -43,19 +41,12 @@ protected:
 };
 
 
-#ifdef UINT8_SizeT
-    template class Search<uint8_t>;
-#endif
+template class Search<uint8_t>;
 
-#ifdef UINT16_SizeT
+
+#ifdef NDEBUG
     template class Search<uint16_t>;
-#endif
-
-#ifdef UINT32_SizeT
     template class Search<uint32_t>;
-#endif
-
-#ifdef UINT64_SizeT
     template class Search<uint64_t>;
 #endif
 

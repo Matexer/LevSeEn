@@ -12,7 +12,6 @@ using namespace std;
 class DistanceTest : public ::testing::Test {
 protected:
     typedef Distance<uint8_t> DistanceT;
-    typedef Distance<uint16_t> DistanceT16;
 
     static constexpr uint8_t numOfWords = 10;
 
@@ -69,21 +68,21 @@ TEST_F(DistanceTest, testDistanceObject_SettingEditCost) {
         auto word = words[i+1];
         auto pLength = pattern.length();
         auto wLength = word.length();
-        auto disObj = DistanceT16(pLength, wLength);
+        auto disObj = DistanceT(pLength, wLength);
         disObj.setEditCosts(3, i, 4);
 
         ASSERT_EQ(disObj.getDistance(pattern, word),
-                  DistanceT16::getDistance(pattern, word, 3, i, 4))
+                  DistanceT::getDistance(pattern, word, 3, i, 4))
                 << "Fail for" << i <<": " << pattern << " " << word;
 
         swap(pattern, word);
         swap(pLength, wLength);
 
-        disObj = DistanceT16(pLength, wLength);
+        disObj = DistanceT(pLength, wLength);
         disObj.setEditCosts(3, i, 4);
 
         ASSERT_EQ(disObj.getDistance(pattern, word),
-                  DistanceT16::getDistance(pattern, word, 3, i, 4))
+                  DistanceT::getDistance(pattern, word, 3, i, 4))
                   << "Fail for " << i <<": " << pattern << " " << word;;
     }
 }
@@ -93,7 +92,7 @@ TEST_F(DistanceTest, testDistanceCopy) {
     auto pattern = words[0];
     auto word = words[1];
 
-    auto disObj = DistanceT16(5, 5);
+    auto disObj = DistanceT(5, 5);
     auto disObj2 = disObj;
 
     ASSERT_EQ(disObj.getDistance(pattern, word),
@@ -108,10 +107,10 @@ TEST_F(DistanceTest, testDistanceMove) {
     auto pLength = pattern.length();
     auto wLength = word.length();
 
-    auto disObj = DistanceT16(pLength, wLength);
+    auto disObj = DistanceT(pLength, wLength);
     auto disObj2 = move(disObj);
 
-    disObj = DistanceT16(pLength, wLength);
+    disObj = DistanceT(pLength, wLength);
 
     ASSERT_EQ(disObj.getDistance(pattern, word), disObj2.getDistance(pattern, word));
 }
