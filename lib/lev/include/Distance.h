@@ -48,6 +48,7 @@ protected:
     //rozmontowywany obiekt (usuwając je)
     void stealAndDestroy(Distance& other);
 
+
     SizeT patternLength;
     SizeT wordLength;
     SizeT tableSize;

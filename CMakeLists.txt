@@ -12,6 +12,11 @@ if (NATIVE)
     target_include_directories(lse PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(lse PUBLIC lev)
 
+    set_target_properties(lse
+            PROPERTIES
+            CXX_STANDARD 20
+            CXX_STANDARD_REQUIRED YES)
+
 else(NATIVE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/public")
     set(LEV_DIR "${CMAKE_SOURCE_DIR}/lib/lev")

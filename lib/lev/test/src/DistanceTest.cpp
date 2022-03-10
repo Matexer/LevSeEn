@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <string>
-
 #include "Distance.h"
 
 
@@ -13,14 +12,15 @@ class DistanceTest : public ::testing::Test {
 protected:
     typedef Distance<uint8_t> DistanceT;
 
-    static constexpr uint8_t numOfWords = 10;
+    static constexpr uint8_t numOfWords = 12;
 
     string words[numOfWords] {
         "aaabaaa", "aabaa",
         "baaab","bab",
         "aabbbaa", "aaabaaa",
         "2222","",
-        "żółf", "żółw"
+        "żółf", "żółw",
+        "żółw", "żołw"
     };
 };
 
@@ -31,6 +31,7 @@ TEST_F(DistanceTest, testGetEditDistanceWhenFirstLongerThanSecond) {
     ASSERT_EQ(2, DistanceT::getEditDistance(words[4], words[5]));
     ASSERT_EQ(4, DistanceT::getEditDistance(words[6], words[7]));
     ASSERT_EQ(1, DistanceT::getEditDistance(words[8], words[9]));
+    ASSERT_EQ(1, DistanceT::getEditDistance(words[10], words[11]));
 }
 
 

@@ -5,23 +5,43 @@
 #include <unordered_map>
 
 
+#ifndef NDEBUG
+    #include <gtest/gtest.h>
+#endif
+
+
 namespace Levenshtein {
 
 
 template<typename SizeT>
 class Filter {
+    typedef std::unordered_map<std::string, SizeT> Letters;
+
 public:
-    Filter(std::string& pattern);
+    explicit Filter(const std::u32string& pattern);
+    SizeT setAt(const std::u32string& word);
 
 protected:
-    typedef std::unordered_map<char, SizeT> Letters;
-
-    static inline Letters getLetters(const std::string& word);
-    static inline SizeT getDifference(const Letters& pattern, const Letters& word);
+    static inline Letters getLetters(const std::u32string& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
 
+    //Zwraca patternLetters z liczbą wystapień litery w word
+    Letters getLettersThatInPattern(const std::u32string& word);
+
+    //Zwraca różnicę wystąpień liter między word a patternLetters
+    SizeT getDifference(const Letters& word);
+
     Letters patternLetters;
-    SizeT lastDifference = 0;
+    SizeT lastDifference;
+private:
+    #ifndef NDEBUG
+        SizeT patternLength;
+
+        FRIEND_TEST(FilterTest, getLettersTest);
+        FRIEND_TEST(FilterTest, getDifferenceTest);
+        FRIEND_TEST(FilterTest, getLettersThatInPatternTest);
+        FRIEND_TEST(FilterTest, setAtTest);
+    #endif
 };
 
 

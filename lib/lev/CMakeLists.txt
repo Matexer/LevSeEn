@@ -10,6 +10,11 @@ target_include_directories(lev PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 include_directories(test)
 
+set_target_properties(lev
+        PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED YES)
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_link_libraries(lev PUBLIC Threads::Threads)
