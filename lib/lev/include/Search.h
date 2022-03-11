@@ -10,7 +10,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Search : public MultiThread {
+class Search : protected MultiThread {
 public:
     static void setDeletionCost(SizeT deletionCost);
     static void setInsertionCost(SizeT insertionCost);
@@ -30,7 +30,9 @@ protected:
 
     static void search(SearchData &data);
     static void _search(SearchData data);   //dla wątków
-    static void concurrentSearch(SearchData &data);
+//    static void
+    //void MultiThread::doConcurrent<SearchData>(std::function<void(SearchData&)> func, SearchData &data);
+    //static void concurrentSearch(SearchData &data);
 
     static SizeT DELETION_COST;
     static SizeT INSERTION_COST;

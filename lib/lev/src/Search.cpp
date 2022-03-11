@@ -26,7 +26,8 @@ void Search<StringT, SizeT>::setSwapCost(SizeT swapCost) {
 
 
 template<typename StringT, typename SizeT>
-std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text) {
+std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
+        const StringT &pattern, const StringT &text) {
     auto patternLength = pattern.length();
     auto textLength = text.length();
     if (patternLength > textLength) {
@@ -38,18 +39,16 @@ std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(const StringT
     auto numOfIndexes = textLength - patternLength + 1;
     auto output = std::make_shared<std::vector<SizeT>>();
     output->resize(numOfIndexes);
-    auto data = typename Search<StringT, SizeT>::SearchData {pattern, text, 0, numOfIndexes, output};
 
-    if (MULTITHREADING) {
-        uint64_t taskComplexity = (patternLength^2 * textLength);
-        if (taskComplexity >= MULTITHREADING_MIN_COMPLEXITY)
-            Search<StringT, SizeT>::concurrentSearch(data);
-        else
-            Search<StringT, SizeT>::search(data);
-    }
-    else {
+    auto data = typename Search<StringT, SizeT>::SearchData {
+        pattern, text, 0, numOfIndexes, output};
+
+    uint64_t taskComplexity = (patternLength^2 * textLength);
+
+    if (shouldBeConcurrent(taskComplexity))
+        doConcurrent<SearchData>(_search, data);
+    else
         Search<StringT, SizeT>::search(data);
-    }
 
     return output;
 }
