@@ -7,7 +7,7 @@
 namespace Levenshtein {
 
 
-template<typename SizeT>
+template<typename StringT, typename SizeT>
 class Search {
 public:
     static void setMultithreading(bool multithreading);
@@ -17,19 +17,19 @@ public:
     static void setSwapCost(SizeT swapCost);
 
     //Zwraca tablicę zawiarającą odległość dla każdego indexu w tekście
-    static std::vector<SizeT>* search(const std::string &pattern, const std::string &text);
+    static std::vector<SizeT>* search(const StringT &pattern, const StringT &text);
 
 protected:
     struct SearchData {
-        const std::string &pattern;
-        const std::string &text;
+        const StringT& pattern;
+        const StringT& text;
         size_t firstIndex;
         size_t lastIndex;
         std::vector<SizeT>* const output;
     };
 
     static void search(SearchData &data);
-    static void _search(SearchData data);
+    static void _search(SearchData data);   //dla wątków
     static void concurrentSearch(SearchData &data);
 
     static SizeT DELETION_COST;
@@ -41,13 +41,19 @@ protected:
 };
 
 
-template class Search<uint8_t>;
-
-
+template class Search<std::u16string, uint8_t>;
 #ifdef NDEBUG
-    template class Search<uint16_t>;
-    template class Search<uint32_t>;
-    template class Search<uint64_t>;
+template class Search<std::string, uint8_t>;
+//template class Distance<std::u16string, uint8_t>;
+template class Search<std::u32string, uint8_t>;
+
+template class Search<std::string, uint16_t>;
+template class Search<std::u16string, uint16_t>;
+template class Search<std::u32string, uint16_t>;
+
+template class Search<std::string, uint32_t>;
+template class Search<std::u16string, uint32_t>;
+template class Search<std::u32string, uint32_t>;
 #endif
 
 }

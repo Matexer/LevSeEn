@@ -9,50 +9,55 @@ using namespace std;
 
 
 //Pubic - static
-template<typename SizeT>
-void Search<SizeT>::setDeletionCost(SizeT deletionCost) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::setDeletionCost(SizeT deletionCost) {
     DELETION_COST = deletionCost;
 }
 
-template<typename SizeT>
-void Search<SizeT>::setInsertionCost(SizeT insertionCost) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::setInsertionCost(SizeT insertionCost) {
     INSERTION_COST = insertionCost;
 }
 
-template<typename SizeT>
-void Search<SizeT>::setSwapCost(SizeT swapCost) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::setSwapCost(SizeT swapCost) {
     SWAP_COST = swapCost;
 }
 
-template<typename SizeT>
-void Search<SizeT>::setMultithreading(bool multithreading) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::setMultithreading(bool multithreading) {
     MULTITHREADING = multithreading;
 }
 
-template<typename SizeT>
-void Search<SizeT>::setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity) {
     MULTITHREADING_MIN_COMPLEXITY = multithreadingMinComplexity;
 }
 
 
-template<typename SizeT>
-std::vector<SizeT>* Search<SizeT>::search(const std::string &pattern, const std::string &text) {
+template<typename StringT, typename SizeT>
+std::vector<SizeT>* Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text) {
     auto patternLength = pattern.length();
     auto textLength = text.length();
-    auto numOfIndexes = textLength - patternLength + 1;
+    if (patternLength > textLength) {
+        throw length_error("Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text)\n"
+                           "(patternLength > textLength)\n"
+                           "Długość wzorca nie może przekraczać długości tekstu!");
+    }
 
+    auto numOfIndexes = textLength - patternLength + 1;
     auto output = new std::vector<SizeT>(numOfIndexes);
-    auto data = typename Search<SizeT>::SearchData {pattern, text, 0, numOfIndexes, output};
+    auto data = typename Search<StringT, SizeT>::SearchData {pattern, text, 0, numOfIndexes, output};
 
     if (MULTITHREADING) {
         uint64_t taskComplexity = (patternLength^2 * textLength);
         if (taskComplexity >= MULTITHREADING_MIN_COMPLEXITY)
-            Search<SizeT>::concurrentSearch(data);
+            Search<StringT, SizeT>::concurrentSearch(data);
         else
-            Search<SizeT>::search(data);
+            Search<StringT, SizeT>::search(data);
     }
     else {
-        Search<SizeT>::search(data);
+        Search<StringT, SizeT>::search(data);
     }
 
     return output;
@@ -60,11 +65,11 @@ std::vector<SizeT>* Search<SizeT>::search(const std::string &pattern, const std:
 
 
 //Protected - static
-template<typename SizeT>
-void Search<SizeT>::search(typename Search<SizeT>::SearchData &data) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::search(typename Search<StringT, SizeT>::SearchData &data) {
     auto patternLength = data.pattern.length();
-    auto disSearch = Distance<SizeT>(patternLength, patternLength,
-                                     DELETION_COST, INSERTION_COST, SWAP_COST);
+    auto disSearch = Distance<StringT, SizeT>(patternLength, patternLength,
+                                              DELETION_COST, INSERTION_COST, SWAP_COST);
 
     for (size_t i = data.firstIndex; i < data.lastIndex; i++) {
         data.output->at(i) = disSearch.getDistance(
@@ -73,14 +78,14 @@ void Search<SizeT>::search(typename Search<SizeT>::SearchData &data) {
 }
 
 
-template<typename SizeT>
-void Search<SizeT>::_search(typename Search<SizeT>::SearchData data) {
-    Search<SizeT>::search(data);
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::_search(typename Search<StringT, SizeT>::SearchData data) {
+    Search<StringT, SizeT>::search(data);
 }
 
 
-template<typename SizeT>
-void Search<SizeT>::concurrentSearch(typename Search<SizeT>::SearchData &data) {
+template<typename StringT, typename SizeT>
+void Search<StringT, SizeT>::concurrentSearch(typename Search<StringT, SizeT>::SearchData &data) {
     auto numOfIndexes = data.lastIndex;
 
     auto numOfThreads = thread::hardware_concurrency();
@@ -92,14 +97,14 @@ void Search<SizeT>::concurrentSearch(typename Search<SizeT>::SearchData &data) {
     threadData.firstIndex = 0;
     threadData.lastIndex = indexesPerThread;
     for (auto i = 0; i < numOfThreads - 1; i++) { //ostatni wątek zostawiony na dokończenie
-        pool[i] = thread(Search<SizeT>::_search, threadData);
+        pool[i] = thread(Search<StringT, SizeT>::_search, threadData);
         threadData.firstIndex += indexesPerThread;
         threadData.lastIndex += indexesPerThread;
     }
 
     //Ostatni wątek iteruje do końca
     threadData.lastIndex = numOfIndexes;
-    pool[numOfThreads - 1] = thread(Search<SizeT>::_search, threadData);
+    pool[numOfThreads - 1] = thread(Search<StringT, SizeT>::_search, threadData);
 
     for(auto i = 0; i < numOfThreads; i++) {
         pool[i].join();
@@ -107,17 +112,17 @@ void Search<SizeT>::concurrentSearch(typename Search<SizeT>::SearchData &data) {
 }
 
 
-template<typename SizeT>
-bool Search<SizeT>::MULTITHREADING = true;
+template<typename StringT, typename SizeT>
+bool Search<StringT, SizeT>::MULTITHREADING = true;
 
-template<typename SizeT>
-uint64_t Search<SizeT>::MULTITHREADING_MIN_COMPLEXITY = 100;
+template<typename StringT, typename SizeT>
+uint64_t Search<StringT, SizeT>::MULTITHREADING_MIN_COMPLEXITY = 100;
 
-template<typename SizeT>
-SizeT Search<SizeT>::DELETION_COST = 1;
+template<typename StringT, typename SizeT>
+SizeT Search<StringT, SizeT>::DELETION_COST = 1;
 
-template<typename SizeT>
-SizeT Search<SizeT>::INSERTION_COST = 1;
+template<typename StringT, typename SizeT>
+SizeT Search<StringT, SizeT>::INSERTION_COST = 1;
 
-template<typename SizeT>
-SizeT Search<SizeT>::SWAP_COST = 1;
+template<typename StringT, typename SizeT>
+SizeT Search<StringT, SizeT>::SWAP_COST = 1;

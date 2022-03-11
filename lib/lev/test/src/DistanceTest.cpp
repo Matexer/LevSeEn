@@ -1,18 +1,12 @@
 #include <gtest/gtest.h>
 #include <string>
 
+#include "converters.h"
 #include "Distance.h"
 
 
 using namespace Levenshtein;
 using namespace std;
-
-
-template <class internT, class externT, class stateT>
-struct codecvt : std::codecvt<internT,externT,stateT>
-{ ~codecvt(){} };
-std::wstring_convert<::codecvt<char16_t,char,std::mbstate_t>, char16_t> convert16;
-std::wstring_convert<::codecvt<char32_t,char,std::mbstate_t>, char32_t> convert32;
 
 
 class DistanceTest : public ::testing::Test {
