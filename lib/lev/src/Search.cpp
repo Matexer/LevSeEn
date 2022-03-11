@@ -24,16 +24,6 @@ void Search<StringT, SizeT>::setSwapCost(SizeT swapCost) {
     SWAP_COST = swapCost;
 }
 
-template<typename StringT, typename SizeT>
-void Search<StringT, SizeT>::setMultithreading(bool multithreading) {
-    MULTITHREADING = multithreading;
-}
-
-template<typename StringT, typename SizeT>
-void Search<StringT, SizeT>::setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity) {
-    MULTITHREADING_MIN_COMPLEXITY = multithreadingMinComplexity;
-}
-
 
 template<typename StringT, typename SizeT>
 std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text) {
@@ -112,12 +102,6 @@ void Search<StringT, SizeT>::concurrentSearch(typename Search<StringT, SizeT>::S
     }
 }
 
-
-template<typename StringT, typename SizeT>
-bool Search<StringT, SizeT>::MULTITHREADING = true;
-
-template<typename StringT, typename SizeT>
-uint64_t Search<StringT, SizeT>::MULTITHREADING_MIN_COMPLEXITY = 100;
 
 template<typename StringT, typename SizeT>
 SizeT Search<StringT, SizeT>::DELETION_COST = 1;

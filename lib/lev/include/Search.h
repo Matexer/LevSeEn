@@ -3,15 +3,15 @@
 #include <vector>
 #include <string>
 
+#include "MultiThread.h"
+
 
 namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Search {
+class Search : public MultiThread {
 public:
-    static void setMultithreading(bool multithreading);
-    static void setMultithreadingMinComplexity(uint64_t multithreadingMinComplexity);
     static void setDeletionCost(SizeT deletionCost);
     static void setInsertionCost(SizeT insertionCost);
     static void setSwapCost(SizeT swapCost);
@@ -35,9 +35,6 @@ protected:
     static SizeT DELETION_COST;
     static SizeT INSERTION_COST;
     static SizeT SWAP_COST;
-
-    static bool MULTITHREADING;  // Zezwolenie na wielowątkowość
-    static uint64_t MULTITHREADING_MIN_COMPLEXITY;
 };
 
 
