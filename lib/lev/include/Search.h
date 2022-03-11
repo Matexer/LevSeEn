@@ -16,7 +16,7 @@ public:
     static void setInsertionCost(SizeT insertionCost);
     static void setSwapCost(SizeT swapCost);
 
-    //Zwraca tablicę (shared_pointer) zawiarającą odległość dla każdego indexu w tekście
+    //Zwraca tablicę (shared_pointer) zawierającą odległość dla każdego indexu w tekście
     static std::shared_ptr<std::vector<SizeT>> search(const StringT &pattern, const StringT &text);
 
 protected:
