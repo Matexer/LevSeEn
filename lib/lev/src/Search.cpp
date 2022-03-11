@@ -41,7 +41,7 @@ std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
     output->resize(numOfIndexes);
 
     auto data = typename Search<StringT, SizeT>::SearchData {
-        pattern, text, 0, numOfIndexes, output};
+        0, numOfIndexes, pattern, text, output};
 
     uint64_t taskComplexity = (patternLength^2 * textLength);
 
@@ -71,34 +71,6 @@ void Search<StringT, SizeT>::search(typename Search<StringT, SizeT>::SearchData 
 template<typename StringT, typename SizeT>
 void Search<StringT, SizeT>::_search(typename Search<StringT, SizeT>::SearchData data) {
     Search<StringT, SizeT>::search(data);
-}
-
-
-template<typename StringT, typename SizeT>
-void Search<StringT, SizeT>::concurrentSearch(typename Search<StringT, SizeT>::SearchData &data) {
-    auto numOfIndexes = data.lastIndex;
-
-    auto numOfThreads = thread::hardware_concurrency();
-    numOfThreads = min(numOfThreads, (decltype(numOfThreads)) numOfIndexes);
-    thread pool[numOfThreads];
-    auto indexesPerThread = numOfIndexes / numOfThreads;
-
-    SearchData threadData = data;
-    threadData.firstIndex = 0;
-    threadData.lastIndex = indexesPerThread;
-    for (auto i = 0; i < numOfThreads - 1; i++) { //ostatni wątek zostawiony na dokończenie
-        pool[i] = thread(Search<StringT, SizeT>::_search, threadData);
-        threadData.firstIndex += indexesPerThread;
-        threadData.lastIndex += indexesPerThread;
-    }
-
-    //Ostatni wątek iteruje do końca
-    threadData.lastIndex = numOfIndexes;
-    pool[numOfThreads - 1] = thread(Search<StringT, SizeT>::_search, threadData);
-
-    for(auto i = 0; i < numOfThreads; i++) {
-        pool[i].join();
-    }
 }
 
 

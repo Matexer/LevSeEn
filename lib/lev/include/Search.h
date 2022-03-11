@@ -17,22 +17,18 @@ public:
     static void setSwapCost(SizeT swapCost);
 
     //Zwraca tablicę (shared_pointer) zawierającą odległość dla każdego indexu w tekście
-    static std::shared_ptr<std::vector<SizeT>> search(const StringT &pattern, const StringT &text);
+    static std::shared_ptr<std::vector<SizeT>> search(
+            const StringT &pattern, const StringT &text);
 
 protected:
-    struct SearchData {
+    struct SearchData : ThreadData {
         const StringT& pattern;
         const StringT& text;
-        size_t firstIndex;
-        size_t lastIndex;
         std::shared_ptr<std::vector<SizeT>> const output;
     };
 
     static void search(SearchData &data);
     static void _search(SearchData data);   //dla wątków
-//    static void
-    //void MultiThread::doConcurrent<SearchData>(std::function<void(SearchData&)> func, SearchData &data);
-    //static void concurrentSearch(SearchData &data);
 
     static SizeT DELETION_COST;
     static SizeT INSERTION_COST;
