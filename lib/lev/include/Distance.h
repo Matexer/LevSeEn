@@ -8,6 +8,14 @@ namespace Levenshtein {
 template<typename StringT, typename SizeT>
 class Distance {
 public:
+    //  Zwraca odległość edycji po samodzielnym sprawdzeniu długości wzorca i słowa
+    static SizeT getEditDistance(const StringT &pattern, const StringT &word);
+
+    //  Zwraca odległość Levenshteina po samodzielnym sprawdzeniu długości wzorca i słowa
+    static SizeT getDistance(const StringT &pattern, const StringT &second,
+                             SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
+
+
     //  Konstruktor tworzący warunki do szybkiego porównywania słów o podanych długościach
     Distance(const SizeT &patternLength, const SizeT &wordLength);
 
@@ -19,11 +27,13 @@ public:
     Distance(const Distance& other);
     Distance(Distance&& other) noexcept ;
 
+
     // = działa jak przeniesienie z posprzątaniem obiektu przenoszonego (rozmontowywanego)
     Distance& operator=(Distance &&other) {
         this->stealAndDestroy(other);
         return *this;
     }
+
 
     //  Ustala koszty edycji dla niestatycznych funkcji składowych
     void setEditCosts(SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
@@ -31,12 +41,6 @@ public:
     //  Zwraca odległość Levenshteina, dla wzorca i słowa o ustalonej w konstruktorze długości
     SizeT getDistance(const StringT &pattern, const StringT &word);
 
-    //  Zwraca odległość edycji po samodzielnym sprawdzeniu długości wzorca i słowa
-    static SizeT getEditDistance(const StringT &pattern, const StringT &word);
-
-    //  Zwraca odległość Levenshteina po samodzielnym sprawdzeniu długości wzorca i słowa
-    static SizeT getDistance(const StringT &pattern, const StringT &second,
-                             SizeT deletionCost, SizeT insertionCost, SizeT swapCost);
 
     ~Distance();
 
