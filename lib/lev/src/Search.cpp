@@ -36,17 +36,18 @@ void Search<StringT, SizeT>::setMultithreadingMinComplexity(uint64_t multithread
 
 
 template<typename StringT, typename SizeT>
-std::vector<SizeT>* Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text) {
+std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text) {
     auto patternLength = pattern.length();
     auto textLength = text.length();
     if (patternLength > textLength) {
         throw length_error("Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text)\n"
                            "(patternLength > textLength)\n"
-                           "Długość wzorca nie może przekraczać długości tekstu!");
+                           "Pattern length cannot be longer than a text length!");
     }
 
     auto numOfIndexes = textLength - patternLength + 1;
-    auto output = new std::vector<SizeT>(numOfIndexes);
+    auto output = std::make_shared<std::vector<SizeT>>();
+    output->resize(numOfIndexes);
     auto data = typename Search<StringT, SizeT>::SearchData {pattern, text, 0, numOfIndexes, output};
 
     if (MULTITHREADING) {

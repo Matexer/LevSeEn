@@ -45,32 +45,27 @@ TEST_F(SearchTest, testSearchOnText) {
     ASSERT_EQ(output->at(1), 2);
     ASSERT_EQ(output->size() - 1, textLength - pattern.length())
         << convert16.to_bytes(pattern) << " L: " << pattern.length();
-    delete output;
 
     pattern = patterns[1];
     output = SearchT::search(pattern, text);
     auto index = text.find(pattern);
     ASSERT_EQ(output->at(index), 0);
-    delete output;
 
     pattern = patterns[2];
     output = SearchT::search(pattern, text);
     index = text.find(patterns[1]);
     ASSERT_EQ(output->at(index), 5)
         << "W: " << convert16.to_bytes(patterns[1]) << " : " << convert16.to_bytes(pattern);
-    delete output;
 
     pattern = patterns[3];
     output = SearchT::search(pattern, text);
     index = text.find(pattern);
     ASSERT_EQ(output->at(index), 0);
-    delete output;
 
     pattern = patterns[4];
     output = SearchT::search(pattern, text);
     index = text.find(patterns[3]);
     ASSERT_EQ(output->at(index), 6);
-    delete output;
 
     auto indexes = {34, 324 ,233, 33, 866, 514, 777};
     pattern = u"fdgWe pźłóentLLevenshteinrfng";
@@ -79,7 +74,6 @@ TEST_F(SearchTest, testSearchOnText) {
         auto substr = text.substr(i, pattern.length());
         ASSERT_EQ(output->at(i), DistanceT::getEditDistance(pattern, substr));
     }
-    delete output;
 }
 
 
@@ -90,7 +84,6 @@ TEST_F(SearchTest, testSearchOnString) {
     ASSERT_EQ(output->size(), 2);
     ASSERT_EQ(output->at(0), 0);
     ASSERT_EQ(output->at(1), 2);
-    delete output;
 }
 
 
@@ -100,7 +93,6 @@ TEST_F(SearchTest, testSearchOnEmptyString) {
     auto output = SearchT::search(pattern, text);
     ASSERT_EQ(output->at(0), 0);
     ASSERT_EQ(output->size(), 8);
-    delete output;
 }
 
 

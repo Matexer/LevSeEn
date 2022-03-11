@@ -16,8 +16,8 @@ public:
     static void setInsertionCost(SizeT insertionCost);
     static void setSwapCost(SizeT swapCost);
 
-    //Zwraca tablicę zawiarającą odległość dla każdego indexu w tekście
-    static std::vector<SizeT>* search(const StringT &pattern, const StringT &text);
+    //Zwraca tablicę (shared_pointer) zawiarającą odległość dla każdego indexu w tekście
+    static std::shared_ptr<std::vector<SizeT>> search(const StringT &pattern, const StringT &text);
 
 protected:
     struct SearchData {
@@ -25,7 +25,7 @@ protected:
         const StringT& text;
         size_t firstIndex;
         size_t lastIndex;
-        std::vector<SizeT>* const output;
+        std::shared_ptr<std::vector<SizeT>> const output;
     };
 
     static void search(SearchData &data);
