@@ -13,20 +13,20 @@
 namespace Levenshtein {
 
 
-template<typename SizeT>
+template<typename StringT, typename CharT, typename SizeT>
 class Filter {
-    typedef std::unordered_map<std::string, SizeT> Letters;
+    typedef std::unordered_map<CharT, SizeT> Letters;
 
 public:
-    explicit Filter(const std::u32string& pattern);
-    SizeT setAt(const std::u32string& word);
+    explicit Filter(const StringT& pattern);
+    SizeT setAt(const StringT& word);
 
 protected:
-    static inline Letters getLetters(const std::u32string& word);
+    static inline Letters getLetters(const StringT& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
 
     //Zwraca patternLetters z liczbą wystapień litery w word
-    Letters getLettersThatInPattern(const std::u32string& word);
+    Letters getLettersThatInPattern(const StringT& word);
 
     //Zwraca różnicę wystąpień liter między word a patternLetters
     SizeT getDifference(const Letters& word);
@@ -35,7 +35,7 @@ protected:
     SizeT lastDifference;
 private:
     #ifndef NDEBUG
-        SizeT patternLength;
+        SizeT _patternLength;
 
         FRIEND_TEST(FilterTest, getLettersTest);
         FRIEND_TEST(FilterTest, getDifferenceTest);
@@ -45,11 +45,21 @@ private:
 };
 
 
-template class Filter<uint8_t>;
+template class Filter<std::u16string, char16_t, uint8_t>;
 
 #ifdef NDEBUG
-    template class Filter<uint16_t>;
-    template class Filter<uint32_t>;
-    template class Filter<uint64_t>;
+template class Filter<std::string, char, uint8_t>;
+template class Filter<std::u16string, char16_t, uint8_t>;
+template class Filter<std::u32string, char32_t, uint8_t>;
+
+template class Filter<std::string, char, uint16_t>;
+template class Filter<std::u16string, char16_t, uint16_t>;
+template class Filter<std::u32string, char32_t, uint16_t>;
+
+template class Filter<std::string, char, uint32_t>;
+template class Filter<std::u16string, char16_t, uint32_t>;
+template class Filter<std::u32string, char32_t, uint32_t>;
 #endif
+
+
 }
