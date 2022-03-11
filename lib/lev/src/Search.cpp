@@ -48,7 +48,7 @@ std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
     if (shouldBeConcurrent(taskComplexity))
         doConcurrent<SearchData>(_search, data);
     else
-        Search<StringT, SizeT>::search(data);
+        search(data);
 
     return output;
 }
