@@ -79,7 +79,7 @@ TEST_F(SearchTest, testSearchOnText) {
 
 TEST_F(SearchTest, testSearchOnString) {
     auto pattern = u"rabbit";
-    auto text = u"rabbit2";
+    auto text = u"rabbitó";
     auto output = SearchT::search(pattern, text);
     ASSERT_EQ(output->size(), 2);
     ASSERT_EQ(output->at(0), 0);
