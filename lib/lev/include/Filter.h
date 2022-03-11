@@ -18,13 +18,21 @@ class Filter {
     typedef std::unordered_map<CharT, SizeT> Letters;
 
 public:
-    explicit Filter(const StringT& pattern);
-    SizeT setAt(const StringT& word);
-    SizeT move(const CharT& inserted, const CharT& removed);
+    //Zwraca wektor indeksów w tekście, które spełniają założenia filtra
+    //Indeks oznacza początek słowa o długości wzorca
+    static std::shared_ptr<std::vector<size_t>> filter(
+            const StringT& pattern, const StringT& text, SizeT maxDifference);
 
 protected:
     static inline Letters getLetters(const StringT& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
+
+
+    explicit Filter(const StringT& pattern);
+
+
+    SizeT setAt(const StringT& word);
+    SizeT move(const CharT& inserted, const CharT& removed);
 
     //Zwraca Letters (dla word) tylko z literami występujących w pattern
     Letters getLettersThatInPattern(const StringT& word);
@@ -34,6 +42,7 @@ protected:
 
     //Zwraca różnicę wystąpień jaką powoduje konkretna litera
     inline SizeT getDifferenceFromCharacter(const CharT& character);
+
 
     Letters patternLetters;
     Letters lastLetters;

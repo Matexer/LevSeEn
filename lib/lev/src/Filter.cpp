@@ -2,17 +2,53 @@
 
 
 using namespace Levenshtein;
+using namespace std;
 
 
 //Public - static
+template<typename StringT, typename CharT, typename SizeT>
+std::shared_ptr<std::vector<size_t>> Filter<StringT, CharT, SizeT>::filter(
+        const StringT& pattern, const StringT& text, SizeT maxDifference) {
+    const auto& filter = Filter<StringT, CharT, SizeT>(pattern);
+    const auto& complexity = text.size();
+
+    auto output = shared_ptr<std::vector<size_t>>();
+
+    return output;
+}
+
 
 //Public
+
+
+//Protected - static
 template<typename StringT, typename CharT, typename SizeT>
-Filter<StringT, CharT, SizeT>::Filter(const StringT& pattern) {
+inline typename Filter<StringT, CharT, SizeT>::Letters Filter<StringT, CharT, SizeT>::getLetters(
+        const StringT& word) {
+    Letters patternLetters;
+    for (const auto& character : word) {
+        patternLetters[character]++;
+    }
+    return patternLetters;
+}
+
+
+template<typename StringT, typename CharT, typename SizeT>
+inline SizeT Filter<StringT, CharT, SizeT>::subtractionAbs(const SizeT& a, const SizeT& b) {
+    if (a > b)
+        return a - b;
+    else
+        return b - a;
+}
+
+
+//Protected
+template<typename StringT, typename CharT, typename SizeT> Filter<StringT, CharT, SizeT>::Filter(
+        const StringT& pattern) {
     this->patternLetters = getLetters(pattern);
-    #ifndef NDEBUG
-        this->_patternLength = pattern.size();
-    #endif
+#ifndef NDEBUG
+    this->_patternLength = pattern.size();
+#endif
 }
 
 
@@ -25,7 +61,8 @@ SizeT Filter<StringT, CharT, SizeT>::setAt(const StringT& word) {
 
 
 template<typename StringT, typename CharT, typename SizeT>
-SizeT Filter<StringT, CharT, SizeT>::move(const CharT& inserted, const CharT& removed) {
+SizeT Filter<StringT, CharT, SizeT>::move(
+        const CharT& inserted, const CharT& removed) {
     auto&& diffFromInserted = getDifferenceFromCharacter(inserted);
     auto&& diffFromRemoved = getDifferenceFromCharacter(removed);
 
@@ -45,28 +82,6 @@ SizeT Filter<StringT, CharT, SizeT>::move(const CharT& inserted, const CharT& re
 }
 
 
-//Protected - static
-template<typename StringT, typename CharT, typename SizeT>
-inline typename Filter<StringT, CharT, SizeT>::Letters
-Filter<StringT, CharT, SizeT>::getLetters(const StringT& word) {
-    Letters patternLetters;
-    for (const auto& character : word) {
-        patternLetters[character]++;
-    }
-    return patternLetters;
-}
-
-
-template<typename StringT, typename CharT, typename SizeT>
-inline SizeT Filter<StringT, CharT, SizeT>::subtractionAbs(const SizeT& a, const SizeT& b) {
-    if (a > b)
-        return a - b;
-    else
-        return b - a;
-}
-
-
-//Protected
 template<typename StringT, typename CharT, typename SizeT>
 SizeT Filter<StringT, CharT, SizeT>::getDifference(const Letters& word) {
     SizeT difference = 0;
