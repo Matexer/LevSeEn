@@ -20,19 +20,26 @@ class Filter {
 public:
     explicit Filter(const StringT& pattern);
     SizeT setAt(const StringT& word);
+    SizeT move(const CharT& inserted, const CharT& removed);
 
 protected:
     static inline Letters getLetters(const StringT& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
 
-    //Zwraca patternLetters z liczbą wystapień litery w word
+    //Zwraca Letters (dla word) tylko z literami występujących w pattern
     Letters getLettersThatInPattern(const StringT& word);
 
     //Zwraca różnicę wystąpień liter między word a patternLetters
     SizeT getDifference(const Letters& word);
 
+    //Zwraca różnicę wystąpień jaką powoduje konkretna litera
+    inline SizeT getDifferenceFromCharacter(const CharT& character);
+
     Letters patternLetters;
+    Letters lastLetters;
+
     SizeT lastDifference;
+
 private:
     #ifndef NDEBUG
         SizeT _patternLength;
@@ -41,6 +48,7 @@ private:
         FRIEND_TEST(FilterTest, getDifferenceTest);
         FRIEND_TEST(FilterTest, getLettersThatInPatternTest);
         FRIEND_TEST(FilterTest, setAtTest);
+        FRIEND_TEST(FilterTest, moveTest);
     #endif
 };
 

@@ -18,10 +18,30 @@ Filter<StringT, CharT, SizeT>::Filter(const StringT& pattern) {
 
 template<typename StringT, typename CharT, typename SizeT>
 SizeT Filter<StringT, CharT, SizeT>::setAt(const StringT& word) {
-    const Letters& letters = getLettersThatInPattern(word);
-    const auto& difference = getDifference(letters);
-    this->lastDifference = difference;
-    return difference;
+    lastLetters = getLettersThatInPattern(word);
+    lastDifference = getDifference(lastLetters);
+    return lastDifference;
+}
+
+
+template<typename StringT, typename CharT, typename SizeT>
+SizeT Filter<StringT, CharT, SizeT>::move(const CharT& inserted, const CharT& removed) {
+    auto&& diffFromInserted = getDifferenceFromCharacter(inserted);
+    auto&& diffFromRemoved = getDifferenceFromCharacter(removed);
+
+    auto&& restDifference = lastDifference - diffFromInserted - diffFromRemoved;
+
+    if (patternLetters.contains(inserted))
+        lastLetters[inserted]++;
+
+    if (patternLetters.contains(removed))
+        lastLetters[removed]--;
+
+    diffFromInserted = getDifferenceFromCharacter(inserted);
+    diffFromRemoved = getDifferenceFromCharacter(removed);
+
+    lastDifference = restDifference + diffFromInserted + diffFromRemoved;
+    return lastDifference;
 }
 
 
@@ -29,11 +49,11 @@ SizeT Filter<StringT, CharT, SizeT>::setAt(const StringT& word) {
 template<typename StringT, typename CharT, typename SizeT>
 inline typename Filter<StringT, CharT, SizeT>::Letters
 Filter<StringT, CharT, SizeT>::getLetters(const StringT& word) {
-    Letters letters;
+    Letters patternLetters;
     for (const auto& character : word) {
-        letters[character]++;
+        patternLetters[character]++;
     }
-    return letters;
+    return patternLetters;
 }
 
 
@@ -76,8 +96,17 @@ Filter<StringT, CharT, SizeT>::getLettersThatInPattern(const StringT& word) {
     }
 
     for (const auto& letter: word) {
-        if (letters.contains(letter))
+        if (patternLetters.contains(letter))
             letters[letter]++;
     }
     return letters;
+}
+
+
+template<typename StringT, typename CharT, typename SizeT>
+SizeT Filter<StringT, CharT, SizeT>::getDifferenceFromCharacter(const CharT &character) {
+    if (patternLetters.contains(character))
+        return subtractionAbs(patternLetters[character], lastLetters[character]);
+    else
+        return 0;
 }

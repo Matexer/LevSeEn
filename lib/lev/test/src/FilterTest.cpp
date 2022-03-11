@@ -67,4 +67,23 @@ TEST_F(FilterTest, setAtTest) {
     ASSERT_EQ(filter.setAt(u"ażlbbc"), 2);
 }
 
+
+TEST_F(FilterTest, moveTest) {
+    auto filter = FilterT(u"żółw");
+    ASSERT_EQ(filter.setAt(u"zolw"), 3);
+    ASSERT_EQ(filter.move(u'ż', u'z'), 2);
+    ASSERT_EQ(filter.move(u'ż', u'z'), 3);
+    ASSERT_EQ(filter.move(u'ż', u'z'), 4);
+
+    ASSERT_EQ(filter.setAt(u"zolw"), 3);
+    ASSERT_EQ(filter.move(u'ż', u'z'), 2);
+    ASSERT_EQ(filter.move(u'ż', u'z'), 3);
+
+    ASSERT_EQ(filter.setAt(u"zolw"), 3);
+    ASSERT_EQ(filter.move(u'ż', u'z'), 2);
+    ASSERT_EQ(filter.move(u'ó', u'o'), 1);
+    ASSERT_EQ(filter.move(u'ł', u'l'), 0);
+}
+
+
 }
