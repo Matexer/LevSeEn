@@ -31,13 +31,7 @@ protected:
 
 
 TEST_F(SearchTest, testSearchOnText) {
-    basic_ifstream<char16_t> ifs(navarroPath, ifstream::in);
-    if (!ifs) cerr << "Nie można załadować pliku " << navarroPath;
-    char16_t out[textLength];
-    ifs.read(out, textLength);
-    u16string text;
-
-    text = u16string(out, textLength);
+    auto text = loadText<u16string, char16_t>(navarroPath, textLength);
 
     auto pattern = patterns[0];
     auto output = SearchT::search(pattern, text);
