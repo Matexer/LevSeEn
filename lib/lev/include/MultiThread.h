@@ -11,10 +11,7 @@ namespace Levenshtein {
 class MultiThread {
 public:
     static void setMultiThreading(bool multithreading);
-
     static void setMultiThreadingMinComplexity(uint64_t multithreadingMinComplexity);
-
-    MultiThread() = delete;
 
 protected:
     struct ThreadData {
