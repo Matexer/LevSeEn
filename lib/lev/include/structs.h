@@ -3,14 +3,12 @@
 
 
 template<typename SizeT>
-struct Output {
+struct SearchOutput {
     size_t index;
     SizeT distance;
 };
 
 template<typename SizeT>
-struct FixedOutput {
-    size_t index;
-    SizeT distance;
+struct FixedSearchOutput : SearchOutput<SizeT> {
     SizeT length;
 };

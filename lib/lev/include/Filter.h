@@ -78,7 +78,7 @@ template class Filter<std::u16string, char16_t, uint8_t>;
 
 #ifdef NDEBUG
 template class Filter<std::string, char, uint8_t>;
-template class Filter<std::u16string, char16_t, uint8_t>;
+//template class Filter<std::u16string, char16_t, uint8_t>;
 template class Filter<std::u32string, char32_t, uint8_t>;
 
 template class Filter<std::string, char, uint16_t>;
