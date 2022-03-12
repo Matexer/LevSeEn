@@ -160,14 +160,14 @@ Distance<StringT, SizeT>::~Distance() {
 }
 
 
-//Protected - static
+//Private - static
 template<typename StringT, typename SizeT>
 inline SizeT Distance<StringT, SizeT>::min(SizeT a, SizeT b, SizeT c) {
     auto x = (a < b) ? a : b;
     return (c < x) ? c : x;
 }
 
-//Protected
+//Private
 template<typename StringT, typename SizeT>
 void Distance<StringT, SizeT>::stealAndDestroy(Distance& other) {
     this->patternLength = other.patternLength;

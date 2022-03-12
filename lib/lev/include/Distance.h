@@ -44,7 +44,7 @@ public:
 
     ~Distance();
 
-protected:
+private:
     static inline SizeT min(SizeT a, SizeT b, SizeT c);
 
     //Przypisuje sobie wszystkie wartości argumentów skałdowych
