@@ -60,7 +60,7 @@ void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
 
     const auto& lastIndex = data.lastIndex - 1;
 
-    for (size_t i = data.firstIndex; i < data.lastIndex; i++) {
+    for (size_t i = data.firstIndex; i < lastIndex; i++) {
         const auto& incomingCharacter = data.text.at(i + patternLength);
         const auto& leavingCharacter = data.text.at(i);
         if (incomingCharacter != leavingCharacter) {
