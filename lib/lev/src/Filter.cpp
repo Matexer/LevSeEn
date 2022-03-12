@@ -28,9 +28,7 @@ std::shared_ptr<std::vector<size_t>> Filter<StringT, CharT, SizeT>::filter(
 
 //Public
 
-//Protected - static
 
-//Protected
 template<typename StringT, typename CharT, typename SizeT> Filter<StringT, CharT, SizeT>::Filter(
         const StringT& pattern) {
     this->patternLetters = getLetters(pattern);
