@@ -21,6 +21,13 @@ public:
             const StringT &pattern, const StringT &text);
 
 protected:
+    void static inline throwIfInvalidLength(SizeT patternLength, SizeT textLength);
+
+    static SizeT DELETION_COST;
+    static SizeT INSERTION_COST;
+    static SizeT SWAP_COST;
+
+private:
     struct SearchData : ThreadData {
         const StringT& pattern;
         const StringT& text;
@@ -29,10 +36,6 @@ protected:
 
     static void search(SearchData &data);
     static void _search(SearchData data);   //dla wątków
-
-    static SizeT DELETION_COST;
-    static SizeT INSERTION_COST;
-    static SizeT SWAP_COST;
 };
 
 
