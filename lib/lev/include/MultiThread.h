@@ -21,6 +21,7 @@ protected:
     template<typename DataT>
     static void doConcurrent(std::function<void(DataT)> func, DataT &data);
 
+private:
     static bool MULTITHREADING;  // Zezwolenie na wielowątkowość
     static uint64_t MULTITHREADING_MIN_COMPLEXITY;
 };
