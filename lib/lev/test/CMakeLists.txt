@@ -13,6 +13,7 @@ file(GLOB_RECURSE SRC_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/Distance.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/Search.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/Filter.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/SelectiveSearch.cpp
         )
 
 file(GLOB_RECURSE TEST_SRC_FILES
