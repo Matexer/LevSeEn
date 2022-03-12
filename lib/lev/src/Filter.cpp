@@ -141,8 +141,8 @@ template<typename StringT, typename CharT, typename SizeT>
 SizeT Filter<StringT, CharT, SizeT>::getDifference(const Letters& word) {
     SizeT difference = 0;
     for (const auto& letter: this->patternLetters) {
-        auto inPatternOccurs = letter.second;
-        auto inWordOccurs = word.at(letter.first);
+        const auto& inPatternOccurs = letter.second;
+        const auto& inWordOccurs = word.at(letter.first);
         difference += subtractionAbs(inPatternOccurs,inWordOccurs);
     }
     return difference;

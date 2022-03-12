@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Filter.h"
+#include "Distance.h"
 #include "utils.h"
 
 
@@ -14,8 +15,8 @@ using namespace std;
 
 class FilterTest : public ::testing::Test {
 protected:
-    typedef std::unordered_map<char16_t, uint8_t> Letters;
     typedef Filter<std::u16string, char16_t, uint8_t> FilterT;
+    typedef Distance<std::u16string, uint8_t> DistanceT;
 
     int textLength = 2000;
     string navarroPath = "../data/navarro.txt";
@@ -119,5 +120,21 @@ TEST_F(FilterTest, filterTest) {
     ASSERT_TRUE(output->empty());
 }
 
+
+TEST_F(FilterTest, filterWithDistanceTest) {
+    auto pattern = u"xżcomłóx";
+    auto word = u"becoming";
+
+    auto distance = DistanceT::getEditDistance(pattern, word);
+    auto difference = FilterT(pattern).setAt(word);
+    ASSERT_EQ(distance, difference);
+
+    pattern = u"This is xżcomł";
+    word = u"This is becomi";
+
+    distance = DistanceT::getEditDistance(pattern, word);   //3
+    difference = FilterT(pattern).setAt(word);      //4 (przez "i")
+    ASSERT_FALSE(distance == difference);
+}
 
 }

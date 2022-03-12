@@ -70,6 +70,7 @@ private:
         FRIEND_TEST(FilterTest, setAtTest);
         FRIEND_TEST(FilterTest, moveTest);
         FRIEND_TEST(FilterTest, filterTest);
+        FRIEND_TEST(FilterTest, filterWithDistanceTest);
     #endif
 };
 
