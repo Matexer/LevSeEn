@@ -9,14 +9,15 @@ include_directories(${gtest_SOURCE_DIR}/include
 
 # Testowane kody źródłowe
 file(GLOB_RECURSE SRC_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/../src/converters.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/MultiThread.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/Distance.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/Search.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/../src/Filter.cpp
         )
 
-file(GLOB_RECURSE TEST_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE TEST_SRC_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/utils.cpp)
 
 add_executable(GTests ${SRC_FILES} ${TEST_SRC_FILES} main.cpp)
 
