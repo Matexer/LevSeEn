@@ -1,10 +1,10 @@
 #include "MultiThread.h"
 
 #include <cstdint>
-#include <thread>
 
 
 using namespace std;
+using namespace Levenshtein;
 
 
 void MultiThread::setMultiThreading(bool multithreading) {

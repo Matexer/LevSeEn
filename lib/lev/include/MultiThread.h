@@ -5,10 +5,16 @@
 #include <thread>
 
 
+namespace Levenshtein {
+
+
 class MultiThread {
 public:
     static void setMultiThreading(bool multithreading);
+
     static void setMultiThreadingMinComplexity(uint64_t multithreadingMinComplexity);
+
+    MultiThread() = delete;
 
 protected:
     struct ThreadData {
@@ -49,7 +55,10 @@ void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     threadData.lastIndex = numOfIndexes;
     pool[numOfThreads - 1] = std::thread(func, threadData);
 
-    for(auto i = 0; i < numOfThreads; i++) {
+    for (auto i = 0; i < numOfThreads; i++) {
         pool[i].join();
     }
+}
+
+
 }

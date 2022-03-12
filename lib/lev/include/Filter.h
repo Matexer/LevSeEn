@@ -26,9 +26,6 @@ public:
     static std::shared_ptr<std::vector<size_t>> filter(
             const StringT& pattern, const StringT& text, SizeT maxDifference);
 
-    ~Filter() = delete;
-    Filter& operator=(Filter &&other) = delete;
-
 protected:
     explicit Filter(const StringT& pattern);
 
