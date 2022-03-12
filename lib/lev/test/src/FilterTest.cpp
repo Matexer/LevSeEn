@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
+#include <fstream>
+#include <iostream>
 
 #include "Filter.h"
+#include "utils.h"
 
 
 namespace Levenshtein {
@@ -13,6 +16,9 @@ class FilterTest : public ::testing::Test {
 protected:
     typedef std::unordered_map<char16_t, uint8_t> Letters;
     typedef Filter<std::u16string, char16_t, uint8_t> FilterT;
+
+    int textLength = 2000;
+    string navarroPath = "../data/navarro.txt";
 };
 
 
@@ -83,6 +89,34 @@ TEST_F(FilterTest, moveTest) {
     ASSERT_EQ(filter.move(u'ż', u'z'), 2);
     ASSERT_EQ(filter.move(u'ó', u'o'), 1);
     ASSERT_EQ(filter.move(u'ł', u'l'), 0);
+
+    filter = FilterT(u"żółw");
+    ASSERT_EQ(filter.setAt(u"włóż"), 0);
+}
+
+
+TEST_F(FilterTest, filterTest) {
+    auto output = FilterT::filter(u"Żółw", u"Żółw", 2);
+    ASSERT_EQ(output->size(), 1);
+
+    u16string text = u"Żółw_włóŻ";
+
+    output = FilterT::filter(u"Żółw", text, 5);
+    ASSERT_EQ(output->size(), 6);
+
+    output = FilterT::filter(u"Żółw", text, 2);
+    ASSERT_EQ(output->size(), 4);
+
+    output = FilterT::filter(u"Żółw", text, 1);
+    ASSERT_EQ(output->size(), 4);
+
+    text = loadText<u16string, char16_t>(navarroPath, textLength);
+
+    output = FilterT::filter(u"ŻółwNAVARRO", text, 4);
+    ASSERT_FALSE(output->empty());
+
+    output = FilterT::filter(u"ŻółwNAVARRO", text, 0);
+    ASSERT_TRUE(output->empty());
 }
 
 

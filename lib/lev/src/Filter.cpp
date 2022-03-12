@@ -9,10 +9,18 @@ using namespace std;
 template<typename StringT, typename CharT, typename SizeT>
 std::shared_ptr<std::vector<size_t>> Filter<StringT, CharT, SizeT>::filter(
         const StringT& pattern, const StringT& text, SizeT maxDifference) {
-    const auto& filter = Filter<StringT, CharT, SizeT>(pattern);
-    const auto& complexity = text.size();
+    const auto& taskComplexity = text.length();
+    auto numOfIndexes = text.length() - pattern.length() + 1;
 
-    auto output = shared_ptr<std::vector<size_t>>();
+    auto output = std::make_shared<std::vector<size_t>>();
+
+    auto data = FilterData {
+        0, numOfIndexes, pattern, text, maxDifference, output};
+
+    if (shouldBeConcurrent(taskComplexity))
+        doConcurrent<FilterData>(_filter, data);
+    else
+        _filter(data);
 
     return output;
 }
@@ -49,6 +57,30 @@ template<typename StringT, typename CharT, typename SizeT> Filter<StringT, CharT
 #ifndef NDEBUG
     this->_patternLength = pattern.size();
 #endif
+}
+
+
+template<typename StringT, typename CharT, typename SizeT>
+void Filter<StringT, CharT, SizeT>::_filter(FilterData data) {
+    auto filter = Filter<StringT, CharT, SizeT>(data.pattern);
+    const auto&& patternLength = data.pattern.length();
+
+    auto difference = filter.setAt(data.text.substr(data.firstIndex, patternLength));
+    if (difference <= data.maxDifference)
+        data.output->push_back(data.firstIndex);
+
+    const auto& lastIndex = data.lastIndex - 1;
+
+    for (size_t i = data.firstIndex; i < lastIndex; i++) {
+        const auto& incomingCharacter = data.text.at(i + patternLength);
+        const auto& leavingCharacter = data.text.at(i);
+        if (incomingCharacter != leavingCharacter) {
+            difference = filter.move(incomingCharacter, leavingCharacter);
+        }
+
+        if (difference <= data.maxDifference)
+            data.output->push_back(i + 1);
+    }
 }
 
 

@@ -5,6 +5,9 @@
 #include <unordered_map>
 
 
+#include "MultiThread.h"
+
+
 #ifndef NDEBUG
     #include <gtest/gtest.h>
 #endif
@@ -14,7 +17,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename CharT, typename SizeT>
-class Filter {
+class Filter : protected MultiThread {
     typedef std::unordered_map<CharT, SizeT> Letters;
 
 public:
@@ -24,6 +27,14 @@ public:
             const StringT& pattern, const StringT& text, SizeT maxDifference);
 
 protected:
+    struct FilterData : ThreadData {
+        const StringT& pattern;
+        const StringT& text;
+        SizeT maxDifference;
+        std::shared_ptr<std::vector<size_t>> const output;
+    };
+
+    static void _filter(FilterData data);
     static inline Letters getLetters(const StringT& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
 
@@ -58,6 +69,7 @@ private:
         FRIEND_TEST(FilterTest, getLettersThatInPatternTest);
         FRIEND_TEST(FilterTest, setAtTest);
         FRIEND_TEST(FilterTest, moveTest);
+        FRIEND_TEST(FilterTest, filterTest);
     #endif
 };
 
