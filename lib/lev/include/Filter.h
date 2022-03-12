@@ -26,6 +26,9 @@ public:
     static std::shared_ptr<std::vector<size_t>> filter(
             const StringT& pattern, const StringT& text, SizeT maxDifference);
 
+    ~Filter() = delete;
+    Filter& operator=(Filter &&other) = delete;
+
 protected:
     explicit Filter(const StringT& pattern);
 
@@ -44,6 +47,9 @@ private:
     static inline Letters getLetters(const StringT& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
 
+
+    static void _filter(FilterData data);
+
     //Zwraca Letters (dla word) tylko z literami występujących w pattern
     Letters getLettersThatInPattern(const StringT& word);
 
@@ -52,8 +58,6 @@ private:
 
     //Zwraca różnicę wystąpień jaką powoduje konkretna litera
     inline SizeT getDifferenceFromCharacter(const CharT& character);
-
-    static void _filter(FilterData data);
 
 
     Letters patternLetters;

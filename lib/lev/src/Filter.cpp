@@ -28,27 +28,7 @@ std::shared_ptr<std::vector<size_t>> Filter<StringT, CharT, SizeT>::filter(
 
 //Public
 
-
 //Protected - static
-template<typename StringT, typename CharT, typename SizeT>
-inline typename Filter<StringT, CharT, SizeT>::Letters Filter<StringT, CharT, SizeT>::getLetters(
-        const StringT& word) {
-    Letters patternLetters;
-    for (const auto& character : word) {
-        patternLetters[character]++;
-    }
-    return patternLetters;
-}
-
-
-template<typename StringT, typename CharT, typename SizeT>
-inline SizeT Filter<StringT, CharT, SizeT>::subtractionAbs(const SizeT& a, const SizeT& b) {
-    if (a > b)
-        return a - b;
-    else
-        return b - a;
-}
-
 
 //Protected
 template<typename StringT, typename CharT, typename SizeT> Filter<StringT, CharT, SizeT>::Filter(
@@ -57,30 +37,6 @@ template<typename StringT, typename CharT, typename SizeT> Filter<StringT, CharT
 #ifndef NDEBUG
     this->_patternLength = pattern.size();
 #endif
-}
-
-
-template<typename StringT, typename CharT, typename SizeT>
-void Filter<StringT, CharT, SizeT>::_filter(FilterData data) {
-    auto filter = Filter<StringT, CharT, SizeT>(data.pattern);
-    const auto&& patternLength = data.pattern.length();
-
-    auto difference = filter.setAt(data.text.substr(data.firstIndex, patternLength));
-    if (difference <= data.maxDifference)
-        data.output->push_back(data.firstIndex);
-
-    const auto& lastIndex = data.lastIndex - 1;
-
-    for (size_t i = data.firstIndex; i < lastIndex; i++) {
-        const auto& incomingCharacter = data.text.at(i + patternLength);
-        const auto& leavingCharacter = data.text.at(i);
-        if (incomingCharacter != leavingCharacter) {
-            difference = filter.move(incomingCharacter, leavingCharacter);
-        }
-
-        if (difference <= data.maxDifference)
-            data.output->push_back(i + 1);
-    }
 }
 
 
@@ -113,29 +69,62 @@ SizeT Filter<StringT, CharT, SizeT>::move(
     return lastDifference;
 }
 
+//Private - static
+template<typename StringT, typename CharT, typename SizeT>
+inline typename Filter<StringT, CharT, SizeT>::Letters Filter<StringT, CharT, SizeT>::getLetters(
+        const StringT& word) {
+    Letters patternLetters;
+    for (const auto& character : word) {
+        patternLetters[character]++;
+    }
+    return patternLetters;
+}
+
 
 template<typename StringT, typename CharT, typename SizeT>
-SizeT Filter<StringT, CharT, SizeT>::getDifference(const Letters& word) {
-    SizeT difference = 0;
-    for (const auto& letter: this->patternLetters) {
-        auto inPatternOccurs = letter.second;
-        auto inWordOccurs = word.at(letter.first);
-        difference += subtractionAbs(inPatternOccurs,inWordOccurs);
+inline SizeT Filter<StringT, CharT, SizeT>::subtractionAbs(const SizeT& a, const SizeT& b) {
+    if (a > b)
+        return a - b;
+    else
+        return b - a;
+}
+
+
+//Private
+template<typename StringT, typename CharT, typename SizeT>
+void Filter<StringT, CharT, SizeT>::_filter(FilterData data) {
+    auto filter = Filter<StringT, CharT, SizeT>(data.pattern);
+    const auto&& patternLength = data.pattern.length();
+
+    auto difference = filter.setAt(data.text.substr(data.firstIndex, patternLength));
+    if (difference <= data.maxDifference)
+        data.output->push_back(data.firstIndex);
+
+    const auto& lastIndex = data.lastIndex - 1;
+
+    for (size_t i = data.firstIndex; i < lastIndex; i++) {
+        const auto& incomingCharacter = data.text.at(i + patternLength);
+        const auto& leavingCharacter = data.text.at(i);
+        if (incomingCharacter != leavingCharacter) {
+            difference = filter.move(incomingCharacter, leavingCharacter);
+        }
+
+        if (difference <= data.maxDifference)
+            data.output->push_back(i + 1);
     }
-    return difference;
 }
 
 
 template<typename StringT, typename CharT, typename SizeT>
 typename Filter<StringT, CharT, SizeT>::Letters
 Filter<StringT, CharT, SizeT>::getLettersThatInPattern(const StringT& word) {
-    #ifndef NDEBUG
-        if (word.size() > _patternLength) {
-            throw std::length_error("Filter<StringT, CharT, SizeT>::getLettersThatInPattern(const StringT& word)\n"
-                                    "(patternLength > textLength)\n"
-                                    "Word length shouldn't be longer than a pattern length!");
-        }
-    #endif
+#ifndef NDEBUG
+    if (word.size() > _patternLength) {
+        throw std::length_error("Filter<StringT, CharT, SizeT>::getLettersThatInPattern(const StringT& word)\n"
+                                "(patternLength > textLength)\n"
+                                "Word length shouldn't be longer than a pattern length!");
+    }
+#endif
 
     Letters letters;
     for (const auto& letter : patternLetters) {
@@ -147,6 +136,18 @@ Filter<StringT, CharT, SizeT>::getLettersThatInPattern(const StringT& word) {
             letters[letter]++;
     }
     return letters;
+}
+
+
+template<typename StringT, typename CharT, typename SizeT>
+SizeT Filter<StringT, CharT, SizeT>::getDifference(const Letters& word) {
+    SizeT difference = 0;
+    for (const auto& letter: this->patternLetters) {
+        auto inPatternOccurs = letter.second;
+        auto inWordOccurs = word.at(letter.first);
+        difference += subtractionAbs(inPatternOccurs,inWordOccurs);
+    }
+    return difference;
 }
 
 
