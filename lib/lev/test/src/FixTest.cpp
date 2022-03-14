@@ -61,4 +61,14 @@ TEST_F(FixTest, purifyTestOnText) {
 }
 
 
+TEST_F(FixTest, getFixedText) {
+    u16string pattern = u"żółw_jest_k";
+    u16string text = u"żółw_je_xx_st_k";
+    auto output = SearchT::search(pattern, text, 6);
+    FixT::purify(output);
+    auto fixedOutput = FixT::getFixed(output->at(0), pattern, text);
+    ASSERT_EQ(fixedOutput.length, text.length());
+}
+
+
 }

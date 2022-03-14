@@ -37,7 +37,8 @@ private:
 
     static void purify(std::shared_ptr<OutputVecT> output);
     static void _fix(FixData data);
-    static FixedOutputT getFixed(const OutputT& output);
+    static FixedOutputT getFixed(
+            const OutputT& data, const StringT& pattern, const StringT& text);
 
     static inline bool compareOutput(OutputT& a, OutputT& b);
     static inline bool compareFixedOutput(FixedOutputT& a, FixedOutputT& b);
@@ -49,6 +50,7 @@ private:
 #ifndef NDEBUG
     FRIEND_TEST(FixTest, purifyTest);
     FRIEND_TEST(FixTest, purifyTestOnText);
+    FRIEND_TEST(FixTest, getFixedText);
 #endif
 };
 

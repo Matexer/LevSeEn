@@ -41,44 +41,51 @@ void Fix<StringT, SizeT>::_fix(Fix::FixData data) {
 
 template<typename StringT, typename SizeT>
 typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
-        const Fix::OutputT &output) {
-//    auto bestIndex = data.output.index;
-//    auto bestDistance = data.output.distance;
-//
-//    const auto& patternLength = data.pattern.size();
-//    auto bestLength = patternLength;
-//
-//    SizeT tmpLength;
-//    size_t tmpIndex;
-//    StringT word;
-//    SizeT distance;
-//
-//    auto thisRange = min((SizeT)(data.text.size() - bestIndex + bestLength), FIX_RANGE);
-//    for (SizeT i=1 ; i <= thisRange ; i++){
-//        tmpLength = patternLength + i;
-//        word = data.text.substr(bestIndex, tmpLength);
-//        distance = DistanceCls::getDistance(data.pattern, word);
-//        if (distance < bestDistance) {
-//            bestDistance = distance;
-//            bestLength = tmpLength;
-//        }
-//    }
-//
-//    tmpIndex = bestIndex;
-//
-//    thisRange = min((size_t)range, bestIndex);
-//    for (size_t i=1 ; i <= thisRange ; i++){
-//        tmpIndex -= - i;
-//        if (tmpIndex < data.text.size()) continue;
-//        word = data.text.substr(tmpIndex, bestLength);
-//        distance = Levenshtein<SizeT>::getDistance(data.pattern, word);
-//        if (distance < bestDistance) {
-//            bestDistance = distance;
-//            bestIndex = tmpIndex;
-//        }
-//    }
-//
-//    return FixedOutput {bestIndex, bestDistance, bestLength};
+        const OutputT& data, const StringT& pattern, const StringT& text) {
+    const auto& getDistance = [&] (const StringT& word) {
+        return DistanceCls::getDistance(pattern, word,
+                                        EditCostsCls::DELETION_COST,
+                                        EditCostsCls::INSERTION_COST,
+                                        EditCostsCls::SWAP_COST);
+    };
+
+    size_t bestIndex = data.index;
+    SizeT bestDistance = data.distance;
+
+    const auto& patternLength = pattern.size();
+    SizeT bestLength = patternLength;
+
+    SizeT tmpLength;
+    size_t tmpIndex;
+    StringT word;
+    SizeT distance;
+
+    auto thisRange = min((SizeT)(text.size() - bestIndex + bestLength), FIX_RANGE);
+    for (SizeT i=1 ; i <= thisRange ; i++){
+        tmpLength = patternLength + i;
+        word = text.substr(bestIndex, tmpLength);
+        distance = getDistance(word);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestLength = tmpLength;
+        }
+    }
+
+    tmpIndex = bestIndex;
+
+    thisRange = min((size_t)FIX_RANGE, bestIndex);
+    for (size_t i=1 ; i <= thisRange ; i++){
+        tmpIndex -= - i;
+        if (tmpIndex < text.size()) continue;
+        word = text.substr(tmpIndex, bestLength);
+        distance = getDistance(word);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = tmpIndex;
+        }
+    }
+
+    return FixedOutputT {bestIndex, bestDistance, bestLength};
 }
 
 
