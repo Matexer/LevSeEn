@@ -15,7 +15,11 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
     const auto& patternLength = pattern.length();
     const auto& textLength = text.length();
 
-    SearchCls::throwIfInvalidLength(patternLength, textLength);
+    if (patternLength > textLength) {
+        throw length_error("Search<StringT, SizeT>::search(const StringT &pattern, const StringT &text)\n"
+                           "(patternLength > textLength)\n"
+                           "Pattern length cannot be longer than a text length!");
+    }
 
     auto numOfIndexes = textLength - patternLength + 1;
     auto output = std::make_shared<OutputT>();
@@ -38,9 +42,9 @@ template<typename StringT, typename CharT, typename SizeT>
 void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
     const auto& patternLength = data.pattern.length();
     auto disSearch = DistanceCls(patternLength, patternLength,
-                                 SearchCls::DELETION_COST,
-                                 SearchCls::INSERTION_COST,
-                                 SearchCls::SWAP_COST);
+                                 EditCostCls::DELETION_COST,
+                                 EditCostCls::INSERTION_COST,
+                                 EditCostCls::SWAP_COST);
     auto filter = FilterCls(data.pattern);
 
     auto word = data.text.substr(data.firstIndex, patternLength);

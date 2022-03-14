@@ -4,28 +4,20 @@
 #include <string>
 
 #include "MultiThread.h"
+#include "StaticEditCosts.h"
 
 
 namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Search : protected MultiThread {
-public:
-    static void setDeletionCost(SizeT deletionCost);
-    static void setInsertionCost(SizeT insertionCost);
-    static void setSwapCost(SizeT swapCost);
+class Search : protected MultiThread, protected StaticEditCosts<SizeT> {
+    typedef StaticEditCosts<SizeT> EditCostCls;
 
+public:
     //Zwraca tablicę (shared_pointer) zawierającą odległość dla każdego indexu w tekście
     static std::shared_ptr<std::vector<SizeT>> search(
             const StringT &pattern, const StringT &text);
-
-protected:
-    void static inline throwIfInvalidLength(SizeT patternLength, SizeT textLength);
-
-    static SizeT DELETION_COST;
-    static SizeT INSERTION_COST;
-    static SizeT SWAP_COST;
 
 private:
     struct SearchData : ThreadData {

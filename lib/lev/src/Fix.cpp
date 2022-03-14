@@ -42,43 +42,43 @@ void Fix<StringT, SizeT>::_fix(Fix::FixData data) {
 template<typename StringT, typename SizeT>
 typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         const Fix::OutputT &output) {
-    auto bestIndex = data.output.index;
-    auto bestDistance = data.output.distance;
-
-    const auto& patternLength = data.pattern.size();
-    auto bestLength = patternLength;
-
-    SizeT tmpLength;
-    size_t tmpIndex;
-    StringT word;
-    SizeT distance;
-
-    auto thisRange = min((SizeT)(data.text.size() - bestIndex + bestLength), FIX_RANGE);
-    for (SizeT i=1 ; i <= thisRange ; i++){
-        tmpLength = patternLength + i;
-        word = data.text.substr(bestIndex, tmpLength);
-        distance = DistanceCls::getDistance(data.pattern, word);
-        if (distance < bestDistance) {
-            bestDistance = distance;
-            bestLength = tmpLength;
-        }
-    }
-
-    tmpIndex = bestIndex;
-
-    thisRange = min((size_t)range, bestIndex);
-    for (size_t i=1 ; i <= thisRange ; i++){
-        tmpIndex -= - i;
-        if (tmpIndex < data.text.size()) continue;
-        word = data.text.substr(tmpIndex, bestLength);
-        distance = Levenshtein<SizeT>::getDistance(data.pattern, word);
-        if (distance < bestDistance) {
-            bestDistance = distance;
-            bestIndex = tmpIndex;
-        }
-    }
-
-    return FixedOutput {bestIndex, bestDistance, bestLength};
+//    auto bestIndex = data.output.index;
+//    auto bestDistance = data.output.distance;
+//
+//    const auto& patternLength = data.pattern.size();
+//    auto bestLength = patternLength;
+//
+//    SizeT tmpLength;
+//    size_t tmpIndex;
+//    StringT word;
+//    SizeT distance;
+//
+//    auto thisRange = min((SizeT)(data.text.size() - bestIndex + bestLength), FIX_RANGE);
+//    for (SizeT i=1 ; i <= thisRange ; i++){
+//        tmpLength = patternLength + i;
+//        word = data.text.substr(bestIndex, tmpLength);
+//        distance = DistanceCls::getDistance(data.pattern, word);
+//        if (distance < bestDistance) {
+//            bestDistance = distance;
+//            bestLength = tmpLength;
+//        }
+//    }
+//
+//    tmpIndex = bestIndex;
+//
+//    thisRange = min((size_t)range, bestIndex);
+//    for (size_t i=1 ; i <= thisRange ; i++){
+//        tmpIndex -= - i;
+//        if (tmpIndex < data.text.size()) continue;
+//        word = data.text.substr(tmpIndex, bestLength);
+//        distance = Levenshtein<SizeT>::getDistance(data.pattern, word);
+//        if (distance < bestDistance) {
+//            bestDistance = distance;
+//            bestIndex = tmpIndex;
+//        }
+//    }
+//
+//    return FixedOutput {bestIndex, bestDistance, bestLength};
 }
 
 

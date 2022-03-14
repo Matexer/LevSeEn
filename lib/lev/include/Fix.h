@@ -1,7 +1,8 @@
 #pragma once
 
-#include "MultiThread.h"
 #include "structs.h"
+#include "MultiThread.h"
+#include "StaticEditCosts.h"
 #include "Distance.h"
 
 
@@ -14,8 +15,9 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Fix : protected MultiThread {
+class Fix : protected MultiThread, protected StaticEditCosts<SizeT> {
     typedef Distance<StringT, SizeT> DistanceCls;
+    typedef StaticEditCosts<SizeT> EditCostsCls;
     typedef FixedSearchOutput<SizeT> FixedOutputT;
     typedef SearchOutput<SizeT> OutputT;
     typedef std::vector<SearchOutput<SizeT>> OutputVecT;

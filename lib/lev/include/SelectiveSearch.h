@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Search.h"
 #include "structs.h"
 #include "Distance.h"
+#include "StaticEditCosts.h"
 #include "Filter.h"
 
 
@@ -10,9 +10,9 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename CharT, typename SizeT>
-class SelectiveSearch : protected Search<StringT, SizeT> {
+class SelectiveSearch : protected MultiThread, protected StaticEditCosts<SizeT> {
     typedef std::vector<SearchOutput<SizeT>> OutputT;
-    typedef Search<StringT, SizeT> SearchCls;
+    typedef StaticEditCosts<SizeT> EditCostCls;
     typedef Distance<StringT, SizeT> DistanceCls;
     typedef Filter<StringT, CharT, SizeT> FilterCls;
 
@@ -21,7 +21,7 @@ public:
                           SizeT maxDistance);
 
 private:
-    struct SearchData : MultiThread::ThreadData {
+    struct SearchData : ThreadData {
         const StringT& pattern;
         const StringT& text;
         const SizeT& maxDistance;
