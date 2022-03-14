@@ -4,11 +4,11 @@
 
 template<typename SizeT>
 struct SearchOutput {
-    size_t index;
-    SizeT distance;
+    const size_t index;
+    const SizeT distance;
 };
 
 template<typename SizeT>
 struct FixedSearchOutput : SearchOutput<SizeT> {
-    SizeT length;
+    const SizeT length;
 };
