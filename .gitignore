@@ -1,8 +1,9 @@
 # Project exclude paths
 cmake-build-debug
 cmake-build-release
-/build/
 /.idea/
-*/test/data/
+*/test/data/*
 
-/lib/lev/test/data/
+/lib/lev/test/data/*
+/lib/lev/web/web-build/*
+/web/web-build/*
