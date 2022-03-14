@@ -7,21 +7,10 @@ using namespace std;
 
 //Public - static
 template<typename StringT, typename SizeT>
-std::shared_ptr<typename Fix<StringT, SizeT>::FixedOutputVecT> Fix<StringT, SizeT>::fix(
+std::shared_ptr<typename Fix<StringT, SizeT>::FixedOutputVecT> Fix<StringT, SizeT>::getFixed(
         std::shared_ptr<OutputVecT> output, const StringT& pattern, const StringT& text) {
-    auto const& numOfIndexes = output->size();
-    auto fixedOutput = std::make_shared<FixedOutputVecT>();
-    fixedOutput->resize(numOfIndexes);
-
-    auto&& data = FixData {0, numOfIndexes, pattern, text, output, fixedOutput};
-
-    if (MULTITHREADING)
-        doConcurrent<FixData>(_fix, data);
-    else
-        _fix(data);
-
-    sort(fixedOutput->begin(), fixedOutput->end(), compareFixedOutput);
-    return fixedOutput;
+    purify(output);
+    return fix(output, pattern, text);
 }
 
 
@@ -42,6 +31,48 @@ void Fix<StringT, SizeT>::purify(std::shared_ptr<OutputVecT> outputVec) {
             }
         }
     }
+}
+
+
+template<typename StringT, typename SizeT>
+bool inline Fix<StringT, SizeT>::compareOutput(Fix::OutputT &a, Fix::OutputT &b) {
+    return a.distance < b.distance;
+}
+
+
+template<typename StringT, typename SizeT>
+bool inline Fix<StringT, SizeT>::compareFixedOutput(Fix::FixedOutputT &a, Fix::FixedOutputT &b) {
+    if (a.distance == b.distance) {
+        return a.index < b.index;
+    }
+    else
+        return a.distance < b.distance;
+}
+
+
+template<typename StringT, typename SizeT>
+bool inline Fix<StringT, SizeT>::inRange(size_t val, size_t minRange, size_t maxRange) {
+    if ((val > maxRange) || (val < minRange)) return false;
+    else return true;
+}
+
+
+template<typename StringT, typename SizeT>
+std::shared_ptr<typename Fix<StringT, SizeT>::FixedOutputVecT> Fix<StringT, SizeT>::fix(
+        std::shared_ptr<OutputVecT> output, const StringT& pattern, const StringT& text) {
+    auto const& numOfIndexes = output->size();
+    auto fixedOutput = std::make_shared<FixedOutputVecT>();
+    fixedOutput->resize(numOfIndexes);
+
+    auto&& data = FixData {0, numOfIndexes, pattern, text, output, fixedOutput};
+
+    if (MULTITHREADING)
+        doConcurrent<FixData>(_fix, data);
+    else
+        _fix(data);
+
+    sort(fixedOutput->begin(), fixedOutput->end(), compareFixedOutput);
+    return fixedOutput;
 }
 
 
@@ -71,12 +102,18 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
     size_t bestIndex = data.index;
     SizeT bestDistance = data.distance;
     const auto& patternLength = pattern.size();
+    const auto& textLength = text.length();
     SizeT bestLength = patternLength;
     SizeT tmpLength;
     StringT word;
     SizeT distance;
 
-    auto thisRange = min((SizeT)(text.size() - bestIndex + bestLength), FIX_RANGE); //zapobiega wyjściu poza zakres
+    SizeT thisRange;
+    if (data.index + patternLength + FIX_RANGE > textLength)
+        thisRange = (SizeT)(textLength - data.index + patternLength);
+    else
+        thisRange = FIX_RANGE;
+
     for (SizeT i=1 ; i <= thisRange ; i++){
         tmpLength = patternLength + i;
         word = text.substr(bestIndex, tmpLength);
@@ -87,9 +124,12 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         }
     }
 
-    size_t tmpIndex = bestIndex;
+    if (FIX_RANGE > data.index)
+        thisRange = data.index;
+    else
+        thisRange = FIX_RANGE;
 
-    thisRange = min((size_t)FIX_RANGE, bestIndex); //zapobiega ujemnemu indeksowi
+    size_t tmpIndex = bestIndex;
     for (size_t i=1 ; i <= thisRange ; i++){
         tmpIndex = bestIndex - i;
         word = text.substr(tmpIndex, bestLength);
@@ -101,29 +141,6 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
     }
 
     return FixedOutputT {bestIndex, bestDistance, bestLength};
-}
-
-
-template<typename StringT, typename SizeT>
-bool inline Fix<StringT, SizeT>::compareOutput(Fix::OutputT &a, Fix::OutputT &b) {
-    return a.distance < b.distance;
-}
-
-
-template<typename StringT, typename SizeT>
-bool inline Fix<StringT, SizeT>::compareFixedOutput(Fix::FixedOutputT &a, Fix::FixedOutputT &b) {
-    if (a.distance == b.distance) {
-        return a.index < b.index;
-    }
-    else
-        return a.distance < b.distance;
-}
-
-
-template<typename StringT, typename SizeT>
-bool inline Fix<StringT, SizeT>::inRange(size_t val, size_t minRange, size_t maxRange) {
-    if ((val > maxRange) || (val < minRange)) return false;
-    else return true;
 }
 
 

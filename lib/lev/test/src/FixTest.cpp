@@ -86,11 +86,41 @@ TEST_F(FixTest, getFixedText) {
 
 
 TEST_F(FixTest, fixText) {
+    u16string pattern = u"żółw_jest_k";
+    u16string text = u"żółw_jexxst_k";
 
+    FixT::setFixRange(20);
+    FixT::setPurifyRange(20);
+
+    auto output = SearchT::search(pattern, text, 6);
+    FixT::purify(output);
+    auto fixedOutput = FixT::fix(output, pattern, text);
+    auto fixedVal = fixedOutput->at(0);
+    auto word = text.substr(fixedVal.index, fixedVal.length);
+    ASSERT_EQ(word, u"żółw_jexxst_k");
 }
 
 
 TEST_F(FixTest, fixTextOnText) {
+    auto text = loadText<u16string, char16_t>(navarroPath, textLength);
+    u16string truePattern = u"allowing a limited number of";
+    u16string pattern = u"allowing a limited of";
+
+    FixT::setFixRange(20);
+    FixT::setPurifyRange(5);
+
+    SearchT::setDeletionCost(0);
+
+    auto output = SearchT::search(pattern, text, 10);
+    auto fixedOutput = FixT::getFixed(output, pattern, text);
+
+    bool foundTruePattern = false;
+    u16string word;
+    for (const auto& out : *fixedOutput) {
+        word = text.substr(out.index, out.length);
+        if (word == truePattern) foundTruePattern = true;
+    }
+    ASSERT_TRUE(foundTruePattern);
 
 }
 

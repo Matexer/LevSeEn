@@ -15,7 +15,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Fix : protected MultiThread, protected StaticEditCosts<SizeT> {
+class Fix : public MultiThread, public StaticEditCosts<SizeT> {
     typedef Distance<StringT, SizeT> DistanceCls;
     typedef StaticEditCosts<SizeT> EditCostsCls;
     typedef FixedSearchOutput<SizeT> FixedOutputT;
@@ -26,9 +26,9 @@ class Fix : protected MultiThread, protected StaticEditCosts<SizeT> {
 public:
     static void setPurifyRange(SizeT purifyRange);
     static void setFixRange(SizeT purifyRange);
-    static std::shared_ptr<FixedOutputVecT> fix(
-            std::shared_ptr<OutputVecT> outputVec, const StringT& pattern, const StringT& text);
 
+    static std::shared_ptr<FixedOutputVecT> getFixed(
+            std::shared_ptr<OutputVecT> outputVec, const StringT& pattern, const StringT& text);
 private:
     struct FixData : ThreadData {
         const StringT& pattern;
@@ -38,13 +38,15 @@ private:
     };
 
     static void purify(std::shared_ptr<OutputVecT> output);
-    static void _fix(FixData data);
-    static FixedOutputT getFixed(
-            const OutputT& data, const StringT& pattern, const StringT& text);
-
     static inline bool compareOutput(OutputT& a, OutputT& b);
     static inline bool compareFixedOutput(FixedOutputT& a, FixedOutputT& b);
     static inline bool inRange(size_t val, size_t minRange, size_t maxRange);
+
+    static std::shared_ptr<FixedOutputVecT> fix(
+            std::shared_ptr<OutputVecT> outputVec, const StringT& pattern, const StringT& text);
+    static void _fix(FixData data);
+    static FixedOutputT getFixed(
+            const OutputT& data, const StringT& pattern, const StringT& text);
 
     static SizeT PURIFY_RANGE;
     static SizeT FIX_RANGE;
