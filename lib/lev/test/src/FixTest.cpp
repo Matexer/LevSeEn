@@ -85,4 +85,14 @@ TEST_F(FixTest, getFixedText) {
 }
 
 
+TEST_F(FixTest, fixText) {
+
+}
+
+
+TEST_F(FixTest, fixTextOnText) {
+
+}
+
+
 }

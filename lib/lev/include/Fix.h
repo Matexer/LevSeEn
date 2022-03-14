@@ -26,13 +26,15 @@ class Fix : protected MultiThread, protected StaticEditCosts<SizeT> {
 public:
     static void setPurifyRange(SizeT purifyRange);
     static void setFixRange(SizeT purifyRange);
-    static std::shared_ptr<FixedOutputVecT> fix(std::shared_ptr<OutputVecT> outputVec);
+    static std::shared_ptr<FixedOutputVecT> fix(
+            std::shared_ptr<OutputVecT> outputVec, const StringT& pattern, const StringT& text);
 
 private:
     struct FixData : ThreadData {
         const StringT& pattern;
         const StringT& text;
-        const OutputT& output;
+        const std::shared_ptr<OutputVecT> outputVec;
+        const std::shared_ptr<FixedOutputVecT> fixedOutputVec;
     };
 
     static void purify(std::shared_ptr<OutputVecT> output);
@@ -51,6 +53,8 @@ private:
     FRIEND_TEST(FixTest, purifyTest);
     FRIEND_TEST(FixTest, purifyTestOnText);
     FRIEND_TEST(FixTest, getFixedText);
+    FRIEND_TEST(FixTest, fixText);
+    FRIEND_TEST(FixTest, fixTextOnText);
 #endif
 };
 

@@ -8,8 +8,20 @@ using namespace std;
 //Public - static
 template<typename StringT, typename SizeT>
 std::shared_ptr<typename Fix<StringT, SizeT>::FixedOutputVecT> Fix<StringT, SizeT>::fix(
-        std::shared_ptr<OutputVecT> output) {
-    return std::shared_ptr<FixedOutputVecT>();
+        std::shared_ptr<OutputVecT> output, const StringT& pattern, const StringT& text) {
+    auto const& numOfIndexes = output->size();
+    auto fixedOutput = std::make_shared<FixedOutputVecT>();
+    fixedOutput->resize(numOfIndexes);
+
+    auto&& data = FixData {0, numOfIndexes, pattern, text, output, fixedOutput};
+
+    if (MULTITHREADING)
+        doConcurrent<FixData>(_fix, data);
+    else
+        _fix(data);
+
+    sort(fixedOutput->begin(), fixedOutput->end(), compareFixedOutput);
+    return fixedOutput;
 }
 
 
@@ -36,6 +48,13 @@ void Fix<StringT, SizeT>::purify(std::shared_ptr<OutputVecT> outputVec) {
 //Private - static
 template<typename StringT, typename SizeT>
 void Fix<StringT, SizeT>::_fix(Fix::FixData data) {
+    OutputT output;
+    FixedOutputT fixedOutput;
+    for (size_t i = data.firstIndex; i < data.lastIndex; i++) {
+        output = data.outputVec->at(i);
+        fixedOutput = getFixed(output, data.pattern, data.text);
+        data.fixedOutputVec->at(i) = fixedOutput;
+    }
 }
 
 
