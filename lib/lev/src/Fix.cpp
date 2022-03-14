@@ -73,7 +73,6 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
     thisRange = min((size_t)FIX_RANGE, bestIndex); //zapobiega ujemnemu indeksowi
     for (size_t i=1 ; i <= thisRange ; i++){
         tmpIndex = bestIndex - i;
-        if (tmpIndex < text.size()) continue;
         word = text.substr(tmpIndex, bestLength);
         distance = getDistance(word);
         if (distance < bestDistance) {
