@@ -23,6 +23,7 @@ class Fix : protected MultiThread {
 
 public:
     static void setPurifyRange(SizeT purifyRange);
+    static void setFixRange(SizeT purifyRange);
     static std::shared_ptr<FixedOutputVecT> fix(std::shared_ptr<OutputVecT> outputVec);
 
 private:
@@ -41,6 +42,7 @@ private:
     static inline bool inRange(size_t val, size_t minRange, size_t maxRange);
 
     static SizeT PURIFY_RANGE;
+    static SizeT FIX_RANGE;
 
 #ifndef NDEBUG
     FRIEND_TEST(FixTest, purifyTest);

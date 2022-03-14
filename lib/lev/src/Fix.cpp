@@ -36,14 +36,49 @@ void Fix<StringT, SizeT>::purify(std::shared_ptr<OutputVecT> outputVec) {
 //Private - static
 template<typename StringT, typename SizeT>
 void Fix<StringT, SizeT>::_fix(Fix::FixData data) {
-
 }
 
 
 template<typename StringT, typename SizeT>
 typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         const Fix::OutputT &output) {
-    return Fix<StringT, SizeT>::FixedOutputT();
+    auto bestIndex = data.output.index;
+    auto bestDistance = data.output.distance;
+
+    const auto& patternLength = data.pattern.size();
+    auto bestLength = patternLength;
+
+    SizeT tmpLength;
+    size_t tmpIndex;
+    StringT word;
+    SizeT distance;
+
+    auto thisRange = min((SizeT)(data.text.size() - bestIndex + bestLength), FIX_RANGE);
+    for (SizeT i=1 ; i <= thisRange ; i++){
+        tmpLength = patternLength + i;
+        word = data.text.substr(bestIndex, tmpLength);
+        distance = DistanceCls::getDistance(data.pattern, word);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestLength = tmpLength;
+        }
+    }
+
+    tmpIndex = bestIndex;
+
+    thisRange = min((size_t)range, bestIndex);
+    for (size_t i=1 ; i <= thisRange ; i++){
+        tmpIndex -= - i;
+        if (tmpIndex < data.text.size()) continue;
+        word = data.text.substr(tmpIndex, bestLength);
+        distance = Levenshtein<SizeT>::getDistance(data.pattern, word);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = tmpIndex;
+        }
+    }
+
+    return FixedOutput {bestIndex, bestDistance, bestLength};
 }
 
 
@@ -77,4 +112,14 @@ void Fix<StringT, SizeT>::setPurifyRange(SizeT purifyRange) {
 
 
 template<typename StringT, typename SizeT>
+void Fix<StringT, SizeT>::setFixRange(SizeT fixRange) {
+    FIX_RANGE = fixRange;
+}
+
+
+template<typename StringT, typename SizeT>
 SizeT Fix<StringT, SizeT>::PURIFY_RANGE = 5;
+
+
+template<typename StringT, typename SizeT>
+SizeT Fix<StringT, SizeT>::FIX_RANGE = 5;
