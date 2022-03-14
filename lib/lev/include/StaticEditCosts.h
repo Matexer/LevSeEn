@@ -3,6 +3,7 @@
 
 template<typename SizeT>
 class StaticEditCosts {
+public:
     static void setDeletionCost(SizeT deletionCost);
     static void setInsertionCost(SizeT insertionCost);
     static void setSwapCost(SizeT swapCost);

@@ -16,7 +16,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename CharT, typename SizeT>
-class Filter : protected MultiThread {
+class Filter : public MultiThread {
     typedef std::unordered_map<CharT, SizeT> Letters;
 
 public:
