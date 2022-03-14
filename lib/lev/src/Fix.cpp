@@ -65,8 +65,9 @@ std::shared_ptr<typename Fix<StringT, SizeT>::FixedOutputVecT> Fix<StringT, Size
     fixedOutput->resize(numOfIndexes);
 
     auto&& data = FixData {0, numOfIndexes, pattern, text, output, fixedOutput};
+    size_t taskComplexity = 2 * output->size() * (pattern.length() + FIX_RANGE) * (pattern.length()^2);
 
-    if (MULTITHREADING)
+    if (shouldBeConcurrent(taskComplexity))
         doConcurrent<FixData>(_fix, data);
     else
         _fix(data);
@@ -129,18 +130,20 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
     else
         thisRange = FIX_RANGE;
 
-    size_t tmpIndex = bestIndex;
+    size_t tmpIndex;
+    SizeT finalBestLength = bestLength;
     for (size_t i=1 ; i <= thisRange ; i++){
-        tmpIndex = bestIndex - i;
-        word = text.substr(tmpIndex, bestLength);
+        tmpIndex = data.index - i;
+        word = text.substr(tmpIndex, bestLength + i);
         distance = getDistance(word);
         if (distance < bestDistance) {
             bestDistance = distance;
             bestIndex = tmpIndex;
+            finalBestLength = bestLength + i;
         }
     }
 
-    return FixedOutputT {bestIndex, bestDistance, bestLength};
+    return FixedOutputT {bestIndex, bestDistance, finalBestLength};
 }
 
 
