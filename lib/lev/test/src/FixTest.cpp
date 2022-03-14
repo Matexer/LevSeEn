@@ -63,11 +63,25 @@ TEST_F(FixTest, purifyTestOnText) {
 
 TEST_F(FixTest, getFixedText) {
     u16string pattern = u"żółw_jest_k";
-    u16string text = u"żółw_je_xx_st_k";
+    u16string text = u"żółw_jexxst_k";
+
+    FixT::setFixRange(20);
+    FixT::setPurifyRange(20);
+
     auto output = SearchT::search(pattern, text, 6);
     FixT::purify(output);
     auto fixedOutput = FixT::getFixed(output->at(0), pattern, text);
-    ASSERT_EQ(fixedOutput.length, text.length());
+    auto outputWord = text.substr(fixedOutput.index, fixedOutput.length);
+    ASSERT_EQ(outputWord, text);
+
+    pattern = u"żółw_jest_k";
+    text = u"12345żółw67_jest_k1234567";
+    output = SearchT::search(pattern, text, 6);
+    FixT::purify(output);
+    fixedOutput = FixT::getFixed(output->at(0), pattern, text);
+    auto word = text.substr(fixedOutput.index, fixedOutput.length);
+    ASSERT_EQ(fixedOutput.length, pattern.length() + 2) << convert16.to_bytes(word);
+    ASSERT_EQ(word, u"żółw67_jest_k");
 }
 
 

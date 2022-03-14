@@ -51,16 +51,13 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
 
     size_t bestIndex = data.index;
     SizeT bestDistance = data.distance;
-
     const auto& patternLength = pattern.size();
     SizeT bestLength = patternLength;
-
     SizeT tmpLength;
-    size_t tmpIndex;
     StringT word;
     SizeT distance;
 
-    auto thisRange = min((SizeT)(text.size() - bestIndex + bestLength), FIX_RANGE);
+    auto thisRange = min((SizeT)(text.size() - bestIndex + bestLength), FIX_RANGE); //zapobiega wyjściu poza zakres
     for (SizeT i=1 ; i <= thisRange ; i++){
         tmpLength = patternLength + i;
         word = text.substr(bestIndex, tmpLength);
@@ -71,11 +68,11 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         }
     }
 
-    tmpIndex = bestIndex;
+    size_t tmpIndex = bestIndex;
 
-    thisRange = min((size_t)FIX_RANGE, bestIndex);
+    thisRange = min((size_t)FIX_RANGE, bestIndex); //zapobiega ujemnemu indeksowi
     for (size_t i=1 ; i <= thisRange ; i++){
-        tmpIndex -= - i;
+        tmpIndex = bestIndex - i;
         if (tmpIndex < text.size()) continue;
         word = text.substr(tmpIndex, bestLength);
         distance = getDistance(word);
