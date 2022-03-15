@@ -15,7 +15,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Fix : protected MultiThread, protected StaticEditCosts<SizeT> {
+class Fix : public MultiThread, public StaticEditCosts<SizeT> {
     typedef Distance<StringT, SizeT> DistanceCls;
     typedef StaticEditCosts<SizeT> EditCostsCls;
     typedef FixedSearchOutput<SizeT> FixedOutputT;

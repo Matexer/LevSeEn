@@ -18,7 +18,7 @@ public:
     static std::shared_ptr<OutputVec> lookFor(
             const StringT& pattern, const StringT& text, SizeT maxDistance) {
         const auto& output = SearchCls::search(pattern, text, maxDistance);
-        const auto& fixedOutput = FixCls::getFixed(output);
+        const auto& fixedOutput = FixCls::getFixed(output, pattern, text);
         return fixedOutput;
     }
 

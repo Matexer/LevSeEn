@@ -10,7 +10,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename CharT, typename SizeT>
-class SelectiveSearch : protected MultiThread, protected StaticEditCosts<SizeT> {
+class SelectiveSearch : public MultiThread, public StaticEditCosts<SizeT> {
     typedef std::vector<SearchOutput<SizeT>> OutputT;
     typedef StaticEditCosts<SizeT> EditCostCls;
     typedef Distance<StringT, SizeT> DistanceCls;

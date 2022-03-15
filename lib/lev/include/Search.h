@@ -11,7 +11,7 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename SizeT>
-class Search : protected MultiThread, protected StaticEditCosts<SizeT> {
+class Search : public MultiThread, public StaticEditCosts<SizeT> {
     typedef StaticEditCosts<SizeT> EditCostCls;
 
 public:
