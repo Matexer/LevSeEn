@@ -8,7 +8,10 @@ struct SearchOutput {
     SizeT distance;
 };
 
+
 template<typename SizeT>
-struct FixedSearchOutput : SearchOutput<SizeT> {
+struct FixedSearchOutput {
+    size_t index;
+    SizeT distance;
     SizeT length;
 };

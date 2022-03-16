@@ -15,11 +15,11 @@ class SearchEngine {
     typedef std::vector<FixedSearchOutput<SizeT>> OutputVec;
 
 public:
-    static std::shared_ptr<OutputVec> lookFor(
+    static OutputVec lookFor(
             const StringT& pattern, const StringT& text, SizeT maxDistance) {
         const auto& output = SearchCls::search(pattern, text, maxDistance);
         const auto& fixedOutput = FixCls::getFixed(output, pattern, text);
-        return fixedOutput;
+        return *fixedOutput;
     }
 
     static void setDeletionCost(SizeT deletionCost) {

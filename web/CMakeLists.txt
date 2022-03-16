@@ -19,10 +19,7 @@ target_include_directories(weblse PUBLIC
 set_target_properties(weblse PROPERTIES LINK_FLAGS "-s WASM=1 \
     -03 \
     -lembind \
-    -s EXIT_RUNTIME=1 \
-    -s NO_EXIT_RUNTIME \
-    -s EXPORTED_FUNCTIONS='_main' \
-    -s EXPORTED_RUNTIME_METHODS=''")
+    -s EXIT_RUNTIME=1")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
