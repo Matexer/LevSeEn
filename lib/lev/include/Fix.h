@@ -25,7 +25,7 @@ class Fix : public MultiThread, public StaticEditCosts<SizeT> {
 
 public:
     static void setPurifyRange(SizeT purifyRange);
-    static void setFixRange(SizeT purifyRange);
+    static void setFixRange(SizeT fixRange);
 
     static std::shared_ptr<FixedOutputVecT> getFixed(
             std::shared_ptr<OutputVecT> outputVec, const StringT& pattern, const StringT& text);
