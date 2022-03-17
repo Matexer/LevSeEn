@@ -12,11 +12,14 @@ template<typename EngineT>
 class_<EngineT> register_engine(const char* name) {
     return class_<EngineT>(name)
             .class_function("lookFor", &EngineT::lookFor)
+            .class_function("filtrationEfficiency", &EngineT::filtrationEfficiency)
             .class_function("setDeletionCost", &EngineT::setDeletionCost)
             .class_function("setInsertionCost", &EngineT::setInsertionCost)
             .class_function("setSwapCost", &EngineT::setSwapCost)
             .class_function("setPurifyRange", &EngineT::setPurifyRange)
-            .class_function("setFixRange", &EngineT::setFixRange);
+            .class_function("setFixRange", &EngineT::setFixRange)
+            .class_function("setMultiThreading", &EngineT::setMultiThreading)
+            .class_function("setMultiThreadingMinComplexity", &EngineT::setMultiThreadingMinComplexity);
 }
 
 
