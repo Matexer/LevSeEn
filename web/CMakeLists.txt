@@ -6,7 +6,7 @@ project(weblse VERSION 1.0)
 set(CMAKE_EXECUTABLE_SUFFIX ".wasm.js")
 
 add_compile_definitions(NDEBUG)
-add_executable(weblse ${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp)
+add_executable(weblse ${CMAKE_CURRENT_SOURCE_DIR}/../src/web.cpp)
 target_include_directories(weblse PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 #target_link_libraries(weblse PUBLIC

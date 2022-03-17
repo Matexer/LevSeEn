@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(lev)
 
 file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-add_library(lev STATIC ${SRC_FILES})
+add_library(lev SHARED ${SRC_FILES})
 target_include_directories(lev PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set_target_properties(lev
