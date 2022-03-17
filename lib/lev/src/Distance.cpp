@@ -77,7 +77,7 @@ void Distance<StringT, SizeT>::setEditCosts(const SizeT deletionCost, const Size
 
 
 template<typename StringT, typename SizeT>
-SizeT Distance<StringT, SizeT>::getDistance(const StringT &pattern, const StringT &word) {
+SizeT Distance<StringT, SizeT>::getDistance(const StringT& pattern, const StringT& word) {
     SizeT delFullCost;
     SizeT insFullCost;
     SizeT swpFullCost;
