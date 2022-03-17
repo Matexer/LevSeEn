@@ -2,7 +2,8 @@
 
 #include "structs.h"
 #include "Distance.h"
-#include "Search.h"
+#include "MultiThread.h"
+#include "StaticEditCosts.h"
 #include "Filter.h"
 
 
@@ -10,9 +11,8 @@ namespace Levenshtein {
 
 
 template<typename StringT, typename CharT, typename SizeT>
-class SelectiveSearch : protected Search<StringT, SizeT> {
+class SelectiveSearch : public MultiThread, public StaticEditCosts<SizeT> {
     typedef std::vector<SearchOutput<SizeT>> OutputT;
-    typedef Search<StringT, SizeT> SearchCls;
     typedef StaticEditCosts<SizeT> EditCostCls;
     typedef Distance<StringT, SizeT> DistanceCls;
     typedef Filter<StringT, CharT, SizeT> FilterCls;
@@ -22,7 +22,7 @@ public:
                           SizeT maxDistance);
 
 private:
-    struct SearchData : SearchCls::ThreadData {
+    struct SearchData : ThreadData {
         const StringT& pattern;
         const StringT& text;
         const SizeT& maxDistance;

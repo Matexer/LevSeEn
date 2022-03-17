@@ -1,4 +1,5 @@
 #include "SelectiveSearch.h"
+#include "Search.h"
 #include "structs.h"
 
 
@@ -22,7 +23,7 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
     }
 
     if (maxDistance == 0) {
-        return SearchCls::search(pattern, text);
+        return Search<StringT, SizeT>::search(pattern, text);
     }
 
     auto numOfIndexes = textLength - patternLength + 1;

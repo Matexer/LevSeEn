@@ -5,6 +5,7 @@
 #include "lev.h"
 #include "SelectiveSearch.h"
 #include "Fix.h"
+#include "MultiThread.h"
 #include "structs.h"
 
 
@@ -12,6 +13,7 @@ template<typename StringT, typename ChartT, typename SizeT>
 class SearchEngine {
     typedef Levenshtein::SelectiveSearch<StringT, ChartT, SizeT> SearchCls;
     typedef Levenshtein::Fix<StringT, SizeT> FixCls;
+    typedef Levenshtein::MultiThread MultiThreadCls;
     typedef std::vector<FixedSearchOutput<SizeT>> OutputVec;
 
 public:
@@ -40,5 +42,13 @@ public:
 
     static void setFixRange(SizeT fixRange) {
         FixCls::setFixRange(fixRange);
+    }
+
+    static void setMultiThreading(bool multithreading) {
+        MultiThreadCls::setMultiThreading(multithreading);
+    }
+
+    static void setMultiThreadingMinComplexity(uint64_t multithreadingMinComplexity) {
+        MultiThreadCls::setMultiThreadingMinComplexity(multithreadingMinComplexity);
     }
 };
