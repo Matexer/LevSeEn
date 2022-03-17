@@ -21,13 +21,15 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
                            "Pattern length cannot be longer than a text length!");
     }
 
+    if (maxDistance == 0) {
+        return SearchCls::search(pattern, text);
+    }
+
     auto numOfIndexes = textLength - patternLength + 1;
     auto output = std::make_shared<OutputT>();
 
     auto data = SearchData {0, numOfIndexes, pattern, text, maxDistance, output};
-
-    uint64_t taskComplexity = ((patternLength^2 * textLength) *
-            ((maxDistance + 1)/(patternLength + 1)));
+    uint64_t taskComplexity = ((patternLength^2 * textLength) * ((maxDistance + 1)/(patternLength + 1)));
 
     if (MultiThread::shouldBeConcurrent(taskComplexity))
         doConcurrent<SearchData>(_search, data);

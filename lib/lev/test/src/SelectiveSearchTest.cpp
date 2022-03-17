@@ -32,6 +32,9 @@ TEST_F(SelectiveSearchTest, testSelectiveSearchOnString) {
     ASSERT_EQ(output->size(), 2);
     ASSERT_EQ(output->at(0).distance, 0);
     ASSERT_EQ(output->at(1).distance, 2);
+
+    output = SearchT::search(pattern, text, 0);
+    ASSERT_EQ(output->size(), 2);
 }
 
 

@@ -23,7 +23,7 @@ public:
     static std::shared_ptr<OutputVecT> search(
             const StringT &pattern, const StringT &text);
 
-private:
+protected:
     struct SearchData : ThreadData {
         const StringT& pattern;
         const StringT& text;
