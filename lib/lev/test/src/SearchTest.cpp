@@ -33,38 +33,38 @@ TEST_F(SearchTest, testSearchOnText) {
 
     auto pattern = patterns[0];
     auto output = SearchT::search(pattern, text);
-    ASSERT_EQ(output->at(0), 0);
-    ASSERT_EQ(output->at(1), 2);
+    ASSERT_EQ(output->at(0).distance, 0);
+    ASSERT_EQ(output->at(1).distance, 2);
     ASSERT_EQ(output->size() - 1, textLength - pattern.length())
         << convert16.to_bytes(pattern) << " L: " << pattern.length();
 
     pattern = patterns[1];
     output = SearchT::search(pattern, text);
     auto index = text.find(pattern);
-    ASSERT_EQ(output->at(index), 0);
+    ASSERT_EQ(output->at(index).distance, 0);
 
     pattern = patterns[2];
     output = SearchT::search(pattern, text);
     index = text.find(patterns[1]);
-    ASSERT_EQ(output->at(index), 5)
+    ASSERT_EQ(output->at(index).distance, 5)
         << "W: " << convert16.to_bytes(patterns[1]) << " : " << convert16.to_bytes(pattern);
 
     pattern = patterns[3];
     output = SearchT::search(pattern, text);
     index = text.find(pattern);
-    ASSERT_EQ(output->at(index), 0);
+    ASSERT_EQ(output->at(index).distance, 0);
 
     pattern = patterns[4];
     output = SearchT::search(pattern, text);
     index = text.find(patterns[3]);
-    ASSERT_EQ(output->at(index), 6);
+    ASSERT_EQ(output->at(index).distance, 6);
 
     auto indexes = {34, 324 ,233, 33, 866, 514, 777};
     pattern = u"fdgWe pźłóentLLevenshteinrfng";
     output = SearchT::search(pattern, text);
     for (auto i : indexes) {
         auto substr = text.substr(i, pattern.length());
-        ASSERT_EQ(output->at(i), DistanceT::getEditDistance(pattern, substr));
+        ASSERT_EQ(output->at(i).distance, DistanceT::getEditDistance(pattern, substr));
     }
 }
 
@@ -74,8 +74,8 @@ TEST_F(SearchTest, testSearchOnString) {
     auto text = u"rabbitó";
     auto output = SearchT::search(pattern, text);
     ASSERT_EQ(output->size(), 2);
-    ASSERT_EQ(output->at(0), 0);
-    ASSERT_EQ(output->at(1), 2);
+    ASSERT_EQ(output->at(0).distance, 0);
+    ASSERT_EQ(output->at(1).distance, 2);
 }
 
 
@@ -83,7 +83,7 @@ TEST_F(SearchTest, testSearchOnEmptyString) {
     auto pattern = u"";
     auto text = u"żóbbit2";
     auto output = SearchT::search(pattern, text);
-    ASSERT_EQ(output->at(0), 0);
+    ASSERT_EQ(output->at(0).distance, 0);
     ASSERT_EQ(output->size(), 8);
 }
 

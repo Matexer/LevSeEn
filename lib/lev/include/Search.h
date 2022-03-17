@@ -5,6 +5,8 @@
 
 #include "MultiThread.h"
 #include "StaticEditCosts.h"
+#include "Distance.h"
+#include "structs.h"
 
 
 namespace Levenshtein {
@@ -12,22 +14,23 @@ namespace Levenshtein {
 
 template<typename StringT, typename SizeT>
 class Search : public MultiThread, public StaticEditCosts<SizeT> {
+    typedef std::vector<SearchOutput<SizeT>> OutputVecT;
+    typedef Distance<StringT, SizeT> DistanceCls;
     typedef StaticEditCosts<SizeT> EditCostCls;
 
 public:
-    //Zwraca tablicę (shared_pointer) zawierającą odległość dla każdego indexu w tekście
-    static std::shared_ptr<std::vector<SizeT>> search(
+
+    static std::shared_ptr<OutputVecT> search(
             const StringT &pattern, const StringT &text);
 
 private:
     struct SearchData : ThreadData {
         const StringT& pattern;
         const StringT& text;
-        std::shared_ptr<std::vector<SizeT>> const output;
+        std::shared_ptr<OutputVecT> const output;
     };
 
-    static void search(SearchData &data);
-    static void _search(SearchData data);   //dla wątków
+    static void _search(SearchData data);
 };
 
 

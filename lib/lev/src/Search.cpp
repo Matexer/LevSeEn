@@ -1,7 +1,7 @@
 #include <thread>
 
+
 #include "Search.h"
-#include "Distance.h"
 
 
 using namespace Levenshtein;
@@ -10,7 +10,7 @@ using namespace std;
 
 //Pubic - static
 template<typename StringT, typename SizeT>
-std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
+std::shared_ptr<std::vector<SearchOutput<SizeT>>> Search<StringT, SizeT>::search(
         const StringT &pattern, const StringT &text) {
 
     const auto& patternLength = pattern.length();
@@ -22,8 +22,8 @@ std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
                            "Pattern length cannot be longer than a text length!");
     }
 
-    auto numOfIndexes = textLength - patternLength + 1;
-    auto output = std::make_shared<std::vector<SizeT>>();
+    auto output = std::make_shared<OutputVecT>();
+    const auto& numOfIndexes = textLength - patternLength + 1;
 
     output->resize(numOfIndexes);
 
@@ -35,7 +35,7 @@ std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
     if (shouldBeConcurrent(taskComplexity))
         doConcurrent<SearchData>(_search, data);
     else
-        search(data);
+        _search(data);
 
     return output;
 }
@@ -43,21 +43,16 @@ std::shared_ptr<std::vector<SizeT>> Search<StringT, SizeT>::search(
 
 //Protected - static
 template<typename StringT, typename SizeT>
-void Search<StringT, SizeT>::search(typename Search<StringT, SizeT>::SearchData &data) {
+void Search<StringT, SizeT>::_search(typename Search<StringT, SizeT>::SearchData data) {
     const auto& patternLength = data.pattern.length();
-    auto disSearch = Distance<StringT, SizeT>(patternLength, patternLength,
-                                              EditCostCls::DELETION_COST,
-                                              EditCostCls::INSERTION_COST,
-                                              EditCostCls::SWAP_COST);
+    auto disSearch = DistanceCls(patternLength, patternLength,
+                                 EditCostCls::DELETION_COST,
+                                 EditCostCls::INSERTION_COST,
+                                 EditCostCls::SWAP_COST);
 
     for (size_t i = data.firstIndex; i < data.lastIndex; i++) {
-        data.output->at(i) = disSearch.getDistance(
-                data.pattern, data.text.substr(i, patternLength));
+        const auto& distance = disSearch.getDistance(data.pattern, data.text.substr(i, patternLength));
+        const auto& out = SearchOutput<SizeT> {i, distance};
+        data.output->at(i) = out;
     }
-}
-
-
-template<typename StringT, typename SizeT>
-void Search<StringT, SizeT>::_search(typename Search<StringT, SizeT>::SearchData data) {
-    Search<StringT, SizeT>::search(data);
 }
