@@ -1,6 +1,7 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/bind.h>
 
+#include "lev.h"
 #include "SearchEngine.h"
 #include "structs.h"
 

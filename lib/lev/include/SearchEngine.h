@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "../../../include/lev.h"
 #include "MultiThread.h"
 #include "structs.h"
 #include "SelectiveSearch.h"
