@@ -143,7 +143,6 @@ TEST_F(FilterTest, filterOnTextTestWhenMaxDistnaceLongerThanPattern) {
     auto text = loadText<u16string, char16_t>(navarroPath, textLength);
     auto maxDistance = 16;
 
-    FilterT::setMultiThreading(false);
     auto output = FilterT::filter(pattern, text, maxDistance);
 }
 

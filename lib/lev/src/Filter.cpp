@@ -1,3 +1,4 @@
+#include <mutex>
 #include "Filter.h"
 
 
@@ -13,9 +14,10 @@ std::shared_ptr<std::vector<size_t>> Filter<StringT, CharT, SizeT>::filter(
     auto numOfIndexes = text.length() - pattern.length() + 1;
 
     auto output = std::make_shared<std::vector<size_t>>();
+    auto outputMutex = mutex();
 
     auto data = FilterData {
-        0, numOfIndexes, pattern, text, maxDifference, output};
+        0, numOfIndexes, outputMutex, pattern, text, maxDifference, output};
 
     if (shouldBeConcurrent(taskComplexity))
         doConcurrent<FilterData>(_filter, data);
@@ -95,8 +97,11 @@ void Filter<StringT, CharT, SizeT>::_filter(FilterData data) {
     const auto&& patternLength = data.pattern.length();
 
     auto difference = filter.setAt(data.text.substr(data.firstIndex, patternLength));
-    if (difference <= data.maxDifference)
+    if (difference <= data.maxDifference) {
+        data.outputMutex.lock();
         data.output->push_back(data.firstIndex);
+        data.outputMutex.unlock();
+    }
 
     const auto& lastIndex = data.lastIndex - 1;
 
@@ -107,8 +112,11 @@ void Filter<StringT, CharT, SizeT>::_filter(FilterData data) {
             difference = filter.move(incomingCharacter, leavingCharacter);
         }
 
-        if (difference <= data.maxDifference)
+        if (difference <= data.maxDifference) {
+            data.outputMutex.lock();
             data.output->push_back(i + 1);
+            data.outputMutex.unlock();
+        }
     }
 }
 

@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <functional>
 #include <thread>
+#include <mutex>
 
 
 namespace Levenshtein {
@@ -17,6 +18,7 @@ protected:
     struct ThreadData {
         size_t firstIndex;
         size_t lastIndex;
+        std::mutex& outputMutex;
     };
 
     static bool shouldBeConcurrent(uint64_t complexity);
