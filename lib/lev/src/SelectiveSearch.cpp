@@ -79,7 +79,7 @@ void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
             word = data.text.substr(wordIndex, patternLength);
             distance = disSearch.getDistance(data.pattern, word);
             if (distance <= data.maxDistance) {
-                out = SearchOutput<SizeT> {wordIndex, distance};
+                out = move(SearchOutput<SizeT> {wordIndex, distance});
                 data.output->push_back(out);
             }
         }

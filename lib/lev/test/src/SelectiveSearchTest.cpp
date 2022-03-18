@@ -35,6 +35,10 @@ TEST_F(SelectiveSearchTest, testSelectiveSearchOnString) {
 
     output = SearchT::search(pattern, text, 0);
     ASSERT_EQ(output->size(), 2);
+
+//    pattern = u"eggg";
+//    text = u"eggg3442eggg3243g3";
+//    output = SearchT::search(pattern, text, );
 }
 
 
