@@ -17,6 +17,11 @@ void MultiThread::setMultiThreadingMinComplexity(uint64_t multithreadingMinCompl
 }
 
 
+void MultiThread::setMaxNumOfThreads(size_t maxNumOfThreads) {
+    MAX_NUM_OF_THREADS = maxNumOfThreads;
+}
+
+
 bool MultiThread::shouldBeConcurrent(uint64_t taskComplexity) {
     if (MULTITHREADING) {
         if (taskComplexity >= MULTITHREADING_MIN_COMPLEXITY)
@@ -32,3 +37,4 @@ bool MultiThread::shouldBeConcurrent(uint64_t taskComplexity) {
 
 bool MultiThread::MULTITHREADING = true;
 uint64_t MultiThread::MULTITHREADING_MIN_COMPLEXITY = 100;
+size_t MultiThread::MAX_NUM_OF_THREADS = 12;

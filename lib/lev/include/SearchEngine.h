@@ -60,4 +60,8 @@ public:
     static void setMultiThreadingMinComplexity(uint64_t multithreadingMinComplexity) {
         MultiThreadCls::setMultiThreadingMinComplexity(multithreadingMinComplexity);
     }
+
+    static void setMaxNumOfThreads(size_t maxNumOfThreads) {
+        MultiThreadCls::setMaxNumOfThreads(maxNumOfThreads);
+    }
 };

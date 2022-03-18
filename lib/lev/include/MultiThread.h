@@ -13,6 +13,7 @@ class MultiThread {
 public:
     static void setMultiThreading(bool multithreading);
     static void setMultiThreadingMinComplexity(uint64_t multithreadingMinComplexity);
+    static void setMaxNumOfThreads(size_t maxNumOfThreads);
 
 protected:
     struct ThreadData {
@@ -29,6 +30,7 @@ protected:
 private:
     static bool MULTITHREADING;  // Zezwolenie na wielowątkowość
     static uint64_t MULTITHREADING_MIN_COMPLEXITY;
+    static size_t MAX_NUM_OF_THREADS;
 };
 
 
@@ -36,9 +38,8 @@ template<typename DataT>
 void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     auto numOfIndexes = data.lastIndex;
 
-    auto numOfThreads = std::thread::hardware_concurrency();
-    numOfThreads = std::min(numOfThreads, (decltype(numOfThreads)) numOfIndexes);
-    std::thread pool[numOfThreads];
+    auto numOfThreads = std::min(MAX_NUM_OF_THREADS, numOfIndexes);
+    auto pool = new std::thread[numOfThreads] ;
     auto indexesPerThread = numOfIndexes / numOfThreads;
 
     DataT threadData = data;
@@ -57,7 +58,8 @@ void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     for (auto i = 0; i < numOfThreads; i++) {
         pool[i].join();
     }
-}
 
+    delete[] pool;
+}
 
 }
