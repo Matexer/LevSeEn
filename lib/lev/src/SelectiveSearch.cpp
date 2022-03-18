@@ -24,7 +24,7 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
                            "Pattern length cannot be longer than a text length!");
     }
 
-    if (maxDistance == 0) {
+    if (maxDistance > patternLength) {
         return Search<StringT, SizeT>::search(pattern, text);
     }
 
