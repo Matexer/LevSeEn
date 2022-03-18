@@ -137,4 +137,14 @@ TEST_F(FilterTest, filterWithDistanceTest) {
     ASSERT_FALSE(distance == difference);
 }
 
+
+TEST_F(FilterTest, filterOnTextTestWhenMaxDistnaceLongerThanPattern) {
+    auto pattern = u"Levenshtein";
+    auto text = loadText<u16string, char16_t>(navarroPath, textLength);
+    auto maxDistance = 16;
+
+    FilterT::setMultiThreading(false);
+    auto output = FilterT::filter(pattern, text, maxDistance);
+}
+
 }
