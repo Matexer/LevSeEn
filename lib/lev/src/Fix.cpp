@@ -110,6 +110,7 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
     StringT word;
     SizeT distance;
 
+    //W prawo od końca
     SizeT thisRange;
     if (data.index + patternLength + FIX_RANGE > textLength)
         thisRange = (SizeT)(textLength - data.index + patternLength);
@@ -126,6 +127,19 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         }
     }
 
+    //W lewo od końca
+    thisRange = patternLength / 2;
+    for (SizeT i=1 ; i <= thisRange ; i++){
+        tmpLength = patternLength - i;
+        word = text.substr(bestIndex, tmpLength);
+        distance = getDistance(word);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestLength = tmpLength;
+        }
+    }
+
+    //W lewo od początku
     if (FIX_RANGE > data.index)
         thisRange = data.index;
     else
@@ -141,6 +155,19 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
             bestDistance = distance;
             bestIndex = tmpIndex;
             finalBestLength = bestLength + i;
+        }
+    }
+
+    //W prawo od początku
+    thisRange = patternLength / 2;
+    for (size_t i=1 ; i <= thisRange ; i++){
+        tmpIndex = data.index + i;
+        word = text.substr(tmpIndex, bestLength - i);
+        distance = getDistance(word);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = tmpIndex;
+            finalBestLength = bestLength - i;
         }
     }
 

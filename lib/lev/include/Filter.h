@@ -42,7 +42,6 @@ private:
     static inline Letters getLetters(const StringT& word);
     static inline SizeT subtractionAbs(const SizeT& a, const SizeT& b);
 
-
     static void _filter(FilterData data);
 
     //Zwraca Letters (dla word) tylko z literami występujących w pattern
