@@ -1,4 +1,4 @@
-#include <thread>
+#include <mutex>
 
 
 #include "Search.h"
@@ -27,8 +27,9 @@ std::shared_ptr<std::vector<SearchOutput<SizeT>>> Search<StringT, SizeT>::search
 
     output->resize(numOfIndexes);
 
+    auto outputMutex = mutex();
     auto data = typename Search<StringT, SizeT>::SearchData {
-        0, numOfIndexes, pattern, text, output};
+        0, numOfIndexes, outputMutex, pattern, text, output};
 
     uint64_t taskComplexity = (patternLength^2 * textLength);
 

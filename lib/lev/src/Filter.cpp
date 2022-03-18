@@ -14,8 +14,8 @@ std::shared_ptr<std::vector<size_t>> Filter<StringT, CharT, SizeT>::filter(
     auto numOfIndexes = text.length() - pattern.length() + 1;
 
     auto output = std::make_shared<std::vector<size_t>>();
-    auto outputMutex = mutex();
 
+    auto outputMutex = mutex();
     auto data = FilterData {
         0, numOfIndexes, outputMutex, pattern, text, maxDifference, output};
 

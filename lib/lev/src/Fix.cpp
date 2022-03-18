@@ -64,7 +64,8 @@ std::shared_ptr<typename Fix<StringT, SizeT>::FixedOutputVecT> Fix<StringT, Size
     auto fixedOutput = std::make_shared<FixedOutputVecT>();
     fixedOutput->resize(numOfIndexes);
 
-    auto&& data = FixData {0, numOfIndexes, pattern, text, output, fixedOutput};
+    auto outputMutex = mutex();
+    auto&& data = FixData {0, numOfIndexes, outputMutex, pattern, text, output, fixedOutput};
     size_t taskComplexity = 2 * output->size() * (pattern.length() + FIX_RANGE) * (pattern.length()^2);
 
     if (shouldBeConcurrent(taskComplexity))

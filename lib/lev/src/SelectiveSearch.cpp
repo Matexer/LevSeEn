@@ -1,3 +1,5 @@
+#include <mutex>
+
 #include "SelectiveSearch.h"
 #include "Search.h"
 #include "structs.h"
@@ -29,7 +31,8 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
     auto numOfIndexes = textLength - patternLength + 1;
     auto output = std::make_shared<OutputT>();
 
-    auto data = SearchData {0, numOfIndexes, pattern, text, maxDistance, output};
+    auto outputMutex = mutex();
+    auto data = SearchData {0, numOfIndexes, outputMutex, pattern, text, maxDistance, output};
     uint64_t taskComplexity = ((patternLength^2 * textLength) * ((maxDistance + 1)/(patternLength + 1)));
 
     if (MultiThread::shouldBeConcurrent(taskComplexity))
@@ -61,7 +64,9 @@ void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
         distance = disSearch.getDistance(data.pattern, word);
         if (distance <= data.maxDistance) {
             out = SearchOutput<SizeT> {wordIndex, distance};
+            data.outputMutex.lock();
             data.output->push_back(out);
+            data.outputMutex.unlock();
         }
     }
 
@@ -80,7 +85,9 @@ void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
             distance = disSearch.getDistance(data.pattern, word);
             if (distance <= data.maxDistance) {
                 out = move(SearchOutput<SizeT> {wordIndex, distance});
+                data.outputMutex.lock();
                 data.output->push_back(out);
+                data.outputMutex.unlock();
             }
         }
     }
