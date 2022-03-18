@@ -25,7 +25,7 @@ protected:
 
 
 TEST_F(SearchEngineTest, lookForTest) {
-    auto pattern = u"Levenshteinjmvius8734st78 svtgsdjvgvr djshv3fghhknjgfhnkjdvndvhsfnsdhvgvnsdhgvsdfg";
+    auto pattern = u"The maximum α XXX level stays the YYY same as in";
     auto text = loadText<u16string, char16_t>(navarroPath, textLength);
     auto maxDistance = 3000;
     EngineT::setMaxNumOfThreads(6);
