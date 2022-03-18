@@ -39,7 +39,7 @@ void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     auto numOfIndexes = data.lastIndex;
 
     auto numOfThreads = std::min(MAX_NUM_OF_THREADS, numOfIndexes);
-    auto pool = new std::thread[numOfThreads] ;
+    std::thread pool[numOfThreads];
     auto indexesPerThread = numOfIndexes / numOfThreads;
 
     DataT threadData = data;
@@ -58,8 +58,6 @@ void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     for (auto i = 0; i < numOfThreads; i++) {
         pool[i].join();
     }
-
-    delete[] pool;
 }
 
 }
