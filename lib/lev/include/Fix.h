@@ -5,7 +5,6 @@
 #include "StaticEditCosts.h"
 #include "Distance.h"
 
-
 #ifndef NDEBUG
     #include <gtest/gtest.h>
 #endif
@@ -29,6 +28,10 @@ public:
 
     static std::shared_ptr<FixedOutputVecT> getFixed(
             std::shared_ptr<OutputVecT> outputVec, const StringT& pattern, const StringT& text);
+
+    static inline bool compareOutput(OutputT& a, OutputT& b);
+    static inline bool compareFixedOutput(FixedOutputT& a, FixedOutputT& b);
+
 private:
     struct FixData : ThreadData {
         const StringT& pattern;
@@ -38,8 +41,6 @@ private:
     };
 
     static void purify(std::shared_ptr<OutputVecT> output);
-    static inline bool compareOutput(OutputT& a, OutputT& b);
-    static inline bool compareFixedOutput(FixedOutputT& a, FixedOutputT& b);
     static inline bool inRange(size_t val, size_t minRange, size_t maxRange);
 
     static std::shared_ptr<FixedOutputVecT> fix(

@@ -1,11 +1,16 @@
 #pragma once
 
 
+namespace Levenshtein {
+
+
 template<typename SizeT>
 class StaticEditCosts {
 public:
     static void setDeletionCost(SizeT deletionCost);
+
     static void setInsertionCost(SizeT insertionCost);
+
     static void setSwapCost(SizeT swapCost);
 
 protected:
@@ -43,3 +48,6 @@ SizeT StaticEditCosts<SizeT>::INSERTION_COST = 1;
 
 template<typename SizeT>
 SizeT StaticEditCosts<SizeT>::SWAP_COST = 1;
+
+
+}

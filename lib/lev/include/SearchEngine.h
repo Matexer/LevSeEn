@@ -7,22 +7,35 @@
 #include "SelectiveSearch.h"
 #include "Fix.h"
 #include "Filter.h"
+#include "StaticEditCosts.h"
+#include "Search.h"
 
 
 template<typename StringT, typename ChartT, typename SizeT>
 class SearchEngine {
-    typedef Levenshtein::SelectiveSearch<StringT, ChartT, SizeT> SearchCls;
+    typedef Levenshtein::SelectiveSearch<StringT, ChartT, SizeT> SelectiveSearchCls;
+    typedef Levenshtein::Search<StringT, SizeT> SearchCls;
     typedef Levenshtein::Fix<StringT, SizeT> FixCls;
     typedef Levenshtein::Filter<StringT, ChartT, SizeT> FilterCls;
     typedef Levenshtein::MultiThread MultiThreadCls;
-    typedef std::vector<FixedSearchOutput<SizeT>> OutputVec;
+    typedef Levenshtein::StaticEditCosts<SizeT> EditCostCls;
+
+    typedef std::vector<FixedSearchOutput<SizeT>> FixedOutputVec;
+    typedef std::vector<SearchOutput<SizeT>> OutputVec;
+
 
 public:
-    static OutputVec lookFor(
+    static FixedOutputVec lookFor(
             const StringT& pattern, const StringT& text, SizeT maxDistance) {
-        const auto& output = SearchCls::search(pattern, text, maxDistance);
+        const auto& output = SelectiveSearchCls::search(pattern, text, maxDistance);
         const auto& fixedOutput = FixCls::getFixed(output, pattern, text);
         return *fixedOutput;
+    }
+
+    static OutputVec search(const StringT& pattern, const StringT& text) {
+        auto output = SearchCls::search(pattern, text);
+        std::sort(output->begin(), output->end(), FixCls::compareOutput);
+        return *output;
     }
 
     static float filtrationEfficiency(
@@ -34,15 +47,15 @@ public:
     }
 
     static void setDeletionCost(SizeT deletionCost) {
-        SearchCls::setDeletionCost(deletionCost);
+        EditCostCls::setDeletionCost(deletionCost);
     }
 
     static void setInsertionCost(SizeT insertionCost) {
-        SearchCls::setInsertionCost(insertionCost);
+        EditCostCls::setInsertionCost(insertionCost);
     }
 
     static void setSwapCost(SizeT swapCost) {
-        SearchCls::setSwapCost(swapCost);
+        EditCostCls::setSwapCost(swapCost);
     }
 
     static void setPurifyRange(SizeT purifyRange) {
