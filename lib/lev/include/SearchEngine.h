@@ -27,12 +27,14 @@ class SearchEngine {
 public:
     static FixedOutputVec lookFor(
             const StringT& pattern, const StringT& text, SizeT maxDistance) {
+        setMultiThreading(false);
         const auto& output = SelectiveSearchCls::search(pattern, text, maxDistance);
         const auto& fixedOutput = FixCls::getFixed(output, pattern, text);
         return *fixedOutput;
     }
 
     static OutputVec search(const StringT& pattern, const StringT& text) {
+        setMultiThreading(false);
         auto output = SearchCls::search(pattern, text);
         std::sort(output->begin(), output->end(), FixCls::compareOutput);
         return *output;
@@ -40,6 +42,7 @@ public:
 
     static float filtrationEfficiency(
             const StringT& pattern, const StringT& text, SizeT maxDistance) {
+        setMultiThreading(false);
         const auto& output = FilterCls::filter(pattern, text, maxDistance);
         const auto& numOfOutputs = (float)output->size();
         const auto& numOfWords = (float)(text.length() - pattern.length());
