@@ -20,7 +20,8 @@ class_<EngineT> register_engine(const char* name) {
             .class_function("setPurifyRange", &EngineT::setPurifyRange)
             .class_function("setFixRange", &EngineT::setFixRange)
             .class_function("setMultiThreading", &EngineT::setMultiThreading)
-            .class_function("setMultiThreadingMinComplexity", &EngineT::setMultiThreadingMinComplexity);
+            .class_function("setMultiThreadingMinComplexity", &EngineT::setMultiThreadingMinComplexity)
+            .class_function("setMaxNumOfThreads", &EngineT::setMaxNumOfThreads);
 }
 
 
