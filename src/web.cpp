@@ -65,15 +65,15 @@ EMSCRIPTEN_BINDINGS(Ouput) {
 
 
 EMSCRIPTEN_BINDINGS(Engine) {
-        register_engine<SearchEngineStr8>("SearchEngineStr8");
-        register_engine<SearchEngine16Str8>("SearchEngine16Str8");
-        register_engine<SearchEngine32Str8>("SearchEngine32Str8");
+        register_engine<SearchEngineStr8>("SearchEngineUTF8Size8");
+        register_engine<SearchEngine16Str8>("SearchEngineUTF16Size8");
+        register_engine<SearchEngine32Str8>("SearchEngineUTF32Size8");
 
-        register_engine<SearchEngineStr16>("SearchEngineStr16");
-        register_engine<SearchEngine16Str16>("SearchEngine16Str16");
-        register_engine<SearchEngine32Str16>("SearchEngine32Str16");
+        register_engine<SearchEngineStr16>("SearchEngineUTF8Size16");
+        register_engine<SearchEngine16Str16>("SearchEngineUTF16Size16");
+        register_engine<SearchEngine32Str16>("SearchEngineUTF32Size16");
 
-        register_engine<SearchEngineStr32>("SearchEngineStr32");
-        register_engine<SearchEngine16Str32>("SearchEngine16Str32");
-        register_engine<SearchEngine32Str32>("SearchEngine32Str32");
+        register_engine<SearchEngineStr32>("SearchEngineUTF8Size32");
+        register_engine<SearchEngine16Str32>("SearchEngineUTF16Size32");
+        register_engine<SearchEngine32Str32>("SearchEngineUTF32Size32");
 }
