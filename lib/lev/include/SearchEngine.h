@@ -70,7 +70,7 @@ public:
         MultiThreadCls::setMultiThreading(multithreading);
     }
 
-    static void setMultiThreadingMinComplexity(uint64_t multithreadingMinComplexity) {
+    static void setMultiThreadingMinComplexity(size_t multithreadingMinComplexity) {
         MultiThreadCls::setMultiThreadingMinComplexity(multithreadingMinComplexity);
     }
 
