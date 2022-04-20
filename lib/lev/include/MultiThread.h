@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <cstdint>
 #include <functional>
 #include <thread>
@@ -43,13 +44,25 @@ void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     pool->resize(numOfThreads);
     auto indexesPerThread = numOfIndexes / numOfThreads;
 
+//    #ifndef __EMSCRIPTEN__
+//    auto finalOutput = data.output;
+//    auto outputs = std::make_shared<std::vector<int>>();
+//    outputs->resize(numOfThreads);
+//    #endif
+
     DataT threadData = data;
     threadData.firstIndex = 0;
     threadData.lastIndex = indexesPerThread;
+//    #ifndef __EMSCRIPTEN__
+//        threadData.output = outputs->at(0);
+//    #endif
     for (auto i = 0; i < numOfThreads - 1; i++) { //ostatni wątek zostawiony na dokończenie
         pool->at(i) = std::thread(func, threadData);
         threadData.firstIndex += indexesPerThread;
         threadData.lastIndex += indexesPerThread;
+//        #ifndef __EMSCRIPTEN__
+//            threadData.output = outputs->at(i + 1);
+//        #endif
     }
 
     //Ostatni wątek iteruje do końca
@@ -59,6 +72,17 @@ void MultiThread::doConcurrent(std::function<void(DataT)> func, DataT &data) {
     for (auto i = 0; i < numOfThreads; i++) {
         pool->at(i).join();
     }
+
+//    #ifndef __EMSCRIPTEN__
+//        for (auto i = 0; i < numOfThreads; i++) {
+//            finalOutput.insert(
+//                    finalOutput.end(),
+//                    std::make_move_iterator(outputs->at(i).begin()),
+//                    std::make_move_iterator(outputs->at(i).end())
+//            );
+//        }
+//    #endif
+
 }
 
 }
