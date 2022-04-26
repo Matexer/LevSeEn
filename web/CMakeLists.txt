@@ -22,16 +22,15 @@ set_target_properties(weblse PROPERTIES LINK_FLAGS "\
     -O3 \
     -lembind \
     -s WASM=1 \
-    -s ALLOW_MEMORY_GROWTH=1 \
+    -s ALLOW_MEMORY_GROWTH=0 \
     -s EXIT_RUNTIME=1 \
+    -pthread \
+    -s USE_PTHREADS=1 \
+    -s PTHREAD_POOL_SIZE=16 \
+    -s INITIAL_MEMORY=64MB \
 ")
 
-#-pthread \
-#-s USE_PTHREADS=1 \
-#-s PTHREAD_POOL_SIZE=16 \
-#-s INITIAL_MEMORY=64MB \
-
-#target_compile_options(weblse PUBLIC -pthread)
+target_compile_options(weblse PUBLIC -pthread)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)

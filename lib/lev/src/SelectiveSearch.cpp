@@ -33,9 +33,9 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
 
     auto outputMutex = mutex();
     auto data = SearchData {0, numOfIndexes, outputMutex, pattern, text, maxDistance, output};
-    uint64_t taskComplexity = ((patternLength^2 * textLength) * ((maxDistance + 1)/(patternLength + 1)));
+    uint64_t taskComplexity = (patternLength^2 * textLength);
 
-    if (MultiThread::shouldBeConcurrent(taskComplexity))
+    if (shouldBeConcurrent(taskComplexity))
         doConcurrent<SearchData>(_search, data);
     else
         _search(data);
