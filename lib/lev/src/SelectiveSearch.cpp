@@ -31,6 +31,10 @@ SelectiveSearch<StringT, CharT, SizeT>::search(
     auto numOfIndexes = textLength - patternLength + 1;
     auto output = std::make_shared<OutputT>();
 
+    #ifdef __EMSCRIPTEN__
+        output->resize(numOfIndexes);
+    #endif
+
     auto outputMutex = mutex();
     auto data = SearchData {0, numOfIndexes, outputMutex, pattern, text, maxDistance, output};
     uint64_t taskComplexity = (patternLength^2 * textLength);
@@ -64,9 +68,13 @@ void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
         distance = disSearch.getDistance(data.pattern, word);
         if (distance <= data.maxDistance) {
             out = SearchOutput<SizeT> {wordIndex, distance};
-            data.outputMutex.lock();
-            data.output->push_back(out);
-            data.outputMutex.unlock();
+            #ifndef __EMSCRIPTEN__
+                data.outputMutex.lock();
+                data.output->push_back(out);
+                data.outputMutex.unlock();
+            #else
+                data.output->at(wordIndex) = out;
+            #endif
         }
     }
 
@@ -85,9 +93,13 @@ void SelectiveSearch<StringT, CharT, SizeT>::_search(SearchData data) {
             distance = disSearch.getDistance(data.pattern, word);
             if (distance <= data.maxDistance) {
                 out = move(SearchOutput<SizeT> {wordIndex, distance});
-                data.outputMutex.lock();
-                data.output->push_back(out);
-                data.outputMutex.unlock();
+                #ifndef __EMSCRIPTEN__
+                    data.outputMutex.lock();
+                    data.output->push_back(out);
+                    data.outputMutex.unlock();
+                #else
+                    data.output->at(wordIndex) = out;
+                #endif
             }
         }
     }
