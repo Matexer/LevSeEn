@@ -133,7 +133,7 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         tmpLength = patternLength - i;
         word = text.substr(bestIndex, tmpLength);
         distance = getDistance(word);
-        if (distance < bestDistance) {
+        if (distance <= bestDistance) {
             bestDistance = distance;
             bestLength = tmpLength;
         }
@@ -164,7 +164,7 @@ typename Fix<StringT, SizeT>::FixedOutputT Fix<StringT, SizeT>::getFixed(
         tmpIndex = data.index + i;
         word = text.substr(tmpIndex, bestLength - i);
         distance = getDistance(word);
-        if (distance < bestDistance) {
+        if (distance <= bestDistance) {
             bestDistance = distance;
             bestIndex = tmpIndex;
             finalBestLength = bestLength - i;
